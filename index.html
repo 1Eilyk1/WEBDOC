@@ -226,7 +226,7 @@ form.addEventListener("submit", async function(event) {
 
         const result = await response.json();
 
-        if (!response.ok || !result.ok || !result.token) {
+        if (!response.ok || !result.token || !result.user) {
             throw new Error(result.error || "Invalid username or password.");
         }
 

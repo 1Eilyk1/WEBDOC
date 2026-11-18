@@ -3305,7 +3305,32 @@ document.addEventListener("keydown",function(event){
 .webdoc-dialog input{width:100%;box-sizing:border-box;background:#081526;border:1px solid #3a506e;border-radius:11px;padding:12px 13px;color:#f4f8ff;outline:none}
 .webdoc-dialog input:focus{border-color:#55b9dc;box-shadow:0 0 0 3px #36a9d522}
 .webdoc-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;flex-wrap:wrap}
-.webdoc-actions button,.admin-user-actions button{border:1px solid #405a7a;border-radius:10px;padding:10px 15px;color:#eaf2ff;background:#1b2e48;cursor:pointer;font-weight:650}
+.webdoc-actions button,
+.admin-user-actions button,
+.admin-toolbar button{
+    border:1px solid #405a7a;
+    border-radius:10px;
+    padding:10px 15px;
+    color:#eaf2ff;
+    background:#1b2e48;
+    cursor:pointer;
+    font-weight:650;
+    transition:all .2s ease;
+}
+
+.webdoc-actions .admin-primary,
+.admin-user-actions .admin-primary,
+.admin-toolbar .admin-primary{
+    background:linear-gradient(135deg,#168d82,#2679c6);
+    border:0;
+    color:#ffffff;
+    box-shadow:0 5px 16px #168d8240;
+}
+
+.admin-toolbar button:hover{
+    filter:brightness(1.15);
+    transform:translateY(-1px);
+}
 .webdoc-actions .admin-primary,.admin-user-actions .admin-primary{background:linear-gradient(135deg,#168d82,#2679c6);border:0}
 .webdoc-actions button:disabled{opacity:.45;cursor:not-allowed}
 .cloud-info{background:#102b43;border:1px solid #28617e;border-radius:14px;padding:14px;margin-top:17px;color:#d6eafa;font-size:13px;line-height:1.55}

@@ -3151,12 +3151,12 @@ function webdocLogout(){
 async function changeMyPassword(){
   const currentPassword=prompt('Enter your current password:');
   if(currentPassword===null)return;
-  const newPassword=prompt('Enter your new password (at least 12 characters):');
+  const newPassword=prompt('Enter your new password (at least 6 characters):');
   if(newPassword===null)return;
   const confirmPassword=prompt('Confirm your new password:');
   if(confirmPassword===null)return;
   if(newPassword!==confirmPassword){alert('The new passwords do not match.');return;}
-  if(newPassword.length<12){alert('Password must be at least 12 characters.');return;}
+  if(newPassword.length<6){alert('Password must be at least 6 characters.');return;}
   try{
     const response=await fetch('https://acer-cloud-backend.vercel.app/api/auth/change-password',{
       method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('webdoc_token')},
@@ -3216,7 +3216,7 @@ async function submitCreateUser(event){
   const username=document.getElementById('newUsername').value.trim();
   const password=document.getElementById('newUserPassword').value;
   if(!/^[A-Za-z0-9._-]{3,40}$/.test(username)){alert('Username must be 3–40 characters and use only letters, numbers, dots, underscores or hyphens.');return;}
-  if(password.length<12){alert('Temporary password must be at least 12 characters.');return;}
+  if(password.length<6){alert('Temporary password must be at least 6 characters.');return;}
   const button=document.getElementById('createUserSubmit');button.disabled=true;button.textContent='Creating account…';
   try{
     const result=await adminApi('/api/admin/users',{method:'POST',body:JSON.stringify({username,password})});
@@ -3231,9 +3231,9 @@ async function adminToggleUser(id,isActive,username){
   catch(error){alert(error.message);}
 }
 async function adminResetPassword(id,username){
-  const password=prompt('Enter a temporary password for '+username+' (at least 12 characters):');
+  const password=prompt('Enter a temporary password for '+username+' (at least 6 characters):');
   if(password===null)return;
-  if(password.length<12){alert('Temporary password must be at least 12 characters.');return;}
+  if(password.length<6){alert('Temporary password must be at least 6 characters.');return;}
   if(!confirm('Reset '+username+'’s password? They must change it at their next login.'))return;
   try{await adminApi('/api/admin/users/'+id+'/reset-password',{method:'POST',body:JSON.stringify({temporaryPassword:password})});alert('Temporary password set. The user must change it after signing in.');await loadAdminUsers();}
   catch(error){alert(error.message);}
@@ -3341,7 +3341,7 @@ document.addEventListener("keydown",function(event){
   <form id="createUserForm" onsubmit="submitCreateUser(event)">
    <div class="create-user-intro">Create an individual WebDoc login. Each team member will have a separate cloud workspace and must choose a new password the first time they sign in.</div>
    <div class="create-user-field"><label for="newUsername">Username</label><input id="newUsername" name="username" autocomplete="off" minlength="3" maxlength="40" pattern="[A-Za-z0-9._-]{3,40}" placeholder="e.g. alex.santos" required><div class="create-user-hint">3–40 characters. Use letters, numbers, dots, underscores, or hyphens.</div></div>
-   <div class="create-user-field"><label for="newUserPassword">Temporary password</label><input id="newUserPassword" name="password" type="password" minlength="6" maxlength="200" autocomplete="new-password" placeholder="Enter at least 12 characters" required><div class="create-user-hint">Share this password securely. The user will be required to change it after signing in.</div></div>
+   <div class="create-user-field"><label for="newUserPassword">Temporary password</label><input id="newUserPassword" name="password" type="password" minlength="6" maxlength="200" autocomplete="new-password" placeholder="Enter at least 6 characters" required><div class="create-user-hint">Share this password securely. The user will be required to change it after signing in.</div></div>
    <div class="cloud-info">Account type: <strong>Standard user</strong><br>Documentation and cloud records remain separate for each account.</div>
    <div class="webdoc-actions"><button type="button" onclick="closeCreateUser()">Cancel</button><button type="submit" class="admin-primary" id="createUserSubmit">Create account</button></div>
   </form>

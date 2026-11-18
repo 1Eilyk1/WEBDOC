@@ -1,0 +1,2966 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Call Documentation</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Inter, Arial, Helvetica, sans-serif; }
+    :root { --bg:#080b12; --panel:#111722; --panel2:#151c29; --border:#263244; --text:#e8edf5; --muted:#8d99ab; --accent:#60a5fa; --accent2:#3b82f6; --green:#34d399; --danger:#f87171; }
+    body { background:#050711; color:var(--text); min-height:100vh; overflow-x:hidden; position:relative; isolation:isolate; }
+    /* Animated neon-wall backdrop: pure CSS, no external assets or network requests. */
+    body::before { content:""; position:fixed; inset:-18%; z-index:-2; pointer-events:none; background:
+      radial-gradient(ellipse at 14% 18%, rgba(0,229,255,.22), transparent 31%),
+      radial-gradient(ellipse at 84% 22%, rgba(157,78,221,.27), transparent 32%),
+      radial-gradient(ellipse at 70% 82%, rgba(0,112,255,.22), transparent 35%),
+      radial-gradient(ellipse at 26% 78%, rgba(255,0,153,.13), transparent 30%),
+      linear-gradient(135deg,#050711 0%,#090d1b 48%,#060713 100%);
+      filter:saturate(1.2); animation:neonDrift 22s ease-in-out infinite alternate; }
+    body::after { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.23; background-image:linear-gradient(rgba(90,160,255,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(90,160,255,.10) 1px,transparent 1px); background-size:54px 54px; mask-image:linear-gradient(to bottom,black,transparent 90%); }
+    @keyframes neonDrift { 0% { transform:translate3d(-1%,0,0) scale(1); filter:hue-rotate(0deg) saturate(1.15); } 50% { transform:translate3d(1.5%,1%,0) scale(1.04); } 100% { transform:translate3d(0,-1%,0) scale(1.02); filter:hue-rotate(24deg) saturate(1.35); } }
+    body > * { position:relative; }
+    ::selection { background:rgba(0,229,255,.32); color:#fff; }
+    button,input,textarea { font:inherit; }
+    .header { background:linear-gradient(135deg,#111827,#0b1220 65%,#0f1b31); color:white; padding:25px 30px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 8px 30px rgba(0,0,0,.35); border-bottom:1px solid #253247; }
+    .header h1 { font-size:26px; margin-bottom:5px; letter-spacing:.2px; }
+    .header p { color:#aab5c5; font-size:14px; }
+    .today-btn { background:#182235; color:#bfdbfe; border:1px solid #31415a; padding:11px 18px; border-radius:10px; font-weight:bold; cursor:pointer; transition:.2s; }
+    .today-btn:hover { background:#22304a; border-color:#4f75a8; transform:translateY(-2px); }
+    .container { max-width:1200px; margin:30px auto; padding:0 20px; }
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:25px; }
+    .stat-card { background:linear-gradient(145deg,#121a28,#0f1622); padding:20px; border-radius:14px; box-shadow:0 8px 24px rgba(0,0,0,.22); border:1px solid var(--border); }
+    .stat-title { font-size:13px; color:var(--muted); margin-bottom:8px; }
+    .stat-value { font-size:26px; font-weight:bold; color:#93c5fd; }
+    .calendar-card { background:rgba(17,23,34,.94); border:1px solid var(--border); border-radius:16px; padding:25px; box-shadow:0 12px 35px rgba(0,0,0,.25); }
+    .calendar-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+    .calendar-header h2 { font-size:21px; }
+    .calendar-controls { display:flex; gap:8px; }
+    .calendar-controls button { border:1px solid #31415a; background:#151e2d; color:#d9e2ef; padding:8px 12px; border-radius:8px; cursor:pointer; transition:.2s; }
+    .calendar-controls button:hover { background:#1d2a3f; border-color:#5284c7; color:#bfdbfe; }
+    .weekdays,.calendar { display:grid; grid-template-columns:repeat(7,1fr); }
+    .weekday { text-align:center; font-weight:bold; color:#7f8da2; font-size:13px; padding:10px 0; }
+    .day { min-height:105px; border:1px solid #202b3b; padding:10px; cursor:pointer; position:relative; transition:.2s; background:#101722; color:#dce4ef; }
+    .day:hover { background:#172131; border-color:#42658d; }
+    .day.empty { background:#0d131d; cursor:default; opacity:.55; }
+    .day-number { font-weight:bold; font-size:14px; }
+    .day.today { background:#12223a; border:2px solid #3b82f6; }
+    .day-count { position:absolute; bottom:8px; left:8px; right:8px; background:#18345a; color:#93c5fd; padding:4px 6px; border-radius:6px; font-size:11px; font-weight:bold; text-align:center; }
+    .modal-overlay { position:fixed; inset:0; background:rgba(2,6,15,.78); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; padding:20px; z-index:1000; }
+    .modal-overlay.active { display:flex; }
+    .modal { width:100%; max-width:750px; max-height:92vh; overflow-y:auto; background:#0f1622; border:1px solid #2a374b; border-radius:18px; box-shadow:0 25px 80px rgba(0,0,0,.55); }
+    .modal-header { background:linear-gradient(135deg,#17243a,#101b2c); color:white; padding:20px 25px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #2a374b; }
+    .modal-header h2 { font-size:20px; }
+    .close-btn { border:1px solid #34445c; background:#1b2739; color:#dbeafe; width:35px; height:35px; border-radius:50%; font-size:20px; cursor:pointer; }
+    .close-btn:hover { background:#27364d; }
+    .next-day-btn { border:1px solid rgba(0,217,255,.42); background:linear-gradient(110deg,rgba(0,126,167,.34),rgba(95,65,190,.32)); color:#c9f8ff; padding:9px 15px; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer; transition:.2s; }
+    .next-day-btn:hover { background:linear-gradient(110deg,rgba(0,160,190,.5),rgba(115,75,210,.48)); border-color:#00e5ff; box-shadow:0 0 16px rgba(0,217,255,.16); }
+    .modal-body { padding:25px; }
+    .form-section { background:#121a27; border:1px solid #263244; border-radius:14px; padding:20px; margin-bottom:20px; }
+    .section-title { font-size:14px; font-weight:bold; color:#b9c7d9; margin-bottom:15px; text-transform:uppercase; letter-spacing:.4px; }
+    .form-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:15px; }
+    .form-group { display:flex; flex-direction:column; }
+    .form-group.full { grid-column:1 / -1; }
+    label { font-size:12px; font-weight:bold; color:#9eabc0; margin-bottom:6px; }
+    input,textarea { width:100%; border:1px solid #303d51; border-radius:9px; padding:11px 12px; font-size:14px; outline:none; background:#0b111b; color:#e8edf5; transition:.2s; }
+    input::placeholder,textarea::placeholder { color:#586579; }
+    input:focus,textarea:focus { border-color:#4f8bd8; box-shadow:0 0 0 3px rgba(59,130,246,.15); background:#0d1521; }
+    #summary { min-height:100px; max-height:none; height:auto; resize:vertical; line-height:1.5; overflow-y:hidden; }
+    .summary-hint { font-size:11px; color:#68768a; margin-top:5px; }
+    .add-btn { width:100%; border:none; background:linear-gradient(135deg,#3b82f6,#2563eb); color:white; padding:13px; border-radius:10px; font-size:14px; font-weight:bold; cursor:pointer; transition:.2s; box-shadow:0 6px 18px rgba(37,99,235,.2); }
+    .add-btn:hover { background:linear-gradient(135deg,#60a5fa,#3b82f6); transform:translateY(-1px); }
+    .call-list { display:flex; flex-direction:column; gap:12px; }
+    .call-item { border:1px solid #293548; border-radius:12px; padding:15px; background:#0e1622; }
+    .call-item-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .call-number { font-weight:bold; color:#93c5fd; }
+   .edit-btn {
+    border: 1px solid #2563eb;
+    background: #172b4d;
+    color: #93c5fd;
+    padding: 6px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+   }
+
+.edit-btn:hover {
+    background: #1e40af;
+    color: white;
+}
+    .move-btn { border:1px solid #256b62; background:#12312f; color:#99f6e4; padding:6px 10px; border-radius:7px; cursor:pointer; font-size:12px; font-weight:bold; }
+    .move-btn:hover { background:#155e56; color:white; }
+    .delete-btn { border:1px solid #5b3035; background:#321b21; color:#fca5a5; padding:6px 10px; border-radius:7px; cursor:pointer; font-size:12px; font-weight:bold; }
+    .delete-btn:hover { background:#482027; }
+    .call-info { display:grid; grid-template-columns:repeat(2,1fr); gap:7px 15px; font-size:13px; color:#c8d2df; }
+    .call-info strong { color:#aebbd0; }
+    .call-summary { grid-column:1 / -1; margin-top:7px; padding-top:10px; border-top:1px solid #273244; color:#aeb9c8; white-space:pre-wrap; line-height:1.5; }
+    .download-section { margin-top:20px; padding:18px; background:#0d211b; border:1px solid #214c3c; border-radius:12px; }
+    .download-section h3 { font-size:14px; color:#86efac; margin-bottom:5px; }
+    .filename { font-size:12px; color:#6ee7b7; margin-bottom:12px; word-break:break-all; }
+    .download-btn { width:100%; padding:12px; border:1px solid #28634c; background:#145c43; color:#ecfdf5; border-radius:9px; font-weight:bold; cursor:pointer; }
+    .download-btn:hover { background:#187455; }
+    .modal-footer { display:flex; gap:10px; margin-top:20px; }
+    .footer-btn { flex:1; padding:11px; border-radius:9px; cursor:pointer; font-weight:bold; border:none; }
+    .clear-btn { background:#351d23; color:#fca5a5; border:1px solid #5a3037; }
+    .done-btn { background:#222d3d; color:#cbd5e1; border:1px solid #344258; }
+    .footer-btn:hover { opacity:.85; }
+    .empty { text-align:center; color:#68768a; padding:20px; font-size:13px; }
+    @media (max-width:700px) { .stats{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.form-group.full{grid-column:auto}.call-info{grid-template-columns:1fr}.call-summary{grid-column:auto}.day{min-height:75px;padding:6px}.day-count{font-size:9px;padding:3px}.calendar-card{padding:12px}.modal-body{padding:15px}.header{padding:20px}.header h1{font-size:21px} }
+
+.data-toolbar{max-width:1100px;margin:18px auto 0;padding:0 20px;display:flex;gap:10px;flex-wrap:wrap}
+.toolbar-btn{border:1px solid #334155;background:#1e293b;color:#e2e8f0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;transition:.2s}
+.toolbar-btn:hover{background:#334155;transform:translateY(-1px)}
+.toolbar-btn.danger{border-color:#7f1d1d;background:#3f1515;color:#fecaca}
+.toolbar-btn.danger:hover{background:#5f1d1d}
+.import-btn{display:inline-flex;align-items:center}
+.import-btn input{display:none}
+
+
+    /* Global search */
+    .search-panel { max-width:1160px; margin:20px auto 0; padding:0 20px; }
+    .search-card { background:rgba(17,23,34,.96); border:1px solid var(--border); border-radius:14px; padding:18px; box-shadow:0 8px 24px rgba(0,0,0,.2); }
+    .search-heading { font-size:16px; font-weight:700; margin-bottom:6px; color:#dbeafe; }
+    .search-description { font-size:12px; color:var(--muted); margin-bottom:12px; }
+    .search-row { display:flex; gap:10px; }
+    .search-row input { flex:1; min-width:0; }
+    .search-clear { border:1px solid #334155; background:#1e293b; color:#e2e8f0; border-radius:9px; padding:10px 14px; cursor:pointer; font-weight:700; }
+    .search-results { display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+    .search-result { border:1px solid #2b3b52; background:#0c1420; border-radius:10px; padding:13px; }
+    .search-result-top { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+    .search-result-date { color:#93c5fd; font-weight:700; font-size:13px; }
+    .search-result-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px 14px; color:#cbd5e1; font-size:12px; overflow-wrap:anywhere; }
+    .search-result-fields strong { color:#9eabc0; }
+    .search-result-summary { margin-top:8px; color:#aeb9c8; font-size:12px; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.45; }
+    .search-open { border:1px solid #315d91; background:#17365c; color:#dbeafe; border-radius:8px; padding:8px 11px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; }
+    .search-open:hover { background:#214b7b; }
+    .search-empty { color:#8492a6; font-size:13px; padding:12px 2px 2px; }
+    @media(max-width:600px){ .search-row{flex-direction:column}.search-result-top{align-items:flex-start;flex-direction:column}.search-result-fields{grid-template-columns:1fr}.search-panel{padding:0 12px} }
+
+    /* Modern glass UI skin */
+    .header { position:relative; overflow:hidden; background:linear-gradient(110deg,rgba(7,13,28,.82),rgba(15,19,42,.70),rgba(8,20,39,.82)); backdrop-filter:blur(22px) saturate(145%); -webkit-backdrop-filter:blur(22px) saturate(145%); border-bottom:1px solid rgba(119,190,255,.23); box-shadow:0 12px 45px rgba(0,0,0,.32),0 1px 0 rgba(255,255,255,.04) inset; }
+    .header::after { content:""; position:absolute; height:1px; left:0; right:0; bottom:0; background:linear-gradient(90deg,transparent,#00e5ff 24%,#a855f7 68%,transparent); opacity:.8; }
+    .header h1 { letter-spacing:.4px; text-shadow:0 0 24px rgba(0,229,255,.22); }
+    .header p { color:#b4c2d8; }
+    .today-btn,.toolbar-btn,.search-clear,.calendar-controls button,.search-open { backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background .22s ease; }
+    .today-btn { background:linear-gradient(135deg,rgba(0,229,255,.13),rgba(99,102,241,.16)); border-color:rgba(103,213,255,.35); color:#d9f7ff; box-shadow:0 0 22px rgba(0,229,255,.08) inset; }
+    .today-btn:hover,.toolbar-btn:hover,.calendar-controls button:hover { border-color:rgba(0,229,255,.65); box-shadow:0 0 22px rgba(0,229,255,.13); }
+    .data-toolbar { max-width:1240px; }
+    .toolbar-btn { background:rgba(12,19,35,.62); border-color:rgba(125,158,203,.27); color:#dce9ff; box-shadow:0 8px 25px rgba(0,0,0,.12),0 1px 0 rgba(255,255,255,.04) inset; }
+    .toolbar-btn.danger { background:rgba(78,20,42,.58); border-color:rgba(251,113,133,.32); }
+    .search-panel { max-width:1240px; }
+    .search-card,.stat-card,.calendar-card { background:linear-gradient(135deg,rgba(12,19,35,.77),rgba(10,14,28,.69)); border:1px solid rgba(130,165,216,.23); backdrop-filter:blur(22px) saturate(135%); -webkit-backdrop-filter:blur(22px) saturate(135%); box-shadow:0 18px 55px rgba(0,0,0,.24),0 1px 0 rgba(255,255,255,.045) inset; }
+    .search-card { border-radius:18px; padding:22px; }
+    .search-heading { color:#e1f8ff; font-size:17px; text-shadow:0 0 18px rgba(0,229,255,.15); }
+    .search-description { color:#9baec9; }
+    .search-row input { background:rgba(4,9,20,.72); border-color:rgba(126,164,218,.28); border-radius:12px; padding:13px 15px; }
+    .search-row input:focus,input:focus,textarea:focus { border-color:rgba(0,229,255,.72); box-shadow:0 0 0 3px rgba(0,229,255,.10),0 0 22px rgba(0,229,255,.08); }
+    .search-clear { background:rgba(23,34,60,.78); border-color:rgba(117,171,237,.34); }
+    .search-result { background:rgba(6,12,25,.64); border-color:rgba(99,151,216,.22); border-radius:13px; box-shadow:0 7px 22px rgba(0,0,0,.12),0 1px 0 rgba(255,255,255,.025) inset; }
+    .search-result:hover { border-color:rgba(0,229,255,.35); }
+    .search-result-date,.stat-value,.call-number { color:#7deaff; }
+    .search-open { background:rgba(12,72,105,.55); border-color:rgba(0,229,255,.3); color:#d9faff; }
+    .search-open:hover { background:rgba(12,105,139,.66); box-shadow:0 0 18px rgba(0,229,255,.12); }
+    .stat-card { border-radius:17px; position:relative; overflow:hidden; }
+    .stat-card::before { content:""; position:absolute; left:0; top:15%; bottom:15%; width:2px; background:linear-gradient(transparent,#00e5ff,#8b5cf6,transparent); box-shadow:0 0 13px rgba(0,229,255,.7); }
+    .stat-title { color:#9aaec8; }
+    .calendar-card { border-radius:20px; padding:26px; }
+    .calendar-header h2 { letter-spacing:.2px; }
+    .calendar-controls button { background:rgba(16,27,49,.72); border-color:rgba(125,158,203,.25); border-radius:10px; }
+    .weekday { color:#8fa4c3; }
+    .day { background:rgba(8,15,29,.66); border-color:rgba(116,145,189,.14); }
+    .day:hover { background:rgba(16,39,62,.85); border-color:rgba(0,229,255,.48); box-shadow:inset 0 0 22px rgba(0,229,255,.045); }
+    .day.empty { background:rgba(5,10,20,.48); }
+    .day.today { background:rgba(14,50,77,.72); border-color:#00d9ff; box-shadow:inset 0 0 22px rgba(0,217,255,.09),0 0 16px rgba(0,217,255,.07); }
+    .day-count { background:linear-gradient(100deg,rgba(0,126,167,.34),rgba(95,65,190,.32)); color:#b8f5ff; border:1px solid rgba(0,229,255,.15); }
+    .modal-overlay { background:rgba(2,5,14,.76); backdrop-filter:blur(14px); }
+    .modal { background:rgba(8,14,27,.94); border-color:rgba(123,167,225,.27); backdrop-filter:blur(24px); box-shadow:0 30px 100px rgba(0,0,0,.62),0 0 40px rgba(0,115,255,.06); }
+    .modal-header { background:linear-gradient(120deg,rgba(13,33,53,.97),rgba(28,19,55,.94)); border-bottom-color:rgba(117,171,237,.2); }
+    .form-section { background:rgba(14,23,39,.72); border-color:rgba(123,157,204,.19); }
+    input,textarea { background:rgba(4,9,19,.76); border-color:rgba(119,149,193,.24); }
+    .call-item { background:rgba(7,14,27,.72); border-color:rgba(115,150,201,.2); }
+    .add-btn { background:linear-gradient(110deg,#007f9f,#2563eb 55%,#7448d8); box-shadow:0 8px 24px rgba(0,153,255,.18); }
+    .add-btn:hover { box-shadow:0 8px 30px rgba(0,200,255,.24); }
+    .download-section { background:rgba(9,50,39,.52); border-color:rgba(52,211,153,.25); }
+    button { -webkit-tap-highlight-color:transparent; }
+    button:focus-visible { outline:2px solid #00e5ff; outline-offset:3px; }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
+    @media(max-width:700px) { .search-card{padding:16px}.data-toolbar{padding:0 12px}.calendar-card{padding:12px} }
+
+
+    /* Dashboard layout inspired by the neon CRM concept */
+    body { background:#030611; }
+    body::before { background:
+      radial-gradient(ellipse at 8% 5%,rgba(0,229,255,.28),transparent 29%),
+      radial-gradient(ellipse at 90% 12%,rgba(192,38,211,.27),transparent 28%),
+      radial-gradient(ellipse at 78% 88%,rgba(0,112,255,.22),transparent 34%),
+      radial-gradient(ellipse at 16% 92%,rgba(255,0,153,.18),transparent 27%),
+      repeating-linear-gradient(0deg,rgba(30,68,116,.10) 0 1px,transparent 1px 34px),
+      repeating-linear-gradient(90deg,rgba(30,68,116,.10) 0 1px,transparent 1px 34px),
+      linear-gradient(135deg,#02040b,#061026 52%,#09051a);
+      animation:neonDrift 18s ease-in-out infinite alternate; }
+    .app-sidebar { position:fixed!important; z-index:30; inset:18px auto 18px 18px; width:208px; display:flex; flex-direction:column; gap:8px; padding:20px 13px; border:1px solid rgba(64,154,255,.38); border-radius:20px; background:linear-gradient(180deg,rgba(3,12,30,.91),rgba(5,10,27,.83)); backdrop-filter:blur(24px); box-shadow:0 0 35px rgba(0,111,255,.12),0 20px 60px #0008; }
+    .side-brand { display:flex; align-items:center; gap:10px; padding:4px 8px 23px; border-bottom:1px solid rgba(91,151,225,.18); margin-bottom:12px; }
+    .brand-mark { font-size:27px; filter:drop-shadow(0 0 10px #00d9ff); }
+    .side-brand strong { display:block; color:#f3f8ff; font-size:14px; }
+    .side-brand small { color:#7e9abc; font-size:10px; }
+    .side-link { display:flex; align-items:center; gap:12px; padding:12px 11px; color:#b8cbe6; text-decoration:none; font-size:12px; font-weight:600; border:1px solid transparent; border-radius:11px; cursor:pointer; background:transparent; text-align:left; transition:.2s; }
+    .side-link span { width:20px; text-align:center; font-size:17px; }
+    .side-link:hover,.side-link.active { color:#fff; border-color:rgba(0,217,255,.45); background:linear-gradient(100deg,rgba(0,199,255,.24),rgba(135,42,255,.28)); box-shadow:0 0 18px rgba(0,196,255,.13),inset 0 1px rgba(255,255,255,.06); }
+    .side-spacer { flex:1; }
+    .side-safe { padding:12px; border:1px solid rgba(0,217,255,.22); border-radius:12px; color:#87a6c9; font-size:10px; line-height:1.6; background:rgba(0,100,170,.08); }
+    .side-safe b { color:#71edff; display:block; font-size:11px; }
+    .main-shell { margin-left:244px; min-width:0; padding:18px 22px 24px 0; }
+    .header { border:1px solid rgba(65,148,255,.3); border-radius:17px; padding:17px 24px; min-height:76px; }
+    .header h1 { font-size:21px; }
+    .header p { font-size:12px; }
+    .header::before { content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(0,207,255,.04),rgba(171,66,255,.08)); pointer-events:none; }
+    .today-btn { padding:10px 16px; }
+    .data-toolbar { margin:12px 0 0; padding:0; max-width:none; justify-content:flex-end; flex-wrap:wrap; gap:8px; }
+    .toolbar-btn { padding:8px 12px; font-size:11px; }
+    .search-panel { max-width:none; margin:12px 0 16px; padding:0; }
+    .search-card { padding:14px 16px; border-radius:14px; }
+    .search-heading { font-size:14px; margin-bottom:4px; }
+    .search-description { margin-bottom:9px; font-size:11px; }
+    .search-row input { padding:11px 14px; }
+    .search-results { max-height:360px; overflow:auto; }
+    .container { max-width:none; margin:0; padding:0; }
+    .stats { grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:15px; }
+    .stat-card { padding:15px 16px; min-height:91px; border-radius:14px; }
+    .stat-title { font-size:11px; margin-bottom:10px; }
+    .stat-value { font-size:24px; }
+    .dashboard-grid { display:grid; grid-template-columns:minmax(310px,1.15fr) minmax(280px,1fr) minmax(285px,1fr); gap:14px; align-items:stretch; }
+    .dashboard-grid > .calendar-card,.dashboard-grid > .recent-card,.dashboard-grid > .quick-panel { min-width:0; }
+    .calendar-card { padding:17px; border-radius:16px; }
+    .calendar-header { margin-bottom:12px; }
+    .calendar-header h2 { font-size:16px; }
+    .calendar-controls button { padding:7px 10px; }
+    .day { min-height:76px; padding:8px; }
+    .day-count { left:5px; right:5px; bottom:5px; font-size:10px; padding:3px; }
+    .recent-card,.quick-panel { background:linear-gradient(145deg,rgba(7,17,37,.86),rgba(7,12,29,.78)); border:1px solid rgba(83,145,225,.3); border-radius:16px; padding:15px; backdrop-filter:blur(22px); box-shadow:0 18px 55px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.04); }
+    .panel-heading { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:12px; color:#e3efff; font-size:14px; font-weight:700; }
+    .panel-heading small { color:#37d9ff; font-size:11px; cursor:pointer; }
+    .recent-list { display:flex; flex-direction:column; gap:8px; }
+    .recent-record { display:flex; align-items:center; gap:9px; padding:10px; border:1px solid rgba(74,135,213,.24); border-radius:11px; background:rgba(4,12,28,.64); cursor:pointer; min-width:0; transition:.2s; }
+    .recent-record:hover { border-color:rgba(0,225,255,.55); background:rgba(8,35,61,.72); transform:translateY(-1px); }
+    .record-avatar { flex:0 0 34px; height:34px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(0,225,255,.55); color:#9bf3ff; background:linear-gradient(145deg,rgba(0,225,255,.18),rgba(111,45,255,.2)); font-size:11px; font-weight:800; }
+    .record-main { flex:1; min-width:0; }
+    .record-name { font-size:11px; font-weight:700; color:#f0f6ff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .record-meta { font-size:10px; color:#8daed4; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .record-date { color:#9ab5d7; font-size:10px; white-space:nowrap; }
+    .quick-panel { margin-top:14px; }
+    .quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .quick-action { min-width:0; border:1px solid rgba(66,137,225,.3); border-radius:10px; padding:11px 9px; color:#e1efff; text-align:left; cursor:pointer; background:rgba(7,23,48,.7); transition:.2s; font-size:11px; }
+    .quick-action:hover { border-color:#00d9ff; box-shadow:0 0 16px rgba(0,217,255,.12); }
+    .quick-action b { display:block; margin-bottom:4px; font-size:11px; }
+    .quick-action small { color:#86a7cd; font-size:9px; }
+    .bottom-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:14px; margin-top:14px; }
+    .activity-card,.promo-card { border:1px solid rgba(83,145,225,.28); border-radius:15px; padding:14px 17px; background:rgba(4,12,28,.72); backdrop-filter:blur(18px); }
+    .activity-row { display:flex; gap:9px; align-items:center; padding:8px 0; border-bottom:1px solid rgba(83,145,225,.12); font-size:10px; color:#a7bedb; }
+    .activity-row:last-child { border-bottom:0; }
+    .activity-dot { width:22px; height:22px; border-radius:50%; display:grid; place-items:center; color:#06101e; background:#29d9e8; font-weight:900; }
+    .promo-card { display:flex; align-items:center; gap:15px; background:linear-gradient(110deg,rgba(0,100,255,.12),rgba(119,35,255,.17)); }
+    .promo-icon { font-size:42px; filter:drop-shadow(0 0 12px #8b5cf6); }
+    .promo-card h3 { font-size:14px; margin-bottom:6px; color:#eff6ff; }
+    .promo-card p { font-size:10px; line-height:1.6; color:#9bb5d5; }
+    .promo-card button { margin-top:9px; border:1px solid rgba(0,220,255,.5); color:#9ff4ff; border-radius:8px; padding:7px 11px; background:rgba(0,160,255,.12); cursor:pointer; font-size:10px; }
+    .dashboard-search-heading { display:none; }
+    .recovery-tools{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:0 0 14px}
+    .recovery-status{font-size:12px;color:#9bb5d5;padding:8px 10px;border:1px solid rgba(0,220,255,.2);border-radius:9px;background:rgba(4,15,32,.55)}
+    .recovery-panel{display:none;margin:12px 0;padding:14px;border:1px solid rgba(255,111,145,.25);border-radius:14px;background:rgba(28,12,28,.55)}
+    .recovery-item{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;color:#dbeafe}
+    .recovery-item:last-child{border-bottom:0}
+    .recovery-item small{display:block;color:#9bb5d5;margin-top:4px}
+    .restore-btn{border:1px solid rgba(0,220,255,.35);background:rgba(0,120,160,.2);color:#c9f8ff;padding:7px 10px;border-radius:8px;cursor:pointer;white-space:nowrap}
+    .recovery-toggle{border:1px solid rgba(255,111,145,.32);background:rgba(80,25,45,.35);color:#ffd5df;padding:10px 13px;border-radius:9px;cursor:pointer;font-weight:700}
+    .save-indicator{display:inline-flex;align-items:center;gap:7px;color:#7cebd0;font-size:12px;margin-left:auto;padding:8px 10px}
+    .save-indicator:before{content:"";width:7px;height:7px;border-radius:50%;background:#28dfb2;box-shadow:0 0 10px #28dfb2}
+    @media(max-width:700px){.recovery-item{flex-direction:column}.save-indicator{margin-left:0}}
+    @media(max-width:1250px) { .app-sidebar{width:175px;left:12px}.main-shell{margin-left:205px;padding-right:12px}.dashboard-grid{grid-template-columns:minmax(300px,1fr) minmax(270px,1fr)} .dashboard-grid .quick-panel{grid-column:1/-1}.dashboard-grid .search-panel{grid-column:1/-1} }
+    @media(max-width:800px) { .app-sidebar{position:relative!important;inset:auto;width:auto;margin:12px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:10px}.side-brand,.side-spacer,.side-safe{display:none}.side-link{justify-content:center;padding:9px 5px;font-size:10px}.side-link span{width:auto}.main-shell{margin:0;padding:0 12px 20px}.dashboard-grid,.bottom-grid{grid-template-columns:1fr}.dashboard-grid .quick-panel,.dashboard-grid .search-panel{grid-column:auto}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.header{padding:15px}.data-toolbar{justify-content:flex-start}.day{min-height:65px}.container{padding:0}.recent-card{min-height:250px} }
+
+
+    /* Dedicated analytics workspace: keep charts/activity out of the dashboard */
+    .bottom-grid.analytics-page{display:none;grid-template-columns:1fr;gap:16px;margin:0 0 24px;width:100%}
+    .bottom-grid.analytics-page.analytics-active{display:grid}
+    .analytics-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:4px 0 18px}
+    .analytics-header h2{font-size:25px;margin:0 0 6px;color:#edf7ff}
+    .analytics-header p{margin:0;color:#8fa8c8;font-size:13px}
+    .analytics-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+    .analytics-kpi{padding:18px;border-radius:16px;border:1px solid rgba(105,160,220,.23);background:linear-gradient(135deg,rgba(12,25,47,.88),rgba(19,15,42,.78));box-shadow:0 12px 34px rgba(0,0,0,.18)}
+    .analytics-kpi small{display:block;color:#91a9c9;font-size:11px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px}
+    .analytics-kpi strong{font-size:27px;color:#e9f8ff}
+    .analytics-kpi span{display:block;color:#63dfff;font-size:11px;margin-top:7px}
+    .analytics-content{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px}
+    .analytics-panel{min-width:0;padding:20px;border-radius:17px;border:1px solid rgba(105,160,220,.23);background:linear-gradient(135deg,rgba(12,19,35,.85),rgba(10,14,28,.78));backdrop-filter:blur(18px)}
+    .analytics-panel h3{margin:0 0 16px;font-size:15px;color:#e5f4ff}
+    .month-bars{display:flex;align-items:flex-end;gap:10px;height:190px;padding:10px 2px 0;border-bottom:1px solid rgba(150,180,220,.18)}
+    .month-bar-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:7px}
+    .month-bar-value{font-size:10px;color:#a9c3e3}
+    .month-bar{width:min(32px,75%);min-height:3px;border-radius:7px 7px 2px 2px;background:linear-gradient(180deg,#58e6ff,#7867ff);box-shadow:0 0 16px rgba(63,196,255,.18)}
+    .month-bar-label{font-size:10px;color:#8ea6c6}
+    .analytics-note{font-size:12px;color:#91a9c9;margin-top:12px}
+    .trend-legend{display:flex;flex-wrap:wrap;gap:14px;margin:-3px 0 12px;color:#a9bed9;font-size:12px}
+    .trend-legend span{display:flex;align-items:center;gap:7px}
+    .trend-legend i{display:inline-block;width:18px;height:3px;border-radius:4px}
+    .legend-total{background:#e7f3ff}.legend-noncase{background:#4ee5ff}.legend-case{background:#a78bfa}
+    .trend-chart{width:100%;min-height:245px;overflow:hidden}
+    .trend-chart svg{display:block;width:100%;height:auto;min-height:220px}
+    @media(max-width:900px){.analytics-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-content{grid-template-columns:1fr}}
+    @media(max-width:520px){.analytics-kpis{grid-template-columns:1fr 1fr}.analytics-kpi{padding:13px}.analytics-kpi strong{font-size:22px}.analytics-header h2{font-size:21px}}
+
+.analytics-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 16px;padding:14px 16px;border:1px solid rgba(105,160,220,.23);border-radius:14px;background:rgba(10,18,34,.72)}
+.analytics-filter-group{display:flex;align-items:center;gap:10px;color:#9bb4d3;font-size:12px}.analytics-filter-group select{background:#101d34;color:#eaf5ff;border:1px solid rgba(105,160,220,.35);border-radius:9px;padding:9px 12px}
+.analytics-table-wrap{overflow-x:auto}.analytics-table{width:100%;border-collapse:collapse;min-width:650px;font-size:12px}.analytics-table th,.analytics-table td{padding:11px 12px;text-align:left;border-bottom:1px solid rgba(130,165,210,.14);white-space:nowrap}.analytics-table th{color:#8fa8c8}.analytics-table td{color:#dcecff;font-variant-numeric:tabular-nums}
+.analytics-insights{display:grid;gap:12px}.insight-item{padding:12px 14px;border-radius:11px;background:rgba(80,125,190,.09);border:1px solid rgba(105,160,220,.15)}.insight-item small{display:block;color:#8fa8c8;font-size:10px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}.insight-item strong{color:#e8f6ff;font-size:17px}.insight-item span{display:block;color:#a9bed9;font-size:11px;margin-top:4px}
+@media(max-width:600px){.analytics-tools{align-items:stretch;flex-direction:column}.analytics-filter-group{justify-content:space-between}}
+
+
+/* RTB / Mail In documentation module */
+.arc-shell{display:none;max-width:1280px;margin:26px auto;padding:0 22px 40px}.arc-shell.active{display:block}
+.arc-top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px}.arc-top h2{font-size:25px;color:#eaf2ff}.arc-top p{color:#91a2bb;font-size:13px;margin-top:5px}.arc-back{border:1px solid #34445c;background:#1b2739;color:#dbeafe;padding:10px 14px;border-radius:9px;cursor:pointer}
+.arc-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}.arc-step{padding:18px;border-radius:14px;border:1px solid #2a3950;background:linear-gradient(145deg,#121c2b,#0d1420);text-align:left;color:#eaf2ff;cursor:pointer;transition:.18s}.arc-step:hover,.arc-step.active{border-color:#5b9bf0;box-shadow:0 0 0 2px #3b82f622}.arc-step strong{display:block;font-size:15px;margin:7px 0}.arc-step span{font-size:12px;color:#94a8c3}.arc-step.problem{border-top:3px solid #f87171}.arc-step.solution{border-top:3px solid #34d399}.arc-step.contact{border-top:3px solid #60a5fa}
+.arc-panel{background:rgba(15,23,36,.96);border:1px solid #2b3b53;border-radius:16px;padding:22px;box-shadow:0 14px 38px #0005}.arc-panel h3{font-size:19px;margin-bottom:18px}.arc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.arc-field{display:flex;flex-direction:column;gap:7px}.arc-field.full{grid-column:1/-1}.arc-field label{font-size:12px;color:#b7c7dc;font-weight:700}.arc-field input,.arc-field textarea,.arc-field select{width:100%;border:1px solid #34445c;border-radius:9px;padding:11px 12px;background:#0a111c;color:#eaf2ff;outline:none;font:inherit;font-size:13px}.arc-field textarea{min-height:86px;resize:vertical;line-height:1.45}.arc-field input:focus,.arc-field textarea:focus,.arc-field select:focus{border-color:#60a5fa;box-shadow:0 0 0 3px #3b82f622}.arc-checks{display:flex;flex-wrap:wrap;gap:9px}.arc-check{display:flex;align-items:center;gap:7px;background:#111e2e;border:1px solid #2d4059;border-radius:9px;padding:9px 11px;font-size:12px;color:#c8d8ed}.arc-check input{width:auto;accent-color:#60a5fa}.arc-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.arc-btn{border:0;border-radius:9px;padding:11px 15px;font-weight:700;cursor:pointer;color:white}.arc-btn:disabled{opacity:.45;cursor:not-allowed}.arc-btn.red{background:#b91c1c}.arc-btn.green{background:#15803d}.arc-btn.blue{background:#2563eb}.arc-btn.gray{background:#334155}.arc-preview{margin-top:20px;border:1px solid #30435e;background:#09111d;border-radius:12px;padding:16px}.arc-preview-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}.arc-preview h4{font-size:14px;color:#bfdbfe}.arc-preview pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#dbe7f7;font:13px/1.55 ui-monospace,Consolas,monospace;min-height:50px}.arc-note{color:#8fa4bf;font-size:11px;margin-top:10px}.arc-inline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.arc-subtitle{grid-column:1/-1;color:#93c5fd;font-size:13px;font-weight:800;padding-top:10px;border-top:1px solid #29384c}.arc-status{font-size:12px;color:#86efac;min-height:18px;margin-top:8px}
+@media(max-width:760px){.arc-steps{grid-template-columns:1fr}.arc-grid,.arc-inline{grid-template-columns:1fr}.arc-field.full{grid-column:auto}.arc-top{align-items:flex-start;flex-direction:column}}
+
+
+/* Frontline Canva form recreation: white workspace, purple frame, pastel field groups */
+.other-shell{display:none;max-width:1280px;margin:18px auto;padding:18px 22px 34px;background:linear-gradient(135deg,#6952c7,#8060d4);border-radius:22px;min-height:calc(100vh - 36px);color:#263244;box-shadow:0 18px 48px #0003}
+.other-shell.active{display:block}
+.other-shell .arc-top{background:#fff;border-radius:15px;padding:18px 22px;margin-bottom:14px;align-items:center}
+.other-shell .arc-top h2,.other-shell .arc-top h3{color:#263244}
+.other-shell .arc-top p{color:#667085}
+.other-shell .arc-back,.other-shell .other-back{background:#6b7280;color:#fff;border:0;border-radius:9px;padding:10px 15px;cursor:pointer}
+.other-hub{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:14px 0}
+.other-card{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:8px;min-height:230px;padding:25px 24px;background:#fff;border:2px solid #dbeafe;border-radius:16px;text-align:left;color:#243247;cursor:pointer;box-shadow:0 6px 16px #26145c18;transition:.18s}
+.other-card:hover{transform:translateY(-3px);box-shadow:0 12px 25px #26145c28}
+.other-card b{font-size:19px;line-height:1.3;margin:3px 0;color:#25324a}
+.other-card span{font-size:14px;color:#64748b;line-height:1.55}
+.other-card .card-icon{font-size:36px}
+.other-card.trouble{background:#effcf4;border-color:#86efac}.other-card.trouble b{color:#166534}
+.other-card.complaint{background:#f7efff;border-color:#d8b4fe}.other-card.complaint b{color:#6b21a8}
+.other-card.inquiry{background:#eff6ff;border-color:#93c5fd}.other-card.inquiry b{color:#1e40af}
+.other-form{display:none;background:#fff;border:0;border-radius:16px;padding:20px 24px;color:#263244;box-shadow:0 8px 25px #26145c20}
+.other-form.active{display:block}
+.other-form>.arc-top{padding:0 0 14px;margin-bottom:14px;border-bottom:1px solid #e8edf4;border-radius:0}
+.other-form h3{margin:0;color:#263244;font-size:24px}
+.other-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+.other-fields .arc-field{padding:0 0 14px;min-width:0}
+.other-fields .arc-field.full{grid-column:1/-1}
+.other-fields .arc-field label{font-size:14px;color:#374151;font-weight:600;margin-bottom:1px}
+.other-fields input,.other-fields textarea,.other-fields select{width:100%;box-sizing:border-box;border:1px solid #d6dce5;border-radius:9px;padding:13px 15px;background:#fff;color:#202938;font:15px Arial,sans-serif;box-shadow:0 1px 2px #1018280b}
+.other-fields input,.other-fields select{min-height:48px}
+.other-fields textarea{min-height:104px;resize:vertical;line-height:1.45}
+.other-fields input:focus,.other-fields textarea:focus,.other-fields select:focus{outline:2px solid #93c5fd;border-color:#60a5fa}
+.other-group{grid-column:1/-1;padding:14px 16px 4px;margin:0 0 14px;border-radius:11px}
+.other-group-title{font-weight:700;font-size:15px;margin:0 0 12px}
+.other-group .other-group-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+.other-group .other-group-fields.three-col{grid-template-columns:repeat(3,minmax(0,1fr))}
+.other-group.green{background:#effcf4}.other-group.green .other-group-title{color:#166534}
+.other-group.blue{background:#eff6ff}.other-group.blue .other-group-title{color:#1e40af}
+.other-group.yellow{background:#fefce8}.other-group.yellow .other-group-title{color:#854d0e}
+.other-group.pink{background:#fff1f2}.other-group.pink .other-group-title{color:#9f1239}
+.other-group.purple{background:#faf5ff}.other-group.purple .other-group-title{color:#7e22ce}
+.other-stage-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 18px}
+.other-stage-nav button{min-height:88px;padding:16px 18px;border:1px solid #354965;border-top:2px solid #668ac0;border-radius:14px;background:linear-gradient(145deg,#172438,#101a2a);color:#e8f1ff;text-align:left;font-weight:600;cursor:pointer;transition:.18s;box-shadow:none}
+.other-stage-nav button strong{display:block;color:#f0f6ff;font-size:15px;margin:7px 0}
+.other-stage-nav button span{display:block;color:#aabbd2;font-size:12px;font-weight:400;line-height:1.4}
+.other-stage-nav button.active,.other-stage-nav button:hover{border-color:#79aaff;box-shadow:0 0 0 2px #5795ff22}
+@media(max-width:760px){.other-stage-nav{grid-template-columns:1fr}}
+.other-stage{display:none}.other-stage.active{display:block}
+.other-actions{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 18px;align-items:stretch}
+.other-actions .arc-btn{min-height:50px;padding:12px 18px;border-radius:9px;font-size:14px}
+.other-actions .arc-btn.gray{background:#e5e7eb;color:#374151}.other-actions .arc-btn.green{background:#16a34a}.other-actions .arc-btn.blue{background:#2563eb}.other-actions .arc-btn.red{background:#dc2626}
+.other-output{margin-top:16px;padding:18px 20px;background:#fafafa;border-left:4px solid #a855f7;border-radius:10px;color:#263244}
+.other-output-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.other-output h4{font-size:19px;color:#263244;margin:0}
+.other-output pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#334155;font:14px/1.4 ui-monospace,Consolas,monospace;background:transparent;border:0;padding:0;margin:0;min-height:35px}
+.other-output .mini-actions{display:flex;gap:8px}.other-output .mini-actions button{border:0;border-radius:7px;padding:8px 11px;background:#fce7f3;color:#9d174d;cursor:pointer;font-weight:700}
+.other-status{font-size:12px;color:#15803d;min-height:18px;margin-top:8px}
+@media(max-width:850px){.other-hub{grid-template-columns:1fr 1fr}.other-group .other-group-fields.three-col{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.other-shell{margin:8px;padding:10px;border-radius:14px}.other-hub{grid-template-columns:1fr}.other-fields,.other-group .other-group-fields,.other-group .other-group-fields.three-col{grid-template-columns:1fr}.other-form{padding:15px}.other-shell .arc-top{align-items:flex-start;flex-direction:column}}
+
+
+/* Match the guide's pale form panels for the RTB/ARC workflow as well. */
+.arc-shell{background:linear-gradient(135deg,#6952c7,#8060d4);border-radius:22px;padding:18px 22px 34px;max-width:1280px;box-shadow:0 18px 48px #0003}
+.arc-shell .arc-top{background:#fff;border-radius:14px;padding:18px 22px;margin-bottom:14px}
+.arc-shell .arc-top h2{color:#263244}.arc-shell .arc-top p{color:#667085}
+.arc-shell .arc-steps{gap:14px}
+.arc-shell .arc-step{background:#eff6ff;color:#263244;border:2px solid #bfdbfe;border-radius:12px;box-shadow:none}
+.arc-shell .arc-step strong{color:#1e3a8a}.arc-shell .arc-step span{color:#64748b}
+.arc-shell .arc-step.problem{background:#fff1f2;border-color:#fecdd3;border-top:2px solid #fb7185}
+.arc-shell .arc-step.solution{background:#effcf4;border-color:#bbf7d0;border-top:2px solid #4ade80}
+.arc-shell .arc-step.contact{background:#eff6ff;border-color:#bfdbfe;border-top:2px solid #60a5fa}
+.arc-shell .arc-panel{background:#fff;border:0;border-radius:14px;padding:20px 24px;color:#263244;box-shadow:none}
+.arc-shell .arc-panel h3{color:#263244}
+.arc-shell .arc-field label{color:#374151;font-size:14px}
+.arc-shell .arc-field input,.arc-shell .arc-field textarea,.arc-shell .arc-field select{background:#fff;color:#202938;border:1px solid #d6dce5;border-radius:8px;font-size:14px;padding:12px 14px}
+.arc-shell .arc-field textarea{min-height:105px}
+.arc-shell .arc-subtitle{color:#1e40af;border:0;border-radius:9px;background:#eff6ff;padding:13px 14px;margin:10px 0 8px}
+.arc-shell .arc-preview{background:#fafafa;border:0;border-left:4px solid #a855f7;border-radius:10px;color:#263244}
+.arc-shell .arc-preview h4{color:#263244}.arc-shell .arc-preview pre{color:#334155;line-height:1.4}
+
+
+/* Layout fix: documentation workspaces sit beside the fixed sidebar,
+   never underneath it. Keep the dashboard's existing layout unchanged. */
+.arc-shell,
+.other-shell {
+  box-sizing: border-box;
+  width: auto;
+  max-width: none;
+  margin: 18px 22px 24px 244px;
+}
+@media (max-width: 1250px) and (min-width: 801px) {
+  .arc-shell,
+  .other-shell {
+    margin: 18px 12px 24px 205px;
+    width: auto;
+  }
+}
+@media (max-width: 800px) {
+  .arc-shell,
+  .other-shell {
+    width: auto;
+    max-width: none;
+    margin: 8px 12px 20px;
+  }
+}
+
+
+/* Dark-mode visual refinement for all recreated documentation forms */
+.arc-caller-row{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;min-width:0}
+.arc-caller-row .arc-field{min-width:0}
+.other-form{background:linear-gradient(145deg,rgba(17,23,34,.98),rgba(12,18,29,.98));border:1px solid #2b3b53;color:#e8edf5;box-shadow:0 14px 38px rgba(0,0,0,.32)}
+.other-form>.arc-top{border-bottom:1px solid #29384c}
+.other-form h3{color:#edf4ff}
+.other-fields .arc-field label{color:#d4dfed}
+.other-fields input,.other-fields textarea,.other-fields select{border:1px solid #34445c;background:#0a111c;color:#edf4ff;box-shadow:none}
+.other-fields input::placeholder,.other-fields textarea::placeholder{color:#8291a7}
+.other-fields input:focus,.other-fields textarea:focus,.other-fields select:focus{outline:none;border-color:#60a5fa;box-shadow:0 0 0 3px rgba(59,130,246,.18);background:#0d1725}
+.other-group{border:1px solid #33445b;box-shadow:0 5px 18px rgba(0,0,0,.12)}
+.other-group.green{background:linear-gradient(135deg,rgba(16,45,39,.78),rgba(13,31,31,.78));border-color:#245849}.other-group.green .other-group-title{color:#86efac}
+.other-group.blue{background:linear-gradient(135deg,rgba(19,39,67,.82),rgba(15,29,49,.82));border-color:#294f78}.other-group.blue .other-group-title{color:#93c5fd}
+.other-group.yellow{background:linear-gradient(135deg,rgba(55,43,20,.72),rgba(35,31,23,.78));border-color:#66502a}.other-group.yellow .other-group-title{color:#fcd783}
+.other-group.pink{background:linear-gradient(135deg,rgba(59,28,43,.76),rgba(38,24,35,.8));border-color:#704057}.other-group.pink .other-group-title{color:#fda4af}
+.other-group.purple{background:linear-gradient(135deg,rgba(48,32,72,.76),rgba(30,25,49,.8));border-color:#574078}.other-group.purple .other-group-title{color:#d8b4fe}
+.other-group .other-group-fields .arc-field small{color:#9aaac0!important}
+.other-stage-nav button{border:1px solid #34445c;background:#151f2e;color:#d5e2f2}
+.other-stage-nav button.active{background:#17345a;border-color:#4d8bd3;color:#dbeafe}
+.other-actions .arc-btn.gray{background:#334155;color:#f1f5f9;border:1px solid #475569}.other-actions .arc-btn.gray:hover{background:#40516a}
+.other-output{background:#0a111c;border:1px solid #2d4059;border-left:4px solid #a78bfa;color:#e8edf5}
+.other-output h4{color:#dbeafe}.other-output pre{color:#e2eaf5}
+.other-output .mini-actions button{background:#35243e;color:#f0abfc}
+.other-status{color:#86efac}
+.other-card.trouble,.other-card.complaint,.other-card.inquiry{background:linear-gradient(145deg,#151f2e,#101825);border-color:#34445c}
+.other-card.trouble b,.other-card.complaint b,.other-card.inquiry b{color:#dbeafe}
+.other-card{color:#cbd5e1}
+@media(max-width:760px){.arc-caller-row{grid-template-columns:1fr;gap:12px}}
+
+
+/* Sidebar overflow fix: keep every navigation item reachable on short/narrow windows. */
+.app-sidebar{box-sizing:border-box;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(73,190,255,.55) transparent;min-height:0;padding-bottom:14px}
+.app-sidebar::-webkit-scrollbar{width:5px}
+.app-sidebar::-webkit-scrollbar-thumb{background:rgba(73,190,255,.45);border-radius:8px}
+.app-sidebar .side-brand,.app-sidebar .side-link,.app-sidebar .side-safe{flex-shrink:0;min-width:0}
+.app-sidebar .side-link{box-sizing:border-box;width:100%;min-height:48px;line-height:1.25;white-space:normal;overflow-wrap:anywhere}
+.app-sidebar .side-link span{flex:0 0 20px}
+.app-sidebar .side-spacer{flex:0 0 8px;min-height:8px}
+.app-sidebar .side-safe{margin-top:4px}
+@media(max-height:850px) and (min-width:801px){.app-sidebar{gap:6px;padding-top:12px;padding-bottom:12px}.app-sidebar .side-brand{padding-bottom:14px;margin-bottom:6px}.app-sidebar .side-link{min-height:44px;padding:9px 10px}}
+
+
+/* Compact RTB/Mail-in Contact Log layout */
+#arcContact .arc-grid{gap:9px 12px}
+#arcContact .arc-subtitle{margin:7px 0 1px;padding:8px 11px}
+#arcContact .arc-field{gap:4px}
+#arcContact .arc-field input,
+#arcContact .arc-field select{min-height:36px;padding:7px 10px}
+#arcContact .arc-field textarea{min-height:58px;height:58px;padding:8px 10px;resize:vertical}
+#arcContact .compact-summary textarea{min-height:68px;height:68px}
+#arcContact .arc-caller-row{gap:9px}
+
+
+/* Open Case Tracker - isolated styles */
+.case-tracker-page{display:none;margin:8px 0 24px}.case-tracker-page.active{display:block}.ct-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.ct-head h2{margin:0;color:#edf7ff}.ct-head p{margin:5px 0 0;color:#91a9c9;font-size:13px}.ct-actions{display:flex;gap:8px;flex-wrap:wrap}.ct-btn{border:1px solid #42618a;background:#152944;color:#eaf5ff;border-radius:9px;padding:10px 14px;cursor:pointer}.ct-btn.primary{background:linear-gradient(120deg,#176b87,#3157a0);border-color:#4b9cce}.ct-tabs{display:flex;gap:8px;margin:14px 0}.ct-panel{padding:18px;border:1px solid rgba(105,160,220,.23);border-radius:16px;background:linear-gradient(135deg,rgba(12,25,47,.9),rgba(19,15,42,.82))}.ct-list{display:grid;gap:10px}.ct-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px;border:1px solid #2d4565;border-radius:12px;background:#101d30}.ct-item strong{color:#edf7ff}.ct-item small{display:block;color:#91a9c9;margin-top:5px}.ct-item-actions{display:flex;gap:6px;flex-wrap:wrap}.ct-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.ct-form label{display:grid;gap:6px;color:#a9bed9;font-size:12px}.ct-form input,.ct-form textarea{width:100%;box-sizing:border-box;background:#091525;color:#f1f6ff;border:1px solid #40536e;border-radius:8px;padding:10px}.ct-form .wide{grid-column:1/-1}.ct-empty{color:#91a9c9;padding:20px;text-align:center}@media(max-width:650px){.ct-form{grid-template-columns:1fr}.ct-form .wide{grid-column:auto}.ct-item{align-items:flex-start;flex-direction:column}}
+</style>
+<style>
+/* FINAL RTB / Mail In / PRR dark-theme normalization */
+.arc-shell{background:linear-gradient(145deg,#101827 0%,#0b1220 100%) !important;border:1px solid #29384d !important;border-radius:20px !important;box-shadow:0 18px 48px #0005 !important;color:#e8f0fc !important}
+.arc-shell .arc-top{background:linear-gradient(145deg,#172235,#111b2b) !important;border:1px solid #30425b !important;border-radius:14px !important;color:#edf4ff !important;padding:18px 22px !important}
+.arc-shell .arc-top h2,.arc-shell .arc-top h3{color:#f1f6ff !important}
+.arc-shell .arc-top p{color:#a9bad2 !important}
+.arc-shell .arc-back{background:#1a2940 !important;border-color:#405675 !important;color:#e5efff !important}
+.arc-shell .arc-steps .arc-step{background:linear-gradient(145deg,#172438,#101a2a) !important;border:1px solid #354965 !important;color:#e8f1ff !important;box-shadow:none !important}
+.arc-shell .arc-steps .arc-step strong{color:#f0f6ff !important}
+.arc-shell .arc-steps .arc-step span{color:#aabbd2 !important}
+.arc-shell .arc-steps .arc-step.problem,.arc-shell .arc-steps .arc-step.solution,.arc-shell .arc-steps .arc-step.contact{background:linear-gradient(145deg,#172438,#101a2a) !important;border-color:#405675 !important;border-top:2px solid #668ac0 !important}
+.arc-shell .arc-steps .arc-step.active,.arc-shell .arc-steps .arc-step:hover{border-color:#79aaff !important;box-shadow:0 0 0 2px #5795ff22 !important}
+.arc-shell .arc-panel,.arc-shell .arc-preview,.arc-shell .arc-output{background:#111c2c !important;border:1px solid #30435c !important;border-radius:14px !important;color:#e8f0fc !important}
+.arc-shell .arc-panel h3,.arc-shell .arc-panel h4{color:#f0f6ff !important}
+.arc-shell .arc-field label{color:#d5e1f1 !important}
+.arc-shell .arc-field input,.arc-shell .arc-field textarea,.arc-shell .arc-field select{background:#091525 !important;color:#f1f6ff !important;border:1px solid #40536e !important;border-radius:8px !important}
+.arc-shell .arc-field input::placeholder,.arc-shell .arc-field textarea::placeholder{color:#879bb7 !important}
+.arc-shell .arc-field select option{background:#111c2c !important;color:#f1f6ff !important}
+.arc-shell .arc-subtitle{background:#172943 !important;color:#dceaff !important;border:1px solid #344d6c !important}
+.arc-shell .arc-panel button,.arc-shell .arc-top button{color:#edf4ff}
+.arc-shell .arc-preview pre,.arc-shell .arc-output pre{color:#e5efff !important}
+.arc-shell .arc-muted,.arc-shell small{color:#a9bad2 !important}
+</style></head>
+<body>
+<nav aria-label="Main navigation" class="app-sidebar">
+<div class="side-brand"><div class="brand-mark">☏</div><div><strong>Call Documentation</strong><small>TRACK · DOCUMENT · RESOLVE</small></div></div>
+<button class="side-link active" onclick="showDashboardTab()"><span>⌂</span>Dashboard</button>
+<button class="side-link" id="otherFormsNav" onclick="showOtherForms()"><span>📝</span>Other Documentation Form</button>
+<button class="side-link" onclick="window.location.href='BALIDASHUN.html'"><span>📋</span>POP Validation</button>
+<button class="side-link" onclick="window.location.href='BALIDASHUN.html#pre-quote'"><span>💳</span>Pre-Quote</button>
+<button class="side-link" onclick="window.location.href='rn-creation.html'"><span>＋</span>RN Creation</button>
+<button class="side-link" id="caseTrackerNav" onclick="showCaseTracker()"><span>▣</span>Open Case Tracker</button>
+<button class="side-link" id="analyticsNav" onclick="showAnalyticsTab()"><span>▥</span>Analytics</button>
+<button class="side-link" onclick="openAutoBackupSettings()"><span>⚙</span>Backup Settings</button>
+<div class="side-spacer"></div>
+<div class="side-safe"><b>◉ Your data is safe</b>Stored locally in your browser</div>
+</nav>
+<div class="main-shell">
+<!-- ================= HEADER ================= -->
+<header class="header">
+<div>
+<h1>📞 Call Documentation</h1>
+<p>Track and document your calls by date</p>
+</div>
+<button class="today-btn" onclick="openToday()">
+        Today
+    </button>
+</header>
+<div class="data-toolbar">
+<button class="recovery-toggle" onclick="toggleRecoveryBin()" type="button">♻️ Recycle Bin <span id="recoveryCount">0</span></button>
+<span class="save-indicator" id="saveIndicator" role="status">Saved locally</span>
+<span class="save-indicator" id="autoBackupIndicator" role="status" title="Configure the daily backup schedule in Backup Settings">Auto backup · Daily at 4:00 PM</span>
+</div>
+<div aria-live="polite" class="recovery-panel" id="recoveryPanel"><strong>Recently deleted calls</strong><div id="recoveryList"></div></div>
+<!-- ================= GLOBAL CALL SEARCH ================= -->
+<section aria-label="Search saved call documentation" class="search-panel">
+<div class="search-card">
+<div class="search-heading">🔎 Search Call Documentation</div>
+<div class="search-description">Search saved calls by customer name, email address, phone number, or reference. Select a result to open its date and full call record.</div>
+<div class="search-row">
+<input aria-label="Search name, email, phone, or reference" autocomplete="off" id="globalSearch" oninput="searchDocumentation(this.value)" placeholder="Enter name, email, phone number, or reference…" type="search"/>
+<button class="search-clear" onclick="clearDocumentationSearch()" type="button">Clear Search</button>
+</div>
+<div aria-live="polite" class="search-results" id="searchResults"></div>
+</div>
+</section>
+<div class="container">
+<!-- ================= STATS ================= -->
+<div class="stats">
+<div class="stat-card">
+<div class="stat-title">Monthly Documentation</div>
+<div class="stat-value" id="monthlyCount">0</div>
+</div>
+<div class="stat-card">
+<div class="stat-title">Days Documented</div>
+<div class="stat-value" id="daysCount">0</div>
+</div>
+<div class="stat-card">
+<div class="stat-title">Current Month</div>
+<div class="stat-value" id="currentMonth">
+                —
+            </div>
+</div>
+</div>
+<!-- ================= CALENDAR ================= -->
+<div class="calendar-card">
+<div class="calendar-header">
+<h2 id="calendarTitle"></h2>
+<div class="calendar-controls">
+<button onclick="previousMonth()">‹</button>
+<button onclick="goToday()">Today</button>
+<button onclick="nextMonth()">›</button>
+</div>
+</div>
+<div class="weekdays">
+<div class="weekday">Sun</div>
+<div class="weekday">Mon</div>
+<div class="weekday">Tue</div>
+<div class="weekday">Wed</div>
+<div class="weekday">Thu</div>
+<div class="weekday">Fri</div>
+<div class="weekday">Sat</div>
+</div>
+<div class="calendar" id="calendar"></div>
+</div>
+</div>
+</div>
+<!-- RTB / Mail In / PRR documentation forms -->
+<section class="arc-shell" id="arcFormsShell">
+<div class="arc-top"><div><h2>🛠 RTB / Mail In / PRR for ARC Repair Case</h2><p>Create structured Problem, Solutions and Contact Log documentation.</p></div><button class="arc-back" onclick="hideARCForms()">← Back to Dashboard</button></div>
+<div class="arc-steps">
+<button class="arc-step problem active" data-arc-step="problem" onclick="arcShowStep('problem')">🚨 <strong>Problem Field Documentation</strong><span>Document issues, faults, and problem details</span></button>
+<button class="arc-step solution" data-arc-step="solution" onclick="arcShowStep('solution')">✅ <strong>Solutions Field Documentation</strong><span>Record solutions, actions, and customer details</span></button>
+<button class="arc-step contact" data-arc-step="contact" onclick="arcShowStep('contact')">☎️ <strong>Contact Log Documentation</strong><span>Log contact details, transfers, and troubleshooting</span></button>
+</div>
+<div class="arc-panel">
+<div class="arc-form-step" id="arcProblem"><h3>🚨 Problem Field Documentation</h3><div class="arc-grid">
+<div class="arc-field full"><label for="arcFault">Fault / Issue</label><textarea id="arcFault" placeholder="Describe the fault or issue in detail"></textarea></div>
+<div class="arc-field"><label for="arcWhen">When did the issue occur?</label><input id="arcWhen" placeholder="Date, time, frequency"/></div>
+<div class="arc-field"><label for="arcReason">Call Reason</label><select id="arcReason"><option value="">Select call reason</option><option>Warranty Repair</option><option>FOC Repair</option><option>Replacement or Refund or Service Credit</option><option>Assessment prior quotation</option><option>Paid Repair</option></select></div>
+<div class="arc-field full"><label for="arcReplicate">How can the issue be replicated?</label><textarea id="arcReplicate" placeholder="Step-by-step replication instructions"></textarea></div>
+<div class="arc-field full"><label for="arcChanges">Any recent HW/SW modification/change?</label><textarea id="arcChanges" placeholder="Recent hardware or software changes"></textarea></div>
+</div></div>
+<div class="arc-form-step" hidden="" id="arcSolution"><h3>✅ Solutions Field Documentation</h3><div class="arc-grid">
+<div class="arc-field full"><label for="arcCustomerTS">Customer / Retailer troubleshooting done before calling Acer</label><textarea id="arcCustomerTS" placeholder="Document troubleshooting already performed"></textarea></div>
+<div class="arc-field full"><label for="arcNccTS">NCC T/S done with the customer</label><textarea id="arcNccTS" placeholder="Document troubleshooting completed during the contact"></textarea></div>
+<div class="arc-field full"><label for="arcParts">Suspected Parts?</label><input id="arcParts" list="arcPartsList" placeholder="Enter suspected part(s), e.g. MB, LCD"/><datalist id="arcPartsList"><option value="MB"><option value="LCD"><option value="MB/LCD"><option value="HDD"><option value="MB/KB/Touchpad"><option value="SSD"><option value="Battery"><option value="Adapter"></option></option></option></option></option></option></option></option></datalist></div>
+</div></div>
+<div class="arc-form-step" hidden="" id="arcContact"><h3>☎️ Contact Log Documentation</h3><div class="arc-grid">
+<div class="arc-subtitle">Caller Information</div><div class="arc-caller-row">
+<div class="arc-field"><label for="arcCaller">Caller Name</label><input id="arcCaller" placeholder="Caller full name"/></div><div class="arc-field"><label for="arcEmail">Caller Email</label><input id="arcEmail" placeholder="Email address" type="email"/></div><div class="arc-field"><label for="arcPhone">Caller Number</label><input id="arcPhone" placeholder="Contact number"/></div></div>
+<div class="arc-subtitle">Summary</div>
+<div class="arc-field full compact-summary"><label for="arcSummary">Call Summary</label><textarea id="arcSummary" placeholder="Summarise the contact and actions taken"></textarea></div>
+<div class="arc-subtitle">De-escalation</div>
+<div class="arc-field full compact-summary"><label for="arcDeescalation">De-escalation</label><textarea id="arcDeescalation" placeholder="Document de-escalation steps or discussion"></textarea></div>
+<div class="arc-field"><label for="arcPriority">Priority Repair</label><select id="arcPriority"><option value="">Select</option><option>Yes</option><option>No</option></select></div><div class="arc-field"><label for="arcDiscount">Discounted Repair Fee (5%)</label><select id="arcDiscount"><option value="">Select</option><option>Advised</option><option>Not applicable</option></select></div>
+<div class="arc-field full compact-summary"><label for="arcEscReason">Reason for Escalations</label><textarea id="arcEscReason" placeholder="Reason for escalation, if applicable"></textarea></div>
+<div class="arc-field"><label for="arcConsult">Resolution Consultation done with</label><input id="arcConsult" placeholder="Name / team"/></div><div class="arc-field"><label for="arcTransfer">Transferred to</label><input id="arcTransfer" placeholder="Name / team"/></div>
+
+<div class="arc-subtitle">Ticket &amp; Repair Type</div>
+
+<div class="arc-field">
+  <label for="arcTicket">Ticket Type</label>
+  <select id="arcTicket">
+    <option value="">Select ticket type</option>
+    <option>Pickup</option>
+    <option>Complaint</option>
+    <option>Component swap</option>
+  </select>
+</div>
+
+<div class="arc-field">
+  <label for="arcRepair">Repair Type</label>
+  <select id="arcRepair">
+    <option value="">Select repair type</option>
+    <option>RTB</option>
+    <option>Mail in</option>
+    <option>PRR</option>
+    <option>Ship direct</option>
+    <option>Complaint</option>
+  </select>
+</div>
+
+<div class="arc-field">
+  <label for="arcPickupTime">Preferred Courier Pick-up Time</label>
+  <input id="arcPickupTime" placeholder="Example: 9am–5pm only AU Only"/>
+</div>
+
+<div class="arc-field">
+  <label for="arcAddress">Preferred Pick Up and Return Physical Address</label>
+  <textarea id="arcAddress" placeholder="Full collection and return address"></textarea>
+</div>
+
+<div class="arc-subtitle">Disclosure</div><div class="arc-field"><label for="arcDataLoss">Repair Notice/Data Loss</label><select id="arcDataLoss"><option value="">Select option</option><option>Y</option><option>N</option></select></div><div class="arc-field"><label for="arcPhotos">Take Photos of all sides prior shipping</label><select id="arcPhotos"><option value="">Select option</option><option>Y</option><option>N</option></select></div><div class="arc-field full"><label for="arcAccessories">Include Accessories</label><input id="arcAccessories" placeholder="Yes, indicate what accessory / No"/></div><div class="arc-field full"><label for="arcPop">Advised to send POP/VOF/POF to pop.aca@acer.com</label><input id="arcPop" placeholder="Enter advice provided to the customer" type="text"/></div><div class="arc-field"><label for="arcSurvey">Survey Offered</label><select id="arcSurvey"><option value="">Select option</option><option>Y</option><option>N</option></select></div>
+</div></div>
+<div class="arc-actions"><button class="arc-btn gray" onclick="arcClearCurrent()">🗑 Clear Form</button><button class="arc-btn gray" id="arcPrev" onclick="arcPrevStep()">← Previous</button><button class="arc-btn green" onclick="arcGenerate()">✨ Generate Documentation</button><button class="arc-btn blue" hidden="" id="arcSaveLog" onclick="openSaveLogModal('arc')">💾 Save Log to Contact Logs</button><button class="arc-btn blue" id="arcNext" onclick="arcNextStep()">Next →</button></div>
+<div aria-live="polite" class="arc-status" id="arcStatus"></div>
+<div class="arc-preview"><div class="arc-preview-head"><h4>Generated Documentation Preview</h4><button class="arc-btn blue" onclick="arcCopy()">📋 Copy Documentation</button></div><pre id="arcOutput">Your generated documentation will appear here.</pre><div class="arc-note">Your entries are automatically saved in this browser and remain separate from your existing call-log records.</div></div>
+</div>
+</section>
+<!-- Troubleshooting (no repair case), complaint case, and general inquiry forms -->
+<section class="other-shell" id="otherFormsShell">
+<div class="arc-top"><div><h2>📝 Other Docu Form</h2><p>Select the contact type to open its dedicated documentation form.</p></div><button class="arc-back" onclick="hideOtherForms()">← Back to Dashboard</button></div>
+<div class="other-hub" id="otherHub">
+<button class="other-card repair" onclick="openRTBFromHub()"><span class="card-icon">🔧</span><b>RTB/Mail In/PRR for ARC REPAIR CASE</b><span>Complete repair case documentation including problem reports, solutions, and contact logs.</span><span class="arc-btn blue">Access Repair Forms</span></button>
+<button class="other-card trouble" onclick="openOtherForm('trouble')"><span class="card-icon">🔎</span><b>TROUBLESHOOTING CONTACT LOG WITH NO REPAIR CASE</b><span>Document troubleshooting sessions and customer interactions that don't require repair cases.</span><span class="arc-btn green">Create Troubleshooting Log</span></button>
+<button class="other-card complaint" onclick="openOtherForm('complaint')"><span class="card-icon">📝</span><b>COMPLAINT CASE</b><span>Customer complaint documentation, issue tracking, and resolution management forms.</span><span class="arc-btn blue">Access Complaint Forms</span></button>
+<button class="other-card inquiry" onclick="openOtherForm('inquiry')"><span class="card-icon">📞</span><b>GENERAL INQUIRY</b><span>Document general customer enquiries, call summaries, and case updates.</span><span class="arc-btn blue">Access General Inquiry Form</span></button>
+</div>
+<div class="other-form" id="otherForm">
+<div class="arc-top"><h3 id="otherFormTitle">Documentation Form</h3><button class="other-back" onclick="backOtherHub()">← Form Selection</button></div>
+<div class="other-stage-nav" hidden="" id="otherStageNav"></div>
+<div class="other-fields" id="otherFields"></div>
+<div class="other-actions" id="otherActions"><button class="arc-btn gray" onclick="clearOtherForm()">▤ Clear Form</button><button class="arc-btn gray" hidden="" id="otherPrev" onclick="otherPrevStage()">← Previous: Problem Documentation</button><button class="arc-btn green" onclick="generateOtherDoc()">🚀 Generate Documentation</button><button class="arc-btn blue" hidden="" id="otherSaveLog" onclick="openSaveLogModal('other')">💾 Save Log to Contact Logs</button><button class="arc-btn blue" hidden="" id="otherNext" onclick="otherNextStage()">Next: Solutions Documentation →</button></div>
+<div aria-live="polite" class="other-status" id="otherStatus"></div>
+<div class="other-output"><div class="other-output-head"><h4>Generated Documentation</h4><div class="mini-actions"><button onclick="clearOtherOutput()">▤ Clear</button><button onclick="copyOtherDoc()">▣ Copy</button></div></div><pre id="otherOutput">Your generated documentation will appear here.</pre></div>
+</div>
+</section>
+<!-- ================= AUTOMATIC BACKUP SETTINGS ================= -->
+<div class="modal-overlay" id="autoBackupSettingsModal" style="display:none;z-index:1200;">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <h2>⚙️ Backup Settings</h2>
+      <button class="close-btn" type="button" onclick="closeAutoBackupSettings()" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section">
+        <div class="section-title">Backup &amp; Export</div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 18px;">
+          <button class="toolbar-btn" type="button" onclick="exportBackup()">⬇️ Export Backup</button>
+          <button class="toolbar-btn" type="button" onclick="exportAllDocumentation()">📚 Export All Documentation</button>
+          <label class="toolbar-btn import-btn">⬆️ Import Backup<input accept="application/json,.json" id="backupFile" onchange="importBackup(event)" type="file"/></label>
+          <button class="toolbar-btn danger" type="button" onclick="clearAllData()">🗑️ Clear All Data</button>
+        </div>
+        <div class="section-title">Automatic backup schedule</div>
+        <label style="display:flex;align-items:center;gap:10px;margin:12px 0;color:var(--text,#e8eef8);">
+          <input id="autoBackupEnabled" type="checkbox" checked style="width:18px;height:18px;accent-color:#55aaff;">
+          Enable automatic daily backup
+        </label>
+        <div class="form-group" style="margin-top:14px;">
+          <label for="autoBackupTime">BACKUP TIME</label>
+          <input id="autoBackupTime" type="time" value="16:00" style="width:100%;">
+        </div>
+        <div class="form-group" style="margin-top:16px;">
+          <label>AUTOMATIC BACKUP FOLDER</label>
+          <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:7px;">
+            <button class="toolbar-btn" type="button" onclick="chooseAutoBackupFolder()">📁 Choose Folder</button>
+            <button class="toolbar-btn" type="button" onclick="clearAutoBackupFolder()">Use Downloads</button>
+          </div>
+          <div id="autoBackupFolderName" style="font-size:12px;color:#9fb0c8;margin-top:9px;">Default: browser Downloads folder</div>
+          <p style="font-size:12px;line-height:1.5;color:#9fb0c8;margin-top:8px;">Choose your <strong>Documents\Backup</strong> folder (create the Backup folder first if needed). Chrome/Edge will ask you to grant folder access.</p>
+        </div>
+        <p style="font-size:12px;line-height:1.6;color:#9fb0c8;margin-top:12px;">The schedule uses this computer's local time zone: <strong id="autoBackupTimezone"></strong>.</p>
+        <p style="font-size:12px;line-height:1.6;color:#9fb0c8;">Settings are saved separately in each person's browser on this device/profile. Other users can choose their own backup time. The app must be open for the scheduled backup to run; if opened later, it will catch up that day.</p>
+        <div style="display:flex;gap:9px;justify-content:flex-end;margin-top:18px;">
+          <button class="toolbar-btn" type="button" onclick="closeAutoBackupSettings()">Cancel</button>
+          <button class="toolbar-btn" type="button" onclick="saveAutoBackupSettings()">Save Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="modal-overlay" id="modalOverlay">
+<div class="modal">
+<div class="modal-header">
+<h2 id="modalTitle">Call Documentation</h2>
+<div style="display:flex;align-items:center;gap:9px;">
+<button class="next-day-btn" type="button" onclick="goToNextDocumentationDate()">Next →</button>
+<button class="close-btn" onclick="closeModal()" aria-label="Close">
+                ×
+            </button>
+</div>
+</div>
+<div class="modal-body">
+<!-- ================= FORM ================= -->
+<div class="form-section">
+<div class="section-title">
+                    Document New Call
+                </div>
+<div class="form-grid">
+<div class="form-group">
+<label for="name">
+                            NAME
+                        </label>
+<input id="name" placeholder="Customer name" type="text"/>
+</div>
+<div class="form-group">
+<label for="reference">
+                            REFERENCE
+                        </label>
+<input id="reference" placeholder="Reference number" type="text"/>
+</div>
+<div class="form-group">
+<label for="email">
+                            EMAIL
+                        </label>
+<input id="email" placeholder="Customer email" type="email"/>
+</div>
+<div class="form-group">
+<label for="phone">
+                            PHONE
+                        </label>
+<input id="phone" placeholder="Phone number" type="text"/>
+</div>
+<!-- ================= SUMMARY ================= -->
+<div class="form-group full">
+<label for="summary">
+                            SUMMARY
+                        </label>
+<textarea id="summary" oninput="autoResize(this)" placeholder="Enter a detailed summary of the call..."></textarea>
+<div class="summary-hint">
+                            The box will automatically expand as you type.
+                        </div>
+</div>
+</div>
+<br/>
+<button class="add-btn" onclick="addCall()">
+                    + Add Documented Call
+                </button>
+</div>
+<!-- ================= CALL LIST ================= -->
+<div class="form-section">
+<div class="section-title">
+                    Documented Calls
+                </div>
+<div class="call-list" id="callList"></div>
+</div>
+<!-- ================= DOWNLOAD ================= -->
+<div class="download-section">
+<h3>
+                    📥 Save Documentation
+                </h3>
+<div class="filename" id="filename"></div>
+<div id="folderStatus" style="font-size:12px;color:#15803d;margin-bottom:12px;">
+                    No save folder selected. The normal browser download will be used.
+                </div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;">
+<button class="download-btn" onclick="chooseSaveFolder()" style="flex:1;min-width:180px;">
+                        📁 Choose Save Folder
+                    </button>
+<button class="download-btn" onclick="downloadDocumentation()" style="flex:1;min-width:180px;">
+                        📥 Save Documentation
+                    </button>
+</div>
+<div style="font-size:11px;color:#6b7280;margin-top:10px;line-height:1.5;">
+                    Choose a folder once, then your documentation will be saved there
+                    using the date-based filename. Your browser may ask for permission
+                    to access the selected folder.
+                </div>
+</div>
+<!-- ================= FOOTER ================= -->
+<div class="modal-footer">
+<button class="footer-btn clear-btn" onclick="clearDay()">
+                    Clear Day
+                </button>
+<button class="footer-btn done-btn" onclick="closeModal()">
+                    Done
+                </button>
+</div>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="save-log-modal" id="saveLogModal">
+<div aria-labelledby="saveLogTitle" aria-modal="true" class="save-log-card" role="dialog">
+<h3 id="saveLogTitle">Save documentation to Contact Logs</h3>
+<p>Enter the reference number before saving this call.</p>
+<label for="saveLogReference">Reference # <span style="color:#dc2626">*</span></label>
+<input autocomplete="off" id="saveLogReference" placeholder="Enter case / reference number" type="text"/>
+<div class="save-log-meta" id="saveLogMeta"></div>
+<div class="save-log-buttons"><button class="arc-btn gray" onclick="closeSaveLogModal()" type="button">Cancel</button><button class="arc-btn green" onclick="confirmSaveDocumentationLog()" type="button">Save Log</button></div>
+<div id="saveLogError" role="alert"></div>
+</div>
+</div>
+<style>
+.save-log-modal{display:none;position:fixed;inset:0;z-index:99999;background:rgba(7,13,29,.72);align-items:center;justify-content:center;padding:18px}
+.save-log-modal.open{display:flex}.save-log-card{width:min(460px,100%);background:#fff;color:#263449;border-radius:16px;padding:24px;box-shadow:0 24px 70px #0005}
+.save-log-card h3{margin:0 0 8px}.save-log-card p{margin:0 0 18px;color:#64748b}.save-log-card label{display:block;font-weight:700;margin:0 0 7px}.save-log-card input{width:100%;box-sizing:border-box;padding:12px 13px;border:1px solid #cbd5e1;border-radius:9px;font:inherit}.save-log-meta{font-size:12px;color:#64748b;margin-top:10px}.save-log-buttons{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}.save-log-card #saveLogError{color:#dc2626;font-size:13px;margin-top:9px;min-height:16px}
+
+/* FINAL DARK THEME CONSISTENCY FIX: RTB/Mail In and Other Docu Form landing page */
+.arc-shell, .arc-shell.active { color:#e7efff; }
+.arc-shell .arc-top h2, .arc-shell .arc-top h3 { color:#eff6ff !important; }
+.arc-shell .arc-top p { color:#a9bad3 !important; }
+.arc-shell .arc-panel { background:linear-gradient(145deg,rgba(15,25,43,.98),rgba(9,16,29,.98)) !important; border-color:#34445c !important; color:#e7efff !important; }
+.arc-shell .arc-panel h3 { color:#eff6ff !important; }
+.arc-shell .arc-field label { color:#d3e0f2 !important; }
+.arc-shell .arc-field input, .arc-shell .arc-field textarea, .arc-shell .arc-field select { background:#0a1423 !important; color:#eff6ff !important; border-color:#40536e !important; }
+.arc-shell .arc-field input::placeholder, .arc-shell .arc-field textarea::placeholder { color:#8295b1 !important; opacity:1; }
+.arc-shell .arc-subtitle { color:#9cc7ff !important; border-color:#30425c !important; }
+.arc-shell .arc-step { background:linear-gradient(145deg,#142238,#0d1728) !important; border-color:#344761 !important; color:#eaf2ff !important; }
+.arc-shell .arc-step span { color:#a9bad3 !important; }
+.arc-shell .arc-preview { background:#081321 !important; border-color:#344761 !important; }
+.arc-shell .arc-preview h4 { color:#bcd9ff !important; }
+.arc-shell .arc-preview pre { color:#e0ecfb !important; }
+.arc-shell .arc-note, .arc-shell .arc-status { color:#a9bad3 !important; }
+.arc-shell .arc-check { background:#142238 !important; border-color:#344761 !important; color:#dce8f8 !important; }
+.arc-shell .arc-caller-row { display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:14px !important; grid-column:1/-1 !important; }
+.arc-shell .arc-caller-row .arc-field { min-width:0; }
+
+/* Other Docu Form landing page and its forms now match the website dark mode */
+.other-shell { background:linear-gradient(145deg,#101a2b,#0b1220 72%) !important; border:1px solid #293b55 !important; color:#e7efff !important; box-shadow:0 18px 48px #0006 !important; }
+.other-shell .arc-top { background:linear-gradient(135deg,#17263d,#111c30) !important; border:1px solid #344761 !important; }
+.other-shell .arc-top h2, .other-shell .arc-top h3 { color:#eff6ff !important; }
+.other-shell .arc-top p { color:#a9bad3 !important; }
+.other-shell .arc-back, .other-shell .other-back { background:#263750 !important; color:#e8f1ff !important; border:1px solid #405675 !important; }
+.other-shell .other-card, .other-shell .other-card.repair, .other-shell .other-card.trouble, .other-shell .other-card.complaint, .other-shell .other-card.inquiry { background:linear-gradient(145deg,#17263d,#101b2e) !important; border:1px solid #3a506e !important; color:#e7efff !important; box-shadow:0 8px 24px #0004 !important; }
+.other-shell .other-card b, .other-shell .other-card.trouble b, .other-shell .other-card.complaint b, .other-shell .other-card.inquiry b { color:#f0f6ff !important; }
+.other-shell .other-card span { color:#aebed4 !important; }
+.other-shell .other-card:hover { border-color:#6ca7f5 !important; box-shadow:0 12px 28px #0006 !important; }
+.other-shell .other-form { background:linear-gradient(145deg,#121f33,#0c1627) !important; border:1px solid #344761 !important; color:#e7efff !important; }
+.other-shell .other-form>.arc-top { background:transparent !important; border-bottom:1px solid #344761 !important; }
+.other-shell .other-fields .arc-field label { color:#d3e0f2 !important; }
+.other-shell .other-fields input, .other-shell .other-fields textarea, .other-shell .other-fields select { background:#091525 !important; color:#eff6ff !important; border-color:#40536e !important; box-shadow:none !important; }
+.other-shell .other-fields input::placeholder, .other-shell .other-fields textarea::placeholder { color:#8295b1 !important; }
+.other-shell .other-group { background:#142238 !important; border-color:#344761 !important; color:#e7efff !important; }
+.other-shell .other-output { background:#081321 !important; border-color:#344761 !important; color:#e0ecfb !important; }
+.other-shell .other-output pre { color:#e0ecfb !important; }
+.other-shell .other-status { color:#a9bad3 !important; }
+@media(max-width:760px){.arc-shell .arc-caller-row{grid-template-columns:1fr !important}.other-shell .other-hub{grid-template-columns:1fr !important}}
+</style>
+<script>
+
+/* =========================================================
+   DATA
+========================================================= */
+
+const STORAGE_KEY = "callDocumentationLog_v4";
+const RECOVERY_KEY = "callDocumentationRecovery_v1";
+let recoveryData = loadRecoveryData();
+
+let documentationData = loadDocumentationData();
+
+let currentDate = new Date();
+
+let selectedDate = null;
+let editingCallIndex = null;
+let editingCallDate = null;
+
+/* Selected folder for direct .txt saving */
+let saveDirectoryHandle = null;
+
+
+/* =========================================================
+   PERSISTENCE
+========================================================= */
+
+function loadDocumentationData(){
+    try{
+        const saved=localStorage.getItem(STORAGE_KEY);
+        if(!saved) return {};
+        const parsed=JSON.parse(saved);
+        return parsed && typeof parsed === "object" ? parsed : {};
+    }catch(error){
+        console.error("Could not load saved documentation:",error);
+        return {};
+    }
+}
+
+function saveDocumentationData(){
+    try{
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(documentationData));
+        const indicator=document.getElementById("saveIndicator");if(indicator)indicator.textContent="Saved locally · "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+        if (typeof renderDashboardExtras === "function") renderDashboardExtras();
+    }catch(error){
+        console.error("Could not save documentation:",error);
+        alert("Your browser blocked local storage, so the data could not be saved. Please use Export Backup to keep a copy.");
+    }
+}
+
+function loadRecoveryData(){
+    try{const parsed=JSON.parse(localStorage.getItem(RECOVERY_KEY)||"[]");return Array.isArray(parsed)?parsed:[];}catch(e){return [];}
+}
+function saveRecoveryData(){
+    try{localStorage.setItem(RECOVERY_KEY,JSON.stringify(recoveryData.slice(-100)));}catch(e){console.warn("Could not save recycle bin",e);}
+    renderRecoveryBin();
+}
+function renderRecoveryBin(){
+    const count=document.getElementById("recoveryCount");
+    const list=document.getElementById("recoveryList");
+    if(count) count.textContent=String(recoveryData.length);
+    if(!list)return;
+    if(!recoveryData.length){list.innerHTML='<div class="search-empty">The recycle bin is empty.</div>';return;}
+    list.innerHTML="";
+    recoveryData.slice().reverse().forEach((entry,revIndex)=>{
+        const originalIndex=recoveryData.length-1-revIndex;
+        const row=document.createElement("div");row.className="recovery-item";
+        const info=document.createElement("div");
+        info.innerHTML=`<b>${escapeHTML(entry.call?.name||"Unnamed customer")}</b><small>Date: ${escapeHTML(entry.date||"—")} · Reference: ${escapeHTML(entry.call?.reference||"—")} · Email: ${escapeHTML(entry.call?.email||"—")}</small>`;
+        const btn=document.createElement("button");btn.className="restore-btn";btn.textContent="Restore call";btn.onclick=()=>restoreDeletedCall(originalIndex);
+        row.append(info,btn);list.appendChild(row);
+    });
+}
+function toggleRecoveryBin(){
+    const panel=document.getElementById("recoveryPanel");
+    if(!panel)return;
+    panel.style.display=panel.style.display==="block"?"none":"block";
+    renderRecoveryBin();
+    if(panel.style.display==="block")panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function restoreDeletedCall(index){
+    const entry=recoveryData[index];if(!entry)return;
+    if(!Array.isArray(documentationData[entry.date]))documentationData[entry.date]=[];
+    documentationData[entry.date].push(entry.call);
+    recoveryData.splice(index,1);saveRecoveryData();saveDocumentationData();renderCalendar();
+    if(selectedDate===entry.date)renderCallList();
+    alert("Call restored successfully.");
+}
+
+/* =========================================================
+   DATE HELPERS
+========================================================= */
+
+function dateKey(date) {
+
+    const year = date.getFullYear();
+
+    const month = String(
+        date.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+        date.getDate()
+    ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+   function getTodayKey() {
+    return dateKey(new Date());
+}
+   function updateAddCallAvailability() {
+    const button = document.querySelector(".add-btn");
+    if (!button) return;
+
+    const isToday = selectedDate === getTodayKey();
+    const isEditing = editingCallIndex !== null;
+
+    button.disabled = !isToday && !isEditing;
+
+    if (button.disabled) {
+        button.textContent = "Past Date — View Only";
+        button.style.opacity = "0.45";
+        button.style.cursor = "not-allowed";
+    } else {
+        button.textContent = isEditing
+            ? "Save Changes"
+            : "+ Add Documented Call";
+        button.style.opacity = "1";
+        button.style.cursor = "pointer";
+    }
+}
+
+
+function formatDate(date) {
+
+    return date.toLocaleDateString(
+        "en-US",
+        {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CALENDAR
+========================================================= */
+
+function renderCalendar() {
+
+    const calendar =
+        document.getElementById("calendar");
+
+    calendar.innerHTML = "";
+
+
+    const year =
+        currentDate.getFullYear();
+
+    const month =
+        currentDate.getMonth();
+
+
+    const firstDay =
+        new Date(
+            year,
+            month,
+            1
+        ).getDay();
+
+
+    const daysInMonth =
+        new Date(
+            year,
+            month + 1,
+            0
+        ).getDate();
+
+
+    document.getElementById(
+        "calendarTitle"
+    ).textContent =
+        currentDate.toLocaleDateString(
+            "en-US",
+            {
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+
+    document.getElementById(
+        "currentMonth"
+    ).textContent =
+        currentDate.toLocaleDateString(
+            "en-US",
+            {
+                month: "short",
+                year: "numeric"
+            }
+        );
+
+
+    /* Empty cells before first day */
+
+    for (
+        let i = 0;
+        i < firstDay;
+        i++
+    ) {
+
+        const empty =
+            document.createElement("div");
+
+        empty.className =
+            "day empty";
+
+        calendar.appendChild(empty);
+
+    }
+
+
+    /* Days */
+
+    const todayKey =
+        dateKey(new Date());
+
+
+    for (
+        let day = 1;
+        day <= daysInMonth;
+        day++
+    ) {
+
+        const date =
+            new Date(
+                year,
+                month,
+                day
+            );
+
+
+        const key =
+            dateKey(date);
+
+
+        const cell =
+            document.createElement("div");
+
+        cell.className = "day";
+
+
+        if (key === todayKey) {
+            cell.classList.add("today");
+        }
+
+
+        cell.innerHTML = `
+            <div class="day-number">
+                ${day}
+            </div>
+        `;
+
+
+        /* Documentation count */
+
+        if (
+            documentationData[key] &&
+            documentationData[key].length > 0
+        ) {
+
+            const count =
+                document.createElement("div");
+
+            count.className =
+                "day-count";
+
+            const total =
+                documentationData[key].length;
+
+            count.textContent =
+                `${total} call${total !== 1 ? "s" : ""}`;
+
+            cell.appendChild(count);
+
+        }
+
+
+        cell.onclick = () =>
+            openDate(date);
+
+
+        calendar.appendChild(cell);
+
+    }
+
+
+    updateStats();
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function previousMonth() {
+
+    currentDate.setMonth(
+        currentDate.getMonth() - 1
+    );
+
+    renderCalendar();
+    if (typeof renderDashboardExtras === "function") renderDashboardExtras();
+
+}
+
+
+function nextMonth() {
+
+    currentDate.setMonth(
+        currentDate.getMonth() + 1
+    );
+
+    renderCalendar();
+
+}
+
+
+function goToday() {
+
+    currentDate = new Date();
+
+    renderCalendar();
+
+}
+
+
+function openToday() {
+
+    openDate(new Date());
+
+}
+
+
+/* =========================================================
+   OPEN DATE
+========================================================= */
+
+function openDate(date) {
+
+    selectedDate = dateKey(date);
+
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        formatDate(date);
+
+
+    document.getElementById(
+        "filename"
+    ).textContent =
+        `Call_Documentation_${selectedDate}.txt`;
+
+
+    clearForm();
+    updateAddCallAvailability();
+
+    renderCallList();
+
+    document
+        .getElementById("modalOverlay")
+        .classList.add("active");
+
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function goToNextDocumentationDate() {
+    if (!selectedDate) return;
+
+    // selectedDate is stored as YYYY-MM-DD; use local date parts to avoid timezone shifts.
+    const parts = selectedDate.split("-").map(Number);
+    if (parts.length !== 3 || parts.some(Number.isNaN)) return;
+
+    const nextDate = new Date(parts[0], parts[1] - 1, parts[2] + 1);
+    openDate(nextDate);
+}
+
+
+function closeModal() {
+
+    document
+        .getElementById("modalOverlay")
+        .classList.remove("active");
+
+}
+
+
+/* =========================================================
+   CLEAR FORM
+========================================================= */
+
+function clearForm() {
+    document.getElementById("name").value = "";
+    document.getElementById("reference").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("phone").value = "";
+
+    const summary = document.getElementById("summary");
+    summary.value = "";
+    autoResize(summary);
+
+    editingCallIndex = null;
+    editingCallDate = null;
+
+    updateAddCallAvailability();
+}
+
+
+/* =========================================================
+   AUTO EXPANDING SUMMARY
+========================================================= */
+
+function autoResize(textarea) {
+
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+
+}
+
+
+/* =========================================================
+   ADD CALL
+========================================================= */
+
+function addCall() {
+    const name = document.getElementById("name").value.trim();
+    const reference = document.getElementById("reference").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const summary = document.getElementById("summary").value.trim();
+
+    // Require at least one field.
+    if (!name && !reference && !email && !phone && !summary) {
+        alert("Please enter at least one piece of information.");
+        return;
+    }
+
+    if (!selectedDate) {
+        alert("Please select a date before saving a call.");
+        return;
+    }
+   // Prevent adding new calls to past dates.
+// Existing historical calls can still be edited.
+if (
+    editingCallIndex === null &&
+    selectedDate !== getTodayKey()
+) {
+    alert(
+        "You can only add new call documentation for the current date. Past dates are view-only."
+    );
+
+    updateAddCallAvailability();
+    return;
+}
+
+    if (!documentationData[selectedDate]) {
+        documentationData[selectedDate] = [];
+    }
+
+    if (editingCallIndex !== null) {
+        const targetDate = editingCallDate || selectedDate;
+        const existingCall = documentationData[targetDate]?.[editingCallIndex];
+
+        if (!existingCall) {
+            alert("This call could not be found. Please reopen it and try again.");
+            editingCallIndex = null;
+            editingCallDate = null;
+            clearForm();
+            return;
+        }
+
+        documentationData[targetDate][editingCallIndex] = {
+            ...existingCall,
+            name,
+            reference,
+            email,
+            phone,
+            summary
+        };
+
+        // Return to the date whose record was edited.
+        selectedDate = targetDate;
+        editingCallIndex = null;
+        editingCallDate = null;
+    } else {
+        documentationData[selectedDate].push({
+            name,
+            reference,
+            email,
+            phone,
+            summary
+        });
+    }
+
+    saveDocumentationData();
+    clearForm();
+    renderCallList();
+    renderCalendar();
+}
+
+
+/* =========================================================
+   RENDER CALL LIST
+========================================================= */
+
+function renderCallList() {
+
+    const list =
+        document.getElementById("callList");
+
+    list.innerHTML = "";
+
+
+    const calls =
+        documentationData[selectedDate] || [];
+
+
+    if (calls.length === 0) {
+
+        list.innerHTML = `
+            <div class="empty">
+                No calls documented for this date.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    calls.forEach(
+        (call, index) => {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "call-item";
+
+
+            item.innerHTML = `
+
+                <div class="call-item-header">
+
+                    <div class="call-number">
+                        Call #${index + 1}
+                    </div>
+
+                    <div style="display:flex;gap:8px;">
+                      <button
+                          class="edit-btn"
+                           onclick="editCall(${index})">
+                           Edit
+                      </button>
+
+                      <button
+                          class="move-btn"
+                          onclick="moveCallToDate(${index})">
+                          Move
+                      </button>
+                      <button
+                          class="delete-btn"
+                          onclick="deleteCall(${index})">
+                          Delete
+                      </button>
+                     </div>
+
+                </div>
+
+
+                <div class="call-info">
+
+                    <div>
+                        <strong>Name:</strong>
+                        ${escapeHTML(call.name) || "—"}
+                    </div>
+
+                    <div>
+                        <strong>Reference:</strong>
+                        ${escapeHTML(call.reference) || "—"}
+                    </div>
+
+                    <div>
+                        <strong>Email:</strong>
+                        ${escapeHTML(call.email) || "—"}
+                    </div>
+
+                    <div>
+                        <strong>Phone:</strong>
+                        ${escapeHTML(call.phone) || "—"}
+                    </div>
+
+                    <div class="call-summary">
+
+                        <strong>Summary:</strong><br>
+
+                        ${
+                            escapeHTML(
+                                call.summary
+                            ) || "—"
+                        }
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            list.appendChild(item);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   MOVE A CALL TO ANOTHER DATE
+========================================================= */
+function moveCallToDate(index) {
+    if (!selectedDate || !Array.isArray(documentationData[selectedDate])) return;
+
+    const calls = documentationData[selectedDate];
+    const call = calls[index];
+    if (!call) return;
+
+    const enteredDate = prompt(
+        "Move this documentation to which date?\nEnter the date as YYYY-MM-DD (for example, 2026-11-05):",
+        selectedDate
+    );
+    if (enteredDate === null) return;
+
+    const targetDate = enteredDate.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(targetDate)) {
+        alert("Please enter the date in YYYY-MM-DD format, for example 2026-11-05.");
+        return;
+    }
+    const [year, month, day] = targetDate.split("-").map(Number);
+    const parsedDate = new Date(year, month - 1, day);
+    if (parsedDate.getFullYear() !== year || parsedDate.getMonth() !== month - 1 || parsedDate.getDate() !== day) {
+        alert("That date is not valid. Please check the year, month, and day.");
+        return;
+    }
+    if (targetDate === selectedDate) {
+        alert("This documentation is already on that date.");
+        return;
+    }
+
+    if (!confirm(`Move this documentation from ${selectedDate} to ${targetDate}?`)) return;
+
+    if (!Array.isArray(documentationData[targetDate])) documentationData[targetDate] = [];
+    documentationData[targetDate].push(call);
+    calls.splice(index, 1);
+    if (calls.length === 0) delete documentationData[selectedDate];
+
+    if (editingCallDate === selectedDate && editingCallIndex === index) {
+        editingCallIndex = null;
+        editingCallDate = null;
+        clearForm();
+    }
+
+    saveDocumentationData();
+    renderCallList();
+    renderCalendar();
+    alert(`Documentation moved to ${targetDate}.`);
+}
+
+
+/* =========================================================
+   DELETE CALL
+========================================================= */
+/* =========================================================
+   EDIT EXISTING CALL
+========================================================= */
+
+function editCall(index) {
+    const calls = documentationData[selectedDate] || [];
+    const call = calls[index];
+
+    if (!call) {
+        alert("This call could not be found.");
+        return;
+    }
+
+    editingCallIndex = index;
+    editingCallDate = selectedDate;
+
+    document.getElementById("name").value = call.name || "";
+    document.getElementById("reference").value = call.reference || "";
+    document.getElementById("email").value = call.email || "";
+    document.getElementById("phone").value = call.phone || "";
+
+    const summary = document.getElementById("summary");
+    summary.value = call.summary || "";
+    autoResize(summary);
+
+    updateAddCallAvailability();
+
+    const formSection = document.querySelector("#modalOverlay .form-section");
+    if (formSection) {
+        formSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+}
+
+
+function deleteCall(index) {
+
+    if (
+        !confirm(
+            "Delete this documented call?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const deletedCall=documentationData[selectedDate][index];
+    if(deletedCall){recoveryData.push({date:selectedDate,call:deletedCall,deletedAt:new Date().toISOString()});recoveryData=recoveryData.slice(-100);saveRecoveryData();}
+    documentationData[selectedDate]
+        .splice(index, 1);
+
+
+    if (
+        documentationData[selectedDate]
+        .length === 0
+    ) {
+
+        delete documentationData[
+            selectedDate
+        ];
+
+    }
+
+
+    saveDocumentationData();
+
+    renderCallList();
+
+    renderCalendar();
+
+}
+
+
+/* =========================================================
+   CLEAR DAY
+========================================================= */
+
+function clearDay() {
+
+    const calls =
+        documentationData[selectedDate] || [];
+
+
+    if (calls.length === 0) {
+
+        return;
+
+    }
+
+
+    if (
+        !confirm(
+            "Clear all documentation for this date?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    delete documentationData[
+        selectedDate
+    ];
+
+    saveDocumentationData();
+
+    renderCallList();
+
+    renderCalendar();
+
+}
+
+
+/* =========================================================
+   DOWNLOAD
+========================================================= */
+
+async function chooseSaveFolder() {
+
+    if (!window.showDirectoryPicker) {
+
+        alert(
+            "Your browser/compiler does not support direct folder saving.\n\n" +
+            "Use a recent version of Chrome or Edge. If CodeChef blocks " +
+            "folder access, use the normal browser download instead."
+        );
+
+        return;
+    }
+
+    try {
+
+        saveDirectoryHandle =
+            await window.showDirectoryPicker({
+                mode: "readwrite"
+            });
+
+        document.getElementById("folderStatus").textContent =
+            `📁 Save folder selected: ${saveDirectoryHandle.name}`;
+
+    } catch (error) {
+
+        if (error.name !== "AbortError") {
+
+            console.error(error);
+
+            alert(
+                "The folder could not be selected. " +
+                "CodeChef's preview may be blocking folder access."
+            );
+        }
+    }
+}
+
+
+async function downloadDocumentation() {
+
+    const calls =
+        documentationData[selectedDate] || [];
+
+
+    if (calls.length === 0) {
+
+        alert(
+            "There is no documentation to download for this date."
+        );
+
+        return;
+    }
+
+
+    let content = "";
+
+    content +=
+        "CALL DOCUMENTATION\n";
+
+    content +=
+        "============================\n\n";
+
+    content +=
+        `Documentation Date: ${selectedDate}\n`;
+
+    content +=
+        `Total Calls: ${calls.length}\n\n`;
+
+
+    calls.forEach(
+        (call, index) => {
+
+            content +=
+                `CALL #${index + 1}\n`;
+
+            content +=
+                "----------------------------\n";
+
+            content +=
+                `NAME: ${call.name || "N/A"}\n`;
+
+            content +=
+                `REFERENCE: ${call.reference || "N/A"}\n`;
+
+            content +=
+                `EMAIL: ${call.email || "N/A"}\n`;
+
+            content +=
+                `PHONE: ${call.phone || "N/A"}\n`;
+
+            content +=
+                `SUMMARY:\n${call.summary || "N/A"}\n\n`;
+
+        }
+    );
+
+
+    const filename =
+        `Call_Documentation_${selectedDate}.txt`;
+
+
+    /*
+       DIRECT FOLDER SAVE
+    */
+
+    if (saveDirectoryHandle) {
+
+        try {
+
+            let permission =
+                await saveDirectoryHandle.queryPermission({
+                    mode: "readwrite"
+                });
+
+            if (permission !== "granted") {
+
+                permission =
+                    await saveDirectoryHandle.requestPermission({
+                        mode: "readwrite"
+                    });
+            }
+
+            if (permission !== "granted") {
+                throw new Error("Folder permission was not granted.");
+            }
+
+
+            const fileHandle =
+                await saveDirectoryHandle.getFileHandle(
+                    filename,
+                    { create: true }
+                );
+
+
+            const writable =
+                await fileHandle.createWritable();
+
+
+            await writable.write(content);
+
+            await writable.close();
+
+
+            alert(
+                `Saved successfully!\n\n${filename}\n\n` +
+                `Folder: ${saveDirectoryHandle.name}`
+            );
+
+            return;
+
+        } catch (error) {
+
+            console.error(error);
+
+            const useFallback =
+                confirm(
+                    "The selected folder could not be accessed.\n\n" +
+                    "Would you like to download the file normally instead?"
+                );
+
+            if (!useFallback) {
+                return;
+            }
+        }
+    }
+
+
+    /*
+       NORMAL BROWSER DOWNLOAD FALLBACK
+    */
+
+    const blob =
+        new Blob(
+            [content],
+            {
+                type: "text/plain;charset=utf-8"
+            }
+        );
+
+
+    const link =
+        document.createElement("a");
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    link.href = url;
+
+    link.download = filename;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+
+    setTimeout(
+        () => URL.revokeObjectURL(url),
+        1000
+    );
+
+}
+
+
+/* =========================================================
+   BACKUP / RESTORE
+========================================================= */
+
+async function exportBackup(){
+    const backup={
+        app:"Call Documentation Log",
+        version:4,
+        exportedAt:new Date().toISOString(),
+        documentationData:documentationData
+    };
+
+    const filename=`Call_Documentation_Backup_${dateKey(new Date())}.json`;
+    const json=JSON.stringify(backup,null,2);
+
+    /*
+       Use the browser's native Save dialog when supported.
+       startIn: "documents" asks Windows/Chrome/Edge to open the
+       Documents folder first. The browser still requires the user
+       to confirm the save for security reasons.
+    */
+    if(window.showSaveFilePicker){
+        try{
+            const handle=await window.showSaveFilePicker({
+                suggestedName:filename,
+                startIn:"documents",
+                types:[{
+                    description:"JSON Backup File",
+                    accept:{"application/json":[".json"]}
+                }]
+            });
+
+            const writable=await handle.createWritable();
+            await writable.write(json);
+            await writable.close();
+            return;
+        }catch(error){
+            if(error && error.name === "AbortError") return;
+            console.warn("Native save picker unavailable; using normal download.",error);
+        }
+    }
+
+    /* Fallback for browsers/CodeChef previews that block the File System API. */
+    const blob=new Blob([json],{type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement("a");
+    link.href=url;
+    link.download=filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+
+/* =========================================================
+   AUTOMATIC DAILY BACKUP — PER-USER LOCAL SCHEDULE
+   Each browser profile stores its own enabled/time settings.
+========================================================= */
+const AUTO_BACKUP_LAST_RUN_KEY = "callDocumentationAutoBackupLastRun_v1";
+const AUTO_BACKUP_SETTINGS_KEY = "callDocumentationAutoBackupSettings_v1";
+const AUTO_BACKUP_FOLDER_DB = "callDocumentationBackupFolderDB_v1";
+const AUTO_BACKUP_FOLDER_STORE = "handles";
+const AUTO_BACKUP_FOLDER_KEY = "dailyBackupFolder";
+let autoBackupCheckInProgress = false;
+
+function getAutoBackupSettings(){
+    const defaults = {enabled:true, time:"16:00"};
+    try {
+        const saved = JSON.parse(localStorage.getItem(AUTO_BACKUP_SETTINGS_KEY) || "null");
+        if(saved && typeof saved === "object") return {
+            enabled: saved.enabled !== false,
+            time: /^([01]\d|2[0-3]):[0-5]\d$/.test(saved.time || "") ? saved.time : defaults.time
+        };
+    } catch(error) {}
+    return defaults;
+}
+
+function openAutoBackupSettings(){
+    const settings = getAutoBackupSettings();
+    const enabled = document.getElementById("autoBackupEnabled");
+    const time = document.getElementById("autoBackupTime");
+    const zone = document.getElementById("autoBackupTimezone");
+    if(enabled) enabled.checked = settings.enabled;
+    if(time) time.value = settings.time;
+    if(zone) zone.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone || "device local time";
+    refreshAutoBackupFolderLabel();
+    const modal = document.getElementById("autoBackupSettingsModal");
+    if(modal) modal.style.display = "flex";
+}
+
+function closeAutoBackupSettings(){
+    const modal = document.getElementById("autoBackupSettingsModal");
+    if(modal) modal.style.display = "none";
+}
+
+function updateAutoBackupIndicator(message){
+    const indicator = document.getElementById("autoBackupIndicator");
+    if(!indicator) return;
+    const settings = getAutoBackupSettings();
+    if(message){ indicator.textContent = message; return; }
+    indicator.textContent = settings.enabled ? `Auto backup · Daily at ${settings.time}` : "Auto backup · Off";
+    indicator.title = "Configure the automatic backup schedule in Backup Settings";
+}
+
+function saveAutoBackupSettings(){
+    const enabled = !!document.getElementById("autoBackupEnabled")?.checked;
+    const time = document.getElementById("autoBackupTime")?.value || "16:00";
+    if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)){
+        alert("Please choose a valid backup time.");
+        return;
+    }
+    try {
+        localStorage.setItem(AUTO_BACKUP_SETTINGS_KEY, JSON.stringify({enabled, time}));
+    } catch(error) {
+        alert("Could not save backup settings in this browser.");
+        return;
+    }
+    closeAutoBackupSettings();
+    updateAutoBackupIndicator();
+    checkAutomaticDailyBackup();
+}
+
+function openAutoBackupFolderDB(){
+    return new Promise((resolve,reject)=>{
+        const request=indexedDB.open(AUTO_BACKUP_FOLDER_DB,1);
+        request.onupgradeneeded=()=>request.result.createObjectStore(AUTO_BACKUP_FOLDER_STORE);
+        request.onsuccess=()=>resolve(request.result);
+        request.onerror=()=>reject(request.error || new Error("Could not open backup folder settings."));
+    });
+}
+async function storeAutoBackupFolderHandle(handle){
+    const db=await openAutoBackupFolderDB();
+    await new Promise((resolve,reject)=>{
+        const tx=db.transaction(AUTO_BACKUP_FOLDER_STORE,"readwrite");
+        tx.objectStore(AUTO_BACKUP_FOLDER_STORE).put(handle,AUTO_BACKUP_FOLDER_KEY);
+        tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
+    });
+    db.close();
+}
+async function getAutoBackupFolderHandle(){
+    try{
+        const db=await openAutoBackupFolderDB();
+        const handle=await new Promise((resolve,reject)=>{
+            const req=db.transaction(AUTO_BACKUP_FOLDER_STORE,"readonly").objectStore(AUTO_BACKUP_FOLDER_STORE).get(AUTO_BACKUP_FOLDER_KEY);
+            req.onsuccess=()=>resolve(req.result || null); req.onerror=()=>reject(req.error);
+        });
+        db.close(); return handle;
+    }catch(error){ return null; }
+}
+async function deleteAutoBackupFolderHandle(){
+    try{
+        const db=await openAutoBackupFolderDB();
+        await new Promise((resolve,reject)=>{
+            const tx=db.transaction(AUTO_BACKUP_FOLDER_STORE,"readwrite");
+            tx.objectStore(AUTO_BACKUP_FOLDER_STORE).delete(AUTO_BACKUP_FOLDER_KEY);
+            tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
+        }); db.close();
+    }catch(error){}
+}
+async function refreshAutoBackupFolderLabel(){
+    const label=document.getElementById("autoBackupFolderName");
+    if(!label) return;
+    const handle=await getAutoBackupFolderHandle();
+    label.textContent=handle ? `Selected folder: ${handle.name}` : "Default: browser Downloads folder";
+}
+async function chooseAutoBackupFolder(){
+    if(!window.showDirectoryPicker){
+        alert("Folder selection is supported in recent Chrome and Edge versions. This browser will use Downloads instead."); return;
+    }
+    try{
+        const handle=await window.showDirectoryPicker({mode:"readwrite",startIn:"documents"});
+        let permission=await handle.queryPermission({mode:"readwrite"});
+        if(permission!=="granted") permission=await handle.requestPermission({mode:"readwrite"});
+        if(permission!=="granted") throw new Error("Folder permission was not granted.");
+        await storeAutoBackupFolderHandle(handle);
+        await refreshAutoBackupFolderLabel();
+        updateAutoBackupIndicator("Backup folder selected · " + handle.name);
+    }catch(error){
+        if(error.name!=="AbortError") alert("Could not select that folder: " + (error.message || error));
+    }
+}
+async function clearAutoBackupFolder(){
+    await deleteAutoBackupFolderHandle();
+    await refreshAutoBackupFolderLabel();
+    updateAutoBackupIndicator("Auto backup will use Downloads");
+}
+async function createAutomaticBackup(){
+    const now = new Date();
+    const day = dateKey(now);
+    const backup = {
+        app: "Call Documentation Log",
+        version: 4,
+        backupType: "automatic-daily",
+        exportedAt: now.toISOString(),
+        documentationData: documentationData
+    };
+    const filename = `Call_Documentation_AutoBackup_${day}.json`;
+    const blob = new Blob([JSON.stringify(backup, null, 2)], {type:"application/json"});
+    const folderHandle=await getAutoBackupFolderHandle();
+    if(folderHandle){
+        let permission=await folderHandle.queryPermission({mode:"readwrite"});
+        if(permission!=="granted"){
+            updateAutoBackupIndicator("Backup folder permission needed");
+            throw new Error("Please reopen Backup Settings and reselect the backup folder to renew access. A browser download was not started.");
+        }
+        const fileHandle=await folderHandle.getFileHandle(filename,{create:true});
+        const writable=await fileHandle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+    }else{
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url; link.download = filename; link.style.display = "none";
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+    }
+    localStorage.setItem(AUTO_BACKUP_LAST_RUN_KEY, day);
+    updateAutoBackupIndicator("Auto backup saved · " + now.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}));
+}
+
+async function checkAutomaticDailyBackup(){
+    if(autoBackupCheckInProgress || document.visibilityState === "hidden") return;
+    const settings = getAutoBackupSettings();
+    updateAutoBackupIndicator();
+    if(!settings.enabled) return;
+    const now = new Date();
+    const today = dateKey(now);
+    const [targetHour, targetMinute] = settings.time.split(":").map(Number);
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const targetMinutes = targetHour * 60 + targetMinute;
+    let lastRun = "";
+    try { lastRun = localStorage.getItem(AUTO_BACKUP_LAST_RUN_KEY) || ""; } catch(error) {}
+    if(currentMinutes < targetMinutes || lastRun === today) return;
+    autoBackupCheckInProgress = true;
+    try {
+        await createAutomaticBackup();
+    } catch(error) {
+        console.error("Automatic backup could not be created:", error);
+        updateAutoBackupIndicator("Auto backup needs attention");
+    } finally {
+        autoBackupCheckInProgress = false;
+    }
+}
+
+function startAutomaticDailyBackup(){
+    updateAutoBackupIndicator();
+    checkAutomaticDailyBackup();
+    setInterval(checkAutomaticDailyBackup, 30000);
+    document.addEventListener("visibilitychange", checkAutomaticDailyBackup);
+    window.addEventListener("focus", checkAutomaticDailyBackup);
+}
+
+async function exportAllDocumentation(){
+    const dates=Object.keys(documentationData)
+        .filter(key => Array.isArray(documentationData[key]) && documentationData[key].length > 0)
+        .sort();
+
+    if(dates.length === 0){
+        alert("There are no documentation logs to export yet.");
+        return;
+    }
+
+    if(!window.showDirectoryPicker){
+        alert(
+            "Your browser/compiler does not support automatic folder creation.\n\n" +
+            "Please use a recent version of Chrome or Edge."
+        );
+        return;
+    }
+
+    try{
+        /*
+           The browser cannot silently access Windows Documents.
+           This opens the native folder picker at Documents.
+           Select Documents once, then the app creates the month folders inside it.
+        */
+        const documentsHandle=await window.showDirectoryPicker({
+            mode:"readwrite",
+            startIn:"documents"
+        });
+
+        let permission=await documentsHandle.queryPermission({mode:"readwrite"});
+        if(permission!=="granted"){
+            permission=await documentsHandle.requestPermission({mode:"readwrite"});
+        }
+        if(permission!=="granted") throw new Error("Folder permission was not granted.");
+
+        const monthHandles={};
+        let filesCreated=0;
+
+        for(const key of dates){
+            const parts=key.split("-");
+            if(parts.length!==3) continue;
+
+            const year=parts[0];
+            const monthNumber=Number(parts[1]);
+            const monthName=new Date(Number(year),monthNumber-1,1)
+                .toLocaleDateString("en-US",{month:"short"});
+            // Example: September 2026 -> "Sept 2026".
+            // One folder is created for each documentation month.
+            const displayMonth = monthName === "Sep" ? "Sept" : monthName;
+            const folderName=`${displayMonth} ${year}`;
+
+            if(!monthHandles[folderName]){
+                monthHandles[folderName]=await documentsHandle.getDirectoryHandle(
+                    folderName,
+                    {create:true}
+                );
+            }
+
+            const calls=documentationData[key];
+            let content="";
+            content+="CALL DOCUMENTATION\n";
+            content+="============================\n\n";
+            content+=`Documentation Date: ${key}\n`;
+            content+=`Total Calls: ${calls.length}\n\n`;
+
+            calls.forEach((call,index)=>{
+                content+=`CALL #${index+1}\n`;
+                content+="----------------------------\n";
+                content+=`NAME: ${call.name || "N/A"}\n`;
+                content+=`REFERENCE: ${call.reference || "N/A"}\n`;
+                content+=`EMAIL: ${call.email || "N/A"}\n`;
+                content+=`PHONE: ${call.phone || "N/A"}\n`;
+                content+=`SUMMARY:\n${call.summary || "N/A"}\n\n`;
+            });
+
+            const filename=`Call_Documentation_${key}.txt`;
+            const fileHandle=await monthHandles[folderName].getFileHandle(
+                filename,
+                {create:true}
+            );
+            const writable=await fileHandle.createWritable();
+            await writable.write(content);
+            await writable.close();
+            filesCreated++;
+        }
+
+        const monthCount=Object.keys(monthHandles).length;
+        alert(
+            `Export completed successfully!\n\n` +
+            `📁 Location: Documents\n` +
+            `📂 Month folders created/updated: ${monthCount}\n` +
+            `📄 TXT files exported: ${filesCreated}`
+        );
+
+    }catch(error){
+        if(error && error.name === "AbortError") return;
+        console.error("Could not export all documentation:",error);
+        alert(
+            "The documentation could not be exported.\n\n" +
+            "Make sure you selected the Windows Documents folder and allowed file access."
+        );
+    }
+}
+
+function importBackup(event){
+    const file=event.target.files && event.target.files[0];
+    if(!file) return;
+
+    const reader=new FileReader();
+    reader.onload=function(){
+        try{
+            const imported=JSON.parse(reader.result);
+            const incoming=imported.documentationData || imported;
+
+            if(!incoming || typeof incoming !== "object" || Array.isArray(incoming)){
+                throw new Error("Invalid backup format");
+            }
+
+            const replace=confirm("Import backup\n\nOK = Replace current documentation\nCancel = Merge backup into current documentation");
+
+            if(replace){
+                documentationData=incoming;
+            }else{
+                Object.keys(incoming).forEach(day=>{
+                    if(!Array.isArray(incoming[day])) return;
+                    if(!Array.isArray(documentationData[day])) documentationData[day]=[];
+                    documentationData[day]=documentationData[day].concat(incoming[day]);
+                });
+            }
+
+            saveDocumentationData();
+            renderCalendar();
+            if(selectedDate) renderCallList();
+            alert("Backup imported successfully.");
+        }catch(error){
+            console.error(error);
+            alert("That file is not a valid Call Documentation backup.");
+        }finally{
+            event.target.value="";
+        }
+    };
+    reader.readAsText(file);
+}
+
+function clearAllData(){
+    if(!Object.keys(documentationData).length){
+        alert("There is no saved documentation to clear.");
+        return;
+    }
+
+    if(!confirm("Clear ALL saved call documentation?\n\nThis cannot be undone. Export a backup first if you want to keep it.")) return;
+
+    documentationData={};
+    saveDocumentationData();
+    renderCalendar();
+    if(selectedDate) renderCallList();
+}
+
+
+
+/* =========================================================
+   GLOBAL SEARCH: NAME / EMAIL / PHONE / REFERENCE
+========================================================= */
+function searchDocumentation(rawQuery) {
+    const results = document.getElementById("searchResults");
+    const query = String(rawQuery || "").trim().toLocaleLowerCase();
+    results.innerHTML = "";
+    if (!query) return;
+
+    const matches = [];
+    Object.keys(documentationData).sort((a, b) => b.localeCompare(a)).forEach(date => {
+        const calls = Array.isArray(documentationData[date]) ? documentationData[date] : [];
+        calls.forEach((call, index) => {
+            const searchable = [call.name, call.email, call.phone, call.reference, call.summary]
+                .map(value => String(value || "").toLocaleLowerCase());
+            if (searchable.some(value => value.includes(query))) {
+                matches.push({ date, index, call });
+            }
+        });
+    });
+
+    if (!matches.length) {
+        results.innerHTML = '<div class="search-empty">No matching calls found. Try another name, email, number, or reference.</div>';
+        return;
+    }
+
+    const count = document.createElement("div");
+    count.className = "search-empty";
+    count.textContent = `${matches.length} matching call${matches.length === 1 ? "" : "s"} found`;
+    results.appendChild(count);
+
+    matches.forEach(({date, index, call}) => {
+        const card = document.createElement("div");
+        card.className = "search-result";
+        const dateObject = new Date(date + "T00:00:00");
+        const displayDate = Number.isNaN(dateObject.getTime()) ? date : formatDate(dateObject);
+        card.innerHTML = `
+          <div class="search-result-top">
+            <div class="search-result-date">📅 ${escapeHTML(displayDate)} · Call #${index + 1}</div>
+            <button type="button" class="search-open" onclick="openSearchResult('${escapeHTML(date)}', ${index})">Open Full Record →</button>
+          </div>
+          <div class="search-result-fields">
+            <div><strong>Name:</strong> ${escapeHTML(call.name) || "—"}</div>
+            <div><strong>Reference:</strong> ${escapeHTML(call.reference) || "—"}</div>
+            <div><strong>Email:</strong> ${escapeHTML(call.email) || "—"}</div>
+            <div><strong>Phone:</strong> ${escapeHTML(call.phone) || "—"}</div>
+          </div>
+          ${call.summary ? `<div class="search-result-summary"><strong>Summary:</strong> ${escapeHTML(call.summary)}</div>` : ""}
+        `;
+        results.appendChild(card);
+    });
+}
+
+function openSearchResult(date, index) {
+    const dateObject = new Date(date + "T00:00:00");
+    if (Number.isNaN(dateObject.getTime())) return;
+    currentDate = new Date(dateObject.getFullYear(), dateObject.getMonth(), 1);
+    renderCalendar();
+    openDate(dateObject);
+    requestAnimationFrame(() => {
+        const items = document.querySelectorAll("#callList .call-item");
+        const target = items[index];
+        if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "center" });
+            target.style.borderColor = "#60a5fa";
+            target.style.boxShadow = "0 0 0 2px rgba(96,165,250,.22)";
+            setTimeout(() => {
+                target.style.borderColor = "";
+                target.style.boxShadow = "";
+            }, 2500);
+        }
+    });
+}
+
+function clearDocumentationSearch() {
+    const input = document.getElementById("globalSearch");
+    input.value = "";
+    document.getElementById("searchResults").innerHTML = "";
+    input.focus();
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+function updateStats() {
+
+    const year =
+        currentDate.getFullYear();
+
+    const month =
+        currentDate.getMonth();
+
+
+    let monthlyTotal = 0;
+
+    let documentedDays = 0;
+
+
+    Object.keys(
+        documentationData
+    ).forEach(
+        key => {
+
+            const date =
+                new Date(
+                    key + "T00:00:00"
+                );
+
+
+            if (
+                date.getFullYear() === year &&
+                date.getMonth() === month
+            ) {
+
+                const count =
+                    documentationData[key].length;
+
+
+                if (count > 0) {
+
+                    monthlyTotal += count;
+
+                    documentedDays++;
+
+                }
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "monthlyCount"
+    ).textContent =
+        monthlyTotal;
+
+
+    document.getElementById(
+        "daysCount"
+    ).textContent =
+        documentedDays;
+
+}
+
+
+/* =========================================================
+   CLOSE WHEN CLICKING OUTSIDE MODAL
+========================================================= */
+
+document
+    .getElementById("modalOverlay")
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === this
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+
+/* =========================================================
+   DASHBOARD PRESENTATION LAYER (preserves existing data/actions)
+========================================================= */
+function buildDashboardLayout() {
+    const shell = document.querySelector('.main-shell');
+    const toolbar = document.querySelector('.data-toolbar');
+    const searchPanel = document.querySelector('.search-panel');
+    const container = document.querySelector('.container');
+    const stats = document.querySelector('.stats');
+    const calendar = document.querySelector('.calendar-card');
+    if (!shell || !toolbar || !searchPanel || !container || !stats || !calendar || document.querySelector('.dashboard-grid')) return;
+
+    // Move the original sections into a modern dashboard without replacing their logic.
+    shell.insertBefore(toolbar, searchPanel);
+    shell.insertBefore(stats, searchPanel);
+    const grid = document.createElement('div');
+    grid.className = 'dashboard-grid';
+    const recent = document.createElement('section');
+    recent.className = 'recent-card';
+    recent.innerHTML = '<div class="panel-heading">Recent Call Logs <small onclick="document.getElementById(\'globalSearch\').focus()">View Search →</small></div><div class="recent-list" id="recentList"></div><button class="quick-action" style="width:100%;margin-top:10px;text-align:center" onclick="document.querySelector(\'.calendar-card\').scrollIntoView({behavior:\'smooth\'})">View Calendar →</button>';
+    const quick = document.createElement('section');
+    quick.className = 'quick-panel';
+    quick.innerHTML = '<div class="panel-heading">⌕ Quick Search</div><div class="quick-search-slot"></div><div class="panel-heading" style="margin-top:16px">ϟ Quick Actions</div><div class="quick-actions"><button class="quick-action" onclick="openToday()"><b>＋ New Call Log</b><small>Add a new documentation</small></button><button class="quick-action" onclick="document.getElementById(\'backupFile\').click()"><b>⇧ Import Backup</b><small>Load your backup file</small></button><button class="quick-action" onclick="exportAllDocumentation()"><b>▣ Export Data</b><small>Download documentation</small></button><button class="quick-action" onclick="exportBackup()"><b>☁ Export Backup</b><small>Save a backup copy</small></button></div>';
+    grid.append(calendar, recent, quick);
+    container.appendChild(grid);
+    shell.insertBefore(container, shell.querySelector('.modal-overlay'));
+    // Keep the global search functionality; place it in the quick-search card.
+    quick.querySelector('.quick-search-slot').appendChild(searchPanel.querySelector('.search-card'));
+    searchPanel.remove();
+    const searchCard = quick.querySelector('.search-card');
+    searchCard.style.padding = '0';
+    searchCard.style.background = 'transparent';
+    searchCard.style.border = '0';
+    searchCard.style.boxShadow = 'none';
+    const desc = searchCard.querySelector('.search-description');
+    if (desc) desc.textContent = 'Search by name, email, phone, or reference.';
+    const heading = searchCard.querySelector('.search-heading');
+    if (heading) heading.style.display = 'none';
+    const input = document.getElementById('globalSearch');
+    if (input) input.placeholder = 'Search name, email, phone or reference…';
+    const clear = searchCard.querySelector('.search-clear');
+    if (clear) { clear.textContent = 'Clear'; clear.style.padding = '9px 12px'; }
+    // Add a fourth summary card using the existing records.
+    const completed = document.createElement('div');
+    completed.className = 'stat-card';
+    completed.innerHTML = '<div class="stat-title">Completed Summaries</div><div class="stat-value" id="completedCount">0</div>';
+    stats.appendChild(completed);
+    // Use the existing stats in a dashboard order and keep counts truthful.
+    const monthly = stats.querySelector('.stat-card:nth-child(1) .stat-title');
+    if (monthly) monthly.textContent = 'Calls This Month';
+    const days = stats.querySelector('.stat-card:nth-child(2) .stat-title');
+    if (days) days.textContent = 'Days Documented';
+    const month = stats.querySelector('.stat-card:nth-child(3) .stat-title');
+    if (month) month.textContent = 'Current Month';
+    const bottom = document.createElement('div');
+    bottom.className = 'bottom-grid analytics-page';
+    bottom.id = 'analyticsPage';
+    bottom.innerHTML = '<div class="analytics-header"><div><h2>Analytics & Insights</h2><p>Understand your documentation activity without crowding the dashboard.</p></div><button class="toolbar-btn" onclick="showDashboardTab()">← Back to Dashboard</button></div><div class="analytics-tools"><div class="analytics-filter-group"><label for="analyticsRange">Date range</label><select id="analyticsRange" onchange="renderDashboardExtras()"><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="6" selected>Last 6 months</option><option value="12">Last 12 months</option></select></div><button class="toolbar-btn" type="button" onclick="exportAnalyticsCSV()">↓ Export Analytics CSV</button></div><div class="analytics-kpis"><div class="analytics-kpi"><small>Total call logs</small><strong id="analyticsTotal">0</strong><span>All saved dates</span></div><div class="analytics-kpi"><small>This month</small><strong id="analyticsMonth">0</strong><span>Current month activity</span></div><div class="analytics-kpi"><small>Summaries completed</small><strong id="analyticsCompleted">0</strong><span id="analyticsCompletionRate">0% of logged calls</span></div><div class="analytics-kpi"><small>Active days</small><strong id="analyticsDays">0</strong><span>Dates with call records</span></div><div class="analytics-kpi"><small>Non-case-created calls</small><strong id="analyticsNonCase">0</strong><span>Reference starts with AU</span></div><div class="analytics-kpi"><small>Case-created calls</small><strong id="analyticsCase">0</strong><span>Reference does not start with AU</span></div></div><div class="analytics-content"><section class="analytics-panel" style="grid-column:1/-1"><h3>Monthly Breakdown</h3><div class="analytics-table-wrap"><table class="analytics-table"><thead><tr><th>Month</th><th>Total calls</th><th>Non-case-created</th><th>Case-created</th><th>Non-case %</th><th>Case %</th></tr></thead><tbody id="analyticsMonthlyRows"></tbody></table></div></section><section class="analytics-panel"><h3>Activity Insights</h3><div id="analyticsInsights" class="analytics-insights"></div></section><section class="analytics-panel"><h3>Monthly call volume · Selected range</h3><div class="month-bars" id="analyticsMonthBars"></div><div class="analytics-note">Counts are calculated from the records saved in this browser.</div></section><section class="analytics-panel"><h3>Recent Activity</h3><div id="activityList"></div></section><section class="analytics-panel" style="grid-column:1/-1"><h3>Call Trends · Total vs. Call Type</h3><div class="trend-legend"><span><i class="legend-total"></i>Total calls</span><span><i class="legend-noncase"></i>Non-case-created (AU…)</span><span><i class="legend-case"></i>Case-created (non-AU)</span></div><div id="analyticsTrendChart" class="trend-chart" role="img" aria-label="Line chart comparing total calls, non-case-created calls, and case-created calls over the last six months"></div><div class="analytics-note">Monthly counts based on each saved call reference. References beginning with AU are non-case-created; all other references are case-created.</div></section></div>';
+    shell.appendChild(bottom);
+    const tracker=document.createElement('section');
+    tracker.id='caseTrackerPage'; tracker.className='case-tracker-page';
+    tracker.innerHTML='<div class="ct-head"><div><h2>Open Case Tracker</h2><p>Track active cases and keep completed cases in the closed bin.</p></div><div class="ct-actions"><button class="ct-btn primary" type="button" onclick="ctNewCase()">＋ Add Case</button></div></div><div class="ct-tabs"><button class="ct-btn primary" id="ctOpenTab" type="button" onclick="ctShowList(\'open\')">Open Cases</button><button class="ct-btn" id="ctClosedTab" type="button" onclick="ctShowList(\'closed\')">Closed Case Bin</button></div><div class="ct-panel"><div id="ctEditor"></div><div class="ct-list" id="ctList"></div></div>';
+    shell.appendChild(tracker);
+    // Add a clear active state on navigation without affecting functionality.
+    document.querySelectorAll('.side-link').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.side-link').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }));
+    renderDashboardExtras();
+}
+function showAnalyticsTab(){
+  document.getElementById('caseTrackerPage')?.classList.remove('active');
+  document.getElementById('arcFormsShell')?.classList.remove('active');document.getElementById('otherFormsShell')?.classList.remove('active');document.querySelector('.main-shell').style.display='';
+  const page=document.getElementById('analyticsPage'); if(!page)return;
+  page.classList.add('analytics-active');
+  const grid=document.querySelector('.dashboard-grid'); if(grid)grid.style.display='none';
+  const stats=document.querySelector('.stats'); if(stats)stats.style.display='none';
+  const header=document.querySelector('.header'); if(header)header.style.display='none';
+  const toolbar=document.querySelector('.data-toolbar'); if(toolbar)toolbar.style.display='none';
+  document.querySelectorAll('.side-link').forEach(b=>b.classList.remove('active'));
+  const nav=document.getElementById('analyticsNav'); if(nav)nav.classList.add('active');
+  renderDashboardExtras(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function showDashboardTab(){
+  document.getElementById('caseTrackerPage')?.classList.remove('active');
+  // Always close every documentation workspace before restoring the dashboard.
+  document.getElementById('arcFormsShell')?.classList.remove('active');
+  document.getElementById('otherFormsShell')?.classList.remove('active');
+  const otherForm=document.getElementById('otherForm'); if(otherForm)otherForm.classList.remove('active');
+  const otherHub=document.getElementById('otherHub'); if(otherHub)otherHub.style.display='grid';
+  const main=document.querySelector('.main-shell'); if(main)main.style.display='';
+  const page=document.getElementById('analyticsPage'); if(page)page.classList.remove('analytics-active');
+  const grid=document.querySelector('.dashboard-grid'); if(grid)grid.style.display='';
+  const stats=document.querySelector('.stats'); if(stats)stats.style.display='';
+  const header=document.querySelector('.header'); if(header)header.style.display='';
+  const toolbar=document.querySelector('.data-toolbar'); if(toolbar)toolbar.style.display='';
+  document.querySelectorAll('.side-link').forEach(b=>b.classList.remove('active'));
+  const nav=document.querySelector('.side-link'); if(nav)nav.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+  window.showDashboardTab = showDashboardTab;
+
+function renderDashboardExtras() {
+    const all = [];
+    Object.keys(documentationData || {}).forEach(date => {
+      (Array.isArray(documentationData[date]) ? documentationData[date] : []).forEach((call,index) => all.push({date,call,index}));
+    });
+    all.sort((a,b) => (b.date + String(b.index).padStart(4,'0')).localeCompare(a.date + String(a.index).padStart(4,'0')));
+    const completed = all.filter(x => String(x.call.summary || '').trim()).length;
+    // AU-prefixed references are non-case-created calls; all other references are case-created calls.
+    const nonCaseCreated = all.filter(x => String(x.call.reference || '').trim().toUpperCase().startsWith('AU')).length;
+    const caseCreated = all.length - nonCaseCreated;
+    const cc = document.getElementById('completedCount');
+    if (cc) cc.textContent = completed;
+    const recent = document.getElementById('recentList');
+    if (recent) {
+      recent.innerHTML = '';
+      all.slice(0,6).forEach(({date,call,index}) => {
+        const el = document.createElement('div');
+        el.className = 'recent-record';
+        const initials = String(call.name || 'CL').trim().split(/\\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase() || 'CL';
+        const dt = new Date(date + 'T00:00:00');
+        const displayDate = Number.isNaN(dt.getTime()) ? date : dt.toLocaleDateString(undefined,{month:'short',day:'numeric'});
+        el.innerHTML = `<div class="record-avatar">${escapeHTML(initials)}</div><div class="record-main"><div class="record-name">${escapeHTML(call.name || 'Unnamed customer')}</div><div class="record-meta">${escapeHTML(call.email || call.phone || call.reference || 'No contact details')}</div><div class="record-meta">Ref: ${escapeHTML(call.reference || '—')}</div></div><div class="record-date">${escapeHTML(displayDate)} ›</div>`;
+        el.addEventListener('click',()=>openSearchResult(date,index));
+        recent.appendChild(el);
+      });
+      if (!all.length) recent.innerHTML = '<div class="empty">Your recent call logs will appear here.</div>';
+    }
+    const activity = document.getElementById('activityList');
+    if (activity) {
+      activity.innerHTML = '';
+      all.slice(0,4).forEach(({date,call}) => {
+        const row = document.createElement('div');
+        row.className = 'activity-row';
+        row.innerHTML = `<div class="activity-dot">✓</div><div style="flex:1">Call documented — <b>${escapeHTML(call.name || 'Unnamed customer')}</b> <span style="color:#6e91bb">(${escapeHTML(call.reference || 'No reference')})</span></div><span>${escapeHTML(date)}</span>`;
+        activity.appendChild(row);
+      });
+      if (!all.length) activity.innerHTML = '<div class="activity-row">Your activity history will appear here as you add call logs.</div>';
+    }
+    const now=new Date(); const rangeEl=document.getElementById('analyticsRange'); const range=rangeEl?String(rangeEl.value||'6'):'6';
+    const cutoff=new Date(now); if(range==='7')cutoff.setDate(cutoff.getDate()-6);else if(range==='30')cutoff.setDate(cutoff.getDate()-29);else {cutoff.setDate(1);cutoff.setMonth(cutoff.getMonth()-(Number(range)||6)+1);}cutoff.setHours(0,0,0,0);
+    const filtered=all.filter(x=>{const d=new Date(String(x.date)+'T00:00:00');return !Number.isNaN(d.getTime())&&d>=cutoff&&d<=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59);});
+    const filteredNonCase=filtered.filter(x=>String(x.call.reference||'').trim().toUpperCase().startsWith('AU')).length,filteredCase=filtered.length-filteredNonCase;
+    const totalEl=document.getElementById('analyticsTotal');if(totalEl)totalEl.textContent=filtered.length;
+    const ym=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');const monthTotal=all.filter(x=>String(x.date).startsWith(ym)).length;const monthEl=document.getElementById('analyticsMonth');if(monthEl)monthEl.textContent=monthTotal;
+    const completedFiltered=filtered.filter(x=>String(x.call.summary||'').trim()).length;const completedEl=document.getElementById('analyticsCompleted');if(completedEl)completedEl.textContent=completedFiltered;const rateEl=document.getElementById('analyticsCompletionRate');if(rateEl)rateEl.textContent=(filtered.length?Math.round(completedFiltered/filtered.length*100):0)+'% of filtered calls';
+    const daysEl=document.getElementById('analyticsDays');if(daysEl)daysEl.textContent=new Set(filtered.map(x=>x.date)).size;const nonCaseEl=document.getElementById('analyticsNonCase');if(nonCaseEl)nonCaseEl.textContent=filteredNonCase;const caseEl=document.getElementById('analyticsCase');if(caseEl)caseEl.textContent=filteredCase;
+    const monthMap={};filtered.forEach(x=>{const key=String(x.date).slice(0,7);if(!/^\d{4}-\d{2}$/.test(key))return;if(!monthMap[key])monthMap[key]={total:0,nonCase:0,caseCreated:0};monthMap[key].total++;if(String(x.call.reference||'').trim().toUpperCase().startsWith('AU'))monthMap[key].nonCase++;else monthMap[key].caseCreated++;});
+    const monthlySeries=Object.keys(monthMap).sort().map(key=>{const d=new Date(key+'-01T00:00:00');return {key,label:d.toLocaleDateString(undefined,{month:'short',year:'2-digit'}),...monthMap[key]};});
+    const rows=document.getElementById('analyticsMonthlyRows');if(rows){rows.innerHTML='';monthlySeries.slice().reverse().forEach(v=>{const tr=document.createElement('tr'),pct=n=>v.total?Math.round(n/v.total*100)+'%':'0%';tr.innerHTML='<td>'+v.label+'</td><td>'+v.total+'</td><td>'+v.nonCase+'</td><td>'+v.caseCreated+'</td><td>'+pct(v.nonCase)+'</td><td>'+pct(v.caseCreated)+'</td>';rows.appendChild(tr);});if(!monthlySeries.length)rows.innerHTML='<tr><td colspan="6">No calls in this date range.</td></tr>';}
+    const insights=document.getElementById('analyticsInsights');if(insights){const dayCounts={};filtered.forEach(x=>dayCounts[x.date]=(dayCounts[x.date]||0)+1);const busiest=Object.entries(dayCounts).sort((a,b)=>b[1]-a[1])[0];const weekdayCounts={};filtered.forEach(x=>{const k=new Date(x.date+'T00:00:00').toLocaleDateString(undefined,{weekday:'long'});weekdayCounts[k]=(weekdayCounts[k]||0)+1;});const weekday=Object.entries(weekdayCounts).sort((a,b)=>b[1]-a[1])[0];const last=monthlySeries.at(-1),prev=monthlySeries.at(-2);let change='Not enough monthly data';if(last&&prev){const diff=last.total-prev.total,pct=prev.total?Math.round(Math.abs(diff)/prev.total*100):(last.total?100:0);change=(diff>0?'▲ ':diff<0?'▼ ':'— ')+Math.abs(diff)+' calls ('+(diff>0?'+':diff<0?'-':'')+pct+'%) vs '+prev.label;}insights.innerHTML='<div class="insight-item"><small>Busiest date</small><strong>'+(busiest?busiest[0]:'—')+'</strong><span>'+(busiest?busiest[1]+' calls':'No records in this range')+'</span></div><div class="insight-item"><small>Busiest weekday</small><strong>'+(weekday?weekday[0]:'—')+'</strong><span>'+(weekday?weekday[1]+' calls':'No records in this range')+'</span></div><div class="insight-item"><small>Month-to-month change</small><strong>'+change+'</strong><span>Compared with the previous month containing activity</span></div>';}
+    const bars=document.getElementById('analyticsMonthBars'); if(bars){bars.innerHTML='';const max=Math.max(1,...monthlySeries.map(v=>v.total));monthlySeries.forEach(v=>{const col=document.createElement('div');col.className='month-bar-col';col.innerHTML='<span class="month-bar-value">'+v.total+'</span><div class="month-bar" style="height:'+Math.max(3,v.total/max*130)+'px"></div><span class="month-bar-label">'+v.label+'</span>';bars.appendChild(col);});}
+    const trend=document.getElementById('analyticsTrendChart');if(trend){const W=760,H=250,L=42,R=18,T=18,B=34,plotW=W-L-R,plotH=H-T-B;const maxY=Math.max(1,...monthlySeries.map(v=>v.total));const yMax=Math.max(4,Math.ceil(maxY/4)*4);const x=i=>L+(monthlySeries.length<2?plotW/2:i*plotW/(monthlySeries.length-1));const y=v=>T+plotH-(v/yMax)*plotH;const makeLine=(key,color)=>{const pts=monthlySeries.map((v,i)=>x(i)+','+y(v[key])).join(' ');return '<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+monthlySeries.map((v,i)=>'<circle cx="'+x(i)+'" cy="'+y(v[key])+'" r="4" fill="'+color+'"><title>'+v.label+': '+v[key]+'</title></circle>').join('');};let grid='';for(let i=0;i<=4;i++){const val=yMax*i/4,gy=y(val);grid+='<line x1="'+L+'" y1="'+gy+'" x2="'+(W-R)+'" y2="'+gy+'" stroke="rgba(151,180,220,.16)" stroke-dasharray="4 5"/><text x="'+(L-10)+'" y="'+(gy+4)+'" fill="#8fa8c8" font-size="11" text-anchor="end">'+Math.round(val)+'</text>';}const labels=monthlySeries.map((v,i)=>'<text x="'+x(i)+'" y="'+(H-10)+'" fill="#8fa8c8" font-size="11" text-anchor="middle">'+v.label+'</text>').join('');trend.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+grid+makeLine('total','#e7f3ff')+makeLine('nonCase','#4ee5ff')+makeLine('caseCreated','#a78bfa')+labels+'</svg>'; }
+}
+
+
+function exportAnalyticsCSV(){
+ const rows=[['Date','Reference','Call Type','Customer Name','Email','Phone','Summary']];
+ Object.keys(documentationData||{}).sort().forEach(date=>(Array.isArray(documentationData[date])?documentationData[date]:[]).forEach(call=>{const ref=String(call.reference||'').trim();rows.push([date,ref,ref.toUpperCase().startsWith('AU')?'Non-case-created':'Case-created',call.name||'',call.email||'',call.phone||'',call.summary||'']);}));
+ const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""').replace(/\r?\n/g,' ')+'"').join(',')).join('\r\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='call-analytics-'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+
+
+/* RTB / Mail In forms: isolated storage so existing call logs remain untouched. */
+const ARC_STORAGE_KEY='acerARCFormsDraft_v1';
+const arcSteps=['problem','solution','contact'];let arcCurrentStep='problem';
+function showARCForms(){showOtherForms();openRTBFromHub();}
+function openRTBFromHub(){document.getElementById('otherFormsShell').classList.remove('active');document.getElementById('arcFormsShell').classList.add('active');document.querySelector('.main-shell').style.display='none';document.querySelectorAll('.side-link').forEach(x=>x.classList.remove('active'));document.getElementById('otherFormsNav')?.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function hideARCForms(){document.getElementById('arcFormsShell').classList.remove('active');showOtherForms();}
+function arcShowStep(step){arcCurrentStep=step;const saveBtn=document.getElementById('arcSaveLog');if(saveBtn)saveBtn.hidden=step!=='contact';arcSteps.forEach(k=>{document.getElementById('arc'+k[0].toUpperCase()+k.slice(1)).hidden=k!==step;document.querySelector('[data-arc-step="'+k+'"]').classList.toggle('active',k===step);});document.getElementById('arcPrev').disabled=step==='problem';document.getElementById('arcNext').disabled=step==='contact';}
+function arcNextStep(){arcShowStep(arcSteps[Math.min(2,arcSteps.indexOf(arcCurrentStep)+1)]);}
+function arcPrevStep(){arcShowStep(arcSteps[Math.max(0,arcSteps.indexOf(arcCurrentStep)-1)]);}
+function arcFields(){return [...document.querySelectorAll('#arcFormsShell input[id],#arcFormsShell textarea[id],#arcFormsShell select[id]')];}
+function arcSave(){const data={};arcFields().forEach(el=>data[el.id]=el.type==='checkbox'?el.checked:el.value);try{localStorage.setItem(ARC_STORAGE_KEY,JSON.stringify(data));}catch(e){} }
+function arcLoad(){try{const data=JSON.parse(localStorage.getItem(ARC_STORAGE_KEY)||'{}');arcFields().forEach(el=>{if(!(el.id in data))return;if(el.type==='checkbox')el.checked=!!data[el.id];else el.value=data[el.id];});}catch(e){}}
+function arcClearCurrent(){const ids={problem:['arcFault','arcWhen','arcReason','arcReplicate','arcChanges'],solution:['arcCustomerTS','arcNccTS','arcParts'],contact:['arcCaller','arcPhone','arcEmail','arcSummary','arcDeescalation','arcPriority','arcDiscount','arcEscReason','arcConsult','arcTransfer','arcTicket','arcRepair','arcPickupTime','arcAddress','arcDataLoss','arcPhotos','arcAccessories','arcPop','arcSurvey']}[arcCurrentStep];ids.forEach(id=>{const el=document.getElementById(id);if(el.type==='checkbox')el.checked=false;else el.value='';});arcSave();document.getElementById('arcStatus').textContent='Current section cleared.';}
+function arcVal(id){const el=document.getElementById(id);return el?(el.type==='checkbox'?(el.checked?'Yes':'No'):el.value.trim()):'';}
+function arcGenerate(){
+ const defs={
+  problem:[['Fault / Issue','arcFault'],['When did the issue occur?','arcWhen'],['Call Reason','arcReason'],['How can the issue be replicated?','arcReplicate'],['Any recent HW/SW modification/change?','arcChanges']],
+  solution:[['Customer / Retailer troubleshooting done before calling Acer','arcCustomerTS'],['NCC T/S done with the customer','arcNccTS'],['Suspected Parts?','arcParts']],
+  contact:[['Caller Name','arcCaller'],['Number','arcPhone'],['Email','arcEmail'],['Call Summary','arcSummary'],['De-escalation','arcDeescalation'],['Priority Repair','arcPriority'],['Discounted Repair Fee (5%)','arcDiscount'],['Reason for Escalations','arcEscReason'],['Resolution Consultation done with','arcConsult'],['Transferred to','arcTransfer'],['Ticket Type','arcTicket'],['Repair Type','arcRepair'],['Preferred Courier Pick-up Time and Date','arcPickupTime'],['Preferred Pick Up and Return Physical Address','arcAddress'],['Repair Notice/Data Loss','arcDataLoss'],['Take Photos of all side prior shipping','arcPhotos'],['Include Accessories','arcAccessories'],['Advised to send POP/VOF/POF to pop.aca@acer.com','arcPop'],['Survey Offered','arcSurvey']]
+ };
+ const headings={problem:'Problem Field Documentation:',solution:'Solutions Field Documentation:',contact:'Contact Log Documentation:'};
+ const lines=[headings[arcCurrentStep]];
+ if(arcCurrentStep==='contact'){
+  const v=id=>arcVal(id)||'N/A';
+  lines.push('Caller Name: '+v('arcCaller'),'Number: '+v('arcPhone'),'Email: '+v('arcEmail'),'==','Call Summary: '+v('arcSummary'),'==','De-escalation: '+v('arcDeescalation'),'==','* Priority Repair: '+v('arcPriority'),'* Discounted Repair Fee (5%): '+v('arcDiscount'),'* Reason for Escalations: '+v('arcEscReason'),'* Resolution Consultation done with: '+v('arcConsult'),'* Transferred to: '+v('arcTransfer'),'==','* Ticket Type: '+v('arcTicket'),'* Repair Type: '+v('arcRepair'),'* Preferred Courier Pick-up Time and Date: '+v('arcPickupTime'),'* Preferred Pick Up and Return Physical Address: '+v('arcAddress'),'==','Disclosure:','* Repair Notice/Data Loss: '+v('arcDataLoss'),'* Take Photos of all side prior shipping: '+v('arcPhotos'),'* Include Accessories: '+v('arcAccessories'),'* Advised to send POP/VOF/POF to pop.aca@acer.com: '+v('arcPop'),'==','• Survey Offered: '+v('arcSurvey'));
+ }else{
+  defs[arcCurrentStep].forEach(([label,id])=>lines.push(label+': '+(arcVal(id)||'N/A')));
+ }
+ document.getElementById('arcOutput').textContent=lines.join('\n');
+ document.getElementById('arcStatus').textContent='Documentation generated.';arcSave();
+}
+async function arcCopy(){const text=document.getElementById('arcOutput').textContent;if(!text||text==='Your generated documentation will appear here.')return;try{await navigator.clipboard.writeText(text);document.getElementById('arcStatus').textContent='Documentation copied to clipboard.';}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();document.getElementById('arcStatus').textContent='Documentation copied to clipboard.';}}
+arcFields().forEach(el=>el.addEventListener('input',arcSave));arcFields().forEach(el=>el.addEventListener('change',arcSave));arcLoad();arcShowStep('problem');
+
+
+
+/* Other frontline forms - field names, section order, helper text and controls recreated from the supplied recordings. */
+const OTHER_KEY='acerFrontlineOtherForms_v2';let otherType='trouble',otherStageIndex=0;
+const otherSchemas={
+ trouble:{title:'🔎 Troubleshooting Contact Log (No Repair Case)',groups:[
+  ['Caller Information','green',[
+   ['Caller Name','text','Full name',''],['Email','email','Email address',''],['Number','tel','Phone number','']]],
+  ['Fault and Troubleshooting Details','blue',[
+   ['Fault/Issue','textarea','Describe the fault or issue in detail','full'],
+   ['When did the issue occur?','text','Date, time, frequency','full'],
+   ['How can the issue be replicated?','textarea','Step-by-step replication instructions','full'],
+   ['Any recent HW/SW modification/change?','textarea','','full'],
+   ['Customer/Retailer T/S done before calling Acer','textarea','Action > Result (e.g. Battery Reset > Press and hold Pin Hole Reset Button 10-15 seconds = Failed, issue still persisted)','full'],
+   ['NCC Troubleshooting','textarea','Action > Result (e.g. Battery Reset > Press and hold Pin Hole Reset Button 10-15 seconds = Failed, issue still persisted)','full']]],
+  ['Resolution','yellow',[
+   ['Was the issue Resolved?','textarea','Yes / No - specify resolution provided','full','(Yes or If No indicate the resolution provided (e.g. referred to Microsoft, pending troubleshooting))']]],
+  ['Additional Information','pink',[
+   ['Advised if issue still persists after pending troubleshooting call us back to prepare POP/POF/VOF to be sent to pop.aca@acer.com','select',['Select option','Y','N'],'full'],
+   ['Survey Offered','select',['Select option','Y','N'],'full']]]
+ ]},
+ complaint:{title:'🚨 Complaint Case Documentation Forms',stages:[
+  {title:'🚨 Complaint Problem Field Documentation',outputTitle:'Problem Field Documentation:',groups:[['Problem Field Documentation','pink',[
+   ['Reason for Transfer/Concern','textarea','Describe the reason for transfer or customer concern','full'],
+   ['Reported Fault of Device','textarea','Describe the reported device fault in detail','full'],
+   ['Customer/Retailer T/S done before calling Acer','textarea','Example: Action > Result (e.g. Battery Reset > Press and hold Pin Hole Reset Button 10-15 seconds = Failed, issue still persisted)','full'],
+   ['NCC T/S done with the customer','textarea','Example: Action > Result (e.g. Battery Reset > Press and hold Pin Hole Reset Button 10-15 seconds = Failed, issue still persisted)','full'],
+   ['Previous Repair Case IDs','text','','full']]]]},
+  {title:'✅ Complaint Solutions Documentation',outputTitle:'Solutions Field Documentation:',groups:[['Solutions Field Documentation','green',[
+   ['Solutions Offered','textarea','Describe the solutions offered to the customer','full'],
+   ['De-escalations offered','textarea','','full'],
+   ['Resolution Consultation done with','text','Case Manager Name or NA','full'],
+   ['Action taken','textarea','Describe the actions taken to resolve the complaint','full'],
+   ['Customer Details: Name','text','','full'],
+   ['Contact Numbers','tel','','full'],
+   ['Possible Callback Details','textarea','','full'],
+   ['Best date/Time for contact customer','text','','full']]]]},
+  {title:'☎️ Complaint Contact Log Documentation',outputTitle:'Contact Log Documentation:',groups:[
+   ['Caller Information','green',[
+    ['Caller Name','text','Full name'],['Email','email','Email address'],['Number','tel','Phone number']]],
+   ['Call Summary','blue',[
+    ['Call Summary','textarea','(Call interaction excluding detail on the problem/solution field)','full']]],
+   ['Contact & Escalation','yellow',[
+    ['De-escalation','textarea','','full'],
+    ['Priority Repair','select',['Select option','Y','N'],''],
+    ['Discounted Repair Fee (5%)','select',['Select option','Y','N','N/A'],''],
+    ['Reason for Escalations','select',['Select reason'],''],
+    ['Resolution Consultation done with','text','Case Manager Name/NA'],
+    ['Transferred to','text','Case Manager Name/NA']]],
+   ['Ticket & Repair Information','green',[
+    ['Ticket Type','select',['Select type','Pickup','Complaint','Component swap'],''],
+    ['Repair Type','select',['Select type','RTB','Mail in','PRR','Ship direct','Complaint'],''],
+    ['Preferred Courier Pick-up Time and Date','text','Example: 9am-5pm only AU Only','full'],
+    ['Preferred Pick Up and Return Physical Address','textarea','Physical address','full','(Only applies if address on CSS was changed, erase line if NA)']]],
+   ['Disclosure','pink',[
+    ['Repair Notice/Data Loss','select',['Select option','Y','N'],''],
+    ['Take Photos of all side prior shipping','select',['Select option','Y','N'],''],
+    ['Include Accessories','text','Yes, indicate accessories / No','full'],
+    ['Advised to send POP/VOF/POF to pop.aca@acer.com','text','Enter advice provided to the customer','full'],
+    ['Survey Offered','select',['Select option','Y','N'],'']]]
+  ]}
+ ]},
+ inquiry:{title:'💬 General Enquiry Contact Log',groups:[
+  ['Caller Information','blue',[
+   ['Caller Name','text','Full name'],['Email','email','Email address'],['Number','tel','Phone number']]],
+  ['Call Summary','yellow',[
+   ['Call Summary','textarea','(Call interaction excluding detail on the problem/solution field)','full']]],
+  ['Case Information','blue',[
+   ['Have you made any changes on the case?','textarea','','full']]]
+ ]}
+};
+function showOtherForms(){document.getElementById('arcFormsShell').classList.remove('active');document.getElementById('otherForm').classList.remove('active');document.getElementById('otherHub').style.display='grid';document.querySelector('.main-shell').style.display='none';document.getElementById('otherFormsShell').classList.add('active');document.querySelectorAll('.side-link').forEach(x=>x.classList.remove('active'));document.getElementById('otherFormsNav')?.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function hideOtherForms(){document.getElementById('otherFormsShell').classList.remove('active');document.getElementById('arcFormsShell').classList.remove('active');document.querySelector('.main-shell').style.display='';showDashboardTab();}
+function openOtherForm(type){otherType=type;otherStageIndex=0;const schema=otherSchemas[type];document.getElementById('otherHub').style.display='none';document.getElementById('otherForm').classList.add('active');document.getElementById('otherFormTitle').textContent=schema.title;renderOtherForm();document.getElementById('otherOutput').textContent='Your generated documentation will appear here.';window.scrollTo({top:0,behavior:'smooth'});}
+function otherGroupsForCurrent(){const schema=otherSchemas[otherType];return schema.stages?schema.stages[otherStageIndex].groups:schema.groups;}
+function renderOtherForm(){const schema=otherSchemas[otherType],root=document.getElementById('otherFields'),nav=document.getElementById('otherStageNav');root.innerHTML='';nav.innerHTML='';const staged=!!schema.stages;nav.hidden=!staged;
+ if(staged){schema.stages.forEach((st,i)=>{const b=document.createElement('button');b.type='button';const tabContent=[['🚨','Problem Field Documentation','Document the complaint, reported fault, and issue details'],['✅','Solutions Field Documentation','Record solutions offered, actions taken, and customer details'],['☎️','Contact Log Documentation','Log caller information, contact summary, and follow-up details']][i];b.innerHTML='<span>'+tabContent[0]+'</span><strong>'+tabContent[1]+'</strong><span>'+tabContent[2]+'</span>';b.classList.toggle('active',i===otherStageIndex);b.onclick=()=>{saveOtherForm();otherStageIndex=i;renderOtherForm();};nav.appendChild(b);});}
+ const groups=otherGroupsForCurrent();let fieldIndex=0;
+ groups.forEach(([group,color,fields],gi)=>{const box=document.createElement('section');box.className='other-group '+color;const heading=document.createElement('div');heading.className='other-group-title';heading.textContent=group;box.appendChild(heading);const grid=document.createElement('div');grid.className='other-group-fields'+(group==='Caller Information'?' three-col':'');fields.forEach(([label,kind,extra,span,help])=>{const wrap=document.createElement('div');wrap.className='arc-field'+(span==='full'||kind==='textarea'?' full':'');const id='other_'+otherType+'_'+(fieldIndex++);const lab=document.createElement('label');lab.htmlFor=id;lab.textContent=label;wrap.appendChild(lab);if(help){const hint=document.createElement('small');hint.textContent=help;hint.style.cssText='display:block;color:#6b7280;font-size:12px;margin:3px 0 7px';wrap.appendChild(hint);}let el;if(kind==='textarea'){el=document.createElement('textarea');el.placeholder=extra||'';}else if(kind==='select'){el=document.createElement('select');(extra||[]).forEach((v,i)=>{const o=document.createElement('option');o.value=i===0?'':v;o.textContent=v;el.appendChild(o);});}else{el=document.createElement('input');el.type=kind;el.placeholder=extra||'';}el.id=id;el.dataset.label=label;wrap.appendChild(el);grid.appendChild(wrap);});box.appendChild(grid);root.appendChild(box);});
+ loadOtherForm();root.querySelectorAll('input,textarea,select').forEach(el=>{el.addEventListener('input',saveOtherForm);el.addEventListener('change',saveOtherForm);});
+ const prev=document.getElementById('otherPrev'),next=document.getElementById('otherNext'),gen=document.querySelector('#otherActions button[onclick="generateOtherDoc()"]');if(staged){prev.hidden=otherStageIndex===0;next.hidden=otherStageIndex===schema.stages.length-1;document.getElementById('otherSaveLog').hidden=otherStageIndex!==schema.stages.length-1;prev.textContent=otherStageIndex===1?'← Previous: Problem Documentation':'← Previous: Solutions Documentation';next.textContent=otherStageIndex===0?'Next: Solutions Documentation →':'Next: Contact Log Documentation →';gen.textContent='🚀 Generate '+(otherStageIndex===0?'Complaint Problem':otherStageIndex===1?'Complaint Solutions':'Complaint Contact Log')+' Documentation';}else{prev.hidden=true;next.hidden=true;document.getElementById('otherSaveLog').hidden=false;gen.textContent=otherType==='trouble'?'🚀 Generate Troubleshooting Documentation':'🚀 Generate General Enquiry Documentation';}
+}
+function backOtherHub(){saveOtherForm();document.getElementById('otherForm').classList.remove('active');document.getElementById('otherHub').style.display='grid';}
+function otherNextStage(){const schema=otherSchemas[otherType];if(!schema.stages)return;saveOtherForm();otherStageIndex=Math.min(schema.stages.length-1,otherStageIndex+1);renderOtherForm();window.scrollTo({top:0,behavior:'smooth'});}
+function otherPrevStage(){if(otherStageIndex<=0)return;saveOtherForm();otherStageIndex--;renderOtherForm();window.scrollTo({top:0,behavior:'smooth'});}
+function otherStorage(){try{return JSON.parse(localStorage.getItem(OTHER_KEY)||'{}')}catch(e){return {}}}
+function saveOtherForm(){const data=otherStorage();if(!data[otherType])data[otherType]={};document.querySelectorAll('#otherFields input,#otherFields textarea,#otherFields select').forEach(el=>data[otherType][el.dataset.label]=el.value);try{localStorage.setItem(OTHER_KEY,JSON.stringify(data))}catch(e){}}
+function loadOtherForm(){const data=otherStorage()[otherType]||{};document.querySelectorAll('#otherFields input,#otherFields textarea,#otherFields select').forEach(el=>el.value=data[el.dataset.label]||'');}
+function clearOtherForm(){if(!confirm('Clear the fields in this form section?'))return;document.querySelectorAll('#otherFields input,#otherFields textarea,#otherFields select').forEach(el=>el.value='');saveOtherForm();document.getElementById('otherOutput').textContent='Your generated documentation will appear here.';document.getElementById('otherStatus').textContent='Current form section cleared.';}
+function clearOtherOutput(){document.getElementById('otherOutput').textContent='Your generated documentation will appear here.';document.getElementById('otherStatus').textContent='Generated documentation cleared.';}
+function generateOtherDoc(){
+ saveOtherForm();const schema=otherSchemas[otherType],data=otherStorage()[otherType]||{};
+ const titleFor=st=>st.outputTitle||st.title.replace(/^\S+\s/,'')+':';
+ const stages=schema.stages?[schema.stages[otherStageIndex]]:[{outputTitle:otherType==='trouble'?'Troubleshooting Contact Log Documentation:':'General Inquiry Contact Log Documentation:',groups:schema.groups}];
+ const st=stages[0],lines=[titleFor(st)];
+ st.groups.forEach(([group,color,fields],gi)=>{
+  const sameAsTitle=schema.stages && String(group).replace(/:$/,'').trim().toLowerCase()===String(titleFor(st)).replace(/:$/,'').trim().toLowerCase();
+  if(lines.length>1)lines.push('==');
+  if(!sameAsTitle && group==='Caller Information'){
+   lines.push('Caller Information:');fields.forEach(([label])=>lines.push(label+': '+((data[label]||'').trim()||'N/A')));
+  }else if(!sameAsTitle && group==='Call Summary'){
+   lines.push('Call Summary:');fields.forEach(([label])=>lines.push(label+': '+((data[label]||'').trim()||'N/A')));
+  }else if(!sameAsTitle && group==='Case Information'){
+   lines.push('Case Information:');fields.forEach(([label])=>lines.push(label+': '+((data[label]||'').trim()||'N/A')));
+  }else if(!sameAsTitle && group==='Fault and Troubleshooting Details'){
+   lines.push('Fault and Troubleshooting Details:');fields.forEach(([label])=>lines.push(label+': '+((data[label]||'').trim()||'N/A')));
+  }else if(!sameAsTitle && group==='Resolution'){
+   lines.push('Resolution:');fields.forEach(([label])=>lines.push(label+': '+((data[label]||'').trim()||'N/A')));
+  }else{
+   if(!sameAsTitle)lines.push(group+':');
+   fields.forEach(([label])=>lines.push(label+': '+((data[label]||'').trim()||'N/A')));
+  }
+ });
+ const out=lines.join('\n');document.getElementById('otherOutput').textContent=out;document.getElementById('otherStatus').textContent='Documentation generated.';
+}
+async function copyOtherDoc(){const text=document.getElementById('otherOutput').textContent;if(!text||text==='Your generated documentation will appear here.')return;try{await navigator.clipboard.writeText(text)}catch(e){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}document.getElementById('otherStatus').textContent='Documentation copied to clipboard.';}
+
+
+/* =========================================================
+   SAVE FORM DOCUMENTATION DIRECTLY INTO CONTACT LOGS
+========================================================= */
+let pendingDocumentationSource = null;
+function openSaveLogModal(source){
+  pendingDocumentationSource=source;
+  const modal=document.getElementById('saveLogModal');
+  const meta=document.getElementById('saveLogMeta');
+  let name='',email='',phone='';
+  if(source==='arc'){
+    arcSave(); name=arcVal('arcCaller'); email=arcVal('arcEmail'); phone=arcVal('arcPhone');
+  }else{
+    saveOtherForm(); const d=otherStorage()[otherType]||{}; name=d['Caller Name']||''; email=d['Email']||''; phone=d['Number']||d['Caller Number']||'';
+  }
+  document.getElementById('saveLogReference').value='';
+  document.getElementById('saveLogError').textContent='';
+  meta.textContent=(name?'Caller: '+name+' · ':'')+(email||phone);
+  modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+  setTimeout(()=>document.getElementById('saveLogReference').focus(),30);
+}
+function closeSaveLogModal(){const m=document.getElementById('saveLogModal');m.classList.remove('open');m.setAttribute('aria-hidden','true');pendingDocumentationSource=null;}
+function arcAllDocumentation(){
+ const defs={problem:[['Fault / Issue','arcFault'],['When did the issue occur?','arcWhen'],['Call Reason','arcReason'],['How can the issue be replicated?','arcReplicate'],['Any recent HW/SW modification/change?','arcChanges']],solution:[['Customer / Retailer troubleshooting done before calling Acer','arcCustomerTS'],['NCC T/S done with the customer','arcNccTS'],['Suspected Parts?','arcParts']],contact:[['Caller Name','arcCaller'],['Number','arcPhone'],['Email','arcEmail'],['Call Summary','arcSummary'],['De-escalation','arcDeescalation'],['Priority Repair','arcPriority'],['Discounted Repair Fee (5%)','arcDiscount'],['Reason for Escalations','arcEscReason'],['Resolution Consultation done with','arcConsult'],['Transferred to','arcTransfer'],['Ticket Type','arcTicket'],['Repair Type','arcRepair'],['Preferred Courier Pick-up Time and Date','arcPickupTime'],['Preferred Pick Up and Return Physical Address','arcAddress'],['Repair Notice/Data Loss','arcDataLoss'],['Take Photos of all side prior shipping','arcPhotos'],['Include Accessories','arcAccessories'],['Advised to send POP/VOF/POF to pop.aca@acer.com','arcPop'],['Survey Offered','arcSurvey']]};
+ const heads={problem:'Problem Field Documentation:',solution:'Solutions Field Documentation:',contact:'Contact Log Documentation:'};
+ return ['problem','solution','contact'].map((k,i)=>[heads[k],...defs[k].map(([label,id])=>label+': '+(arcVal(id)||'N/A'))].join('\n')).join('\n==\n');
+}
+function otherAllDocumentation(){
+ const schema=otherSchemas[otherType],data=otherStorage()[otherType]||{};
+ const stages=schema.stages?schema.stages:[{outputTitle:otherType==='trouble'?'Troubleshooting Contact Log Documentation:':'General Inquiry Contact Log Documentation:',groups:schema.groups}];
+ return stages.map(st=>{
+  const title=st.outputTitle||st.title.replace(/^\S+\s/,'')+':';const lines=[title];
+  st.groups.forEach(([group,color,fields])=>{
+   const sameAsTitle=String(group).replace(/:$/,'').trim().toLowerCase()===String(title).replace(/:$/,'').trim().toLowerCase();
+   lines.push('==');
+   if(!sameAsTitle)lines.push(group+':');
+   fields.forEach(([label])=>lines.push(label+': '+((data[label]||'').trim()||'N/A')));
+  });
+  return lines.join('\n');
+ }).join('\n==\n');
+}
+function confirmSaveDocumentationLog(){
+ const ref=document.getElementById('saveLogReference').value.trim();
+ if(!ref){document.getElementById('saveLogError').textContent='Reference number is required before saving.';document.getElementById('saveLogReference').focus();return;}
+ let name='',email='',phone='',summary='',sourceType='';
+ if(pendingDocumentationSource==='arc'){
+   arcSave();name=arcVal('arcCaller');email=arcVal('arcEmail');phone=arcVal('arcPhone');summary=arcAllDocumentation();sourceType='RTB / Mail In / PRR';
+ }else{
+   saveOtherForm();const d=otherStorage()[otherType]||{};name=d['Caller Name']||'';email=d['Email']||'';phone=d['Number']||d['Caller Number']||'';summary=otherAllDocumentation();sourceType=otherSchemas[otherType].title;
+ }
+ // Always save new Other Documentation logs under today's date.
+ const date = dateKey(new Date());
+
+ if (!documentationData[date]) {
+     documentationData[date] = [];
+ }
+ const duplicate=Object.values(documentationData).flat().some(c=>String(c.reference||'').trim().toLowerCase()===ref.toLowerCase());
+ if(duplicate&&!confirm('A call with this reference number already exists. Save another entry anyway?'))return;
+ documentationData[date].push({name,reference:ref,email,phone,summary,source:sourceType,createdAt:new Date().toISOString()});
+ saveDocumentationData();if(typeof renderCallList==='function')renderCallList();if(typeof renderCalendar==='function')renderCalendar();
+ closeSaveLogModal();
+ alert('Documentation saved to Contact Logs with reference '+ref+'.');
+}
+
+/* =========================================================
+   OPEN CASE TRACKER - separate local storage, independent of call logs
+========================================================= */
+const CT_KEY='acerOpenCaseTracker_v1';
+let ctMode='open';
+function ctRead(){try{const data=JSON.parse(localStorage.getItem(CT_KEY)||'[]');return Array.isArray(data)?data:[]}catch(e){return []}}
+function ctWrite(rows){localStorage.setItem(CT_KEY,JSON.stringify(rows));ctRender()}
+function showCaseTracker(){
+  document.getElementById('arcFormsShell')?.classList.remove('active');
+  document.getElementById('otherFormsShell')?.classList.remove('active');
+  const otherForm=document.getElementById('otherForm');if(otherForm)otherForm.classList.remove('active');
+  const otherHub=document.getElementById('otherHub');if(otherHub)otherHub.style.display='grid';
+  const main=document.querySelector('.main-shell');if(main)main.style.display='';
+  ['.dashboard-grid','.stats','.header','.data-toolbar'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.style.display='none'});
+  document.getElementById('analyticsPage')?.classList.remove('analytics-active');
+  document.getElementById('caseTrackerPage')?.classList.add('active');
+  document.querySelectorAll('.side-link').forEach(b=>b.classList.remove('active'));
+  document.getElementById('caseTrackerNav')?.classList.add('active');
+  ctShowList('open');window.scrollTo({top:0,behavior:'smooth'});
+}
+function ctNewCase(id){
+  const row=id?ctRead().find(x=>x.id===id):null;const ed=document.getElementById('ctEditor');if(!ed)return;
+  ed.innerHTML=`<h3 style="margin:0 0 12px;color:#eaf5ff">${row?'View / Edit Case':'Add New Case'}</h3><form class="ct-form" onsubmit="ctSave(event,'${row?row.id:''}')"><label>Case ID *<input id="ctCaseId" required value="${row?escapeHTML(row.caseId):''}"></label><label>Customer Name<input id="ctCustomer" value="${row?escapeHTML(row.customer||''):''}"></label><label>Date Opened<input id="ctDate" type="date" value="${row?escapeHTML(row.date||''):new Date().toISOString().slice(0,10)}"></label><label>Assigned To<input id="ctAssigned" value="${row?escapeHTML(row.assigned||''):''}"></label><label class="wide">Progress / Notes<textarea id="ctNotes" rows="3">${row?escapeHTML(row.notes||''):''}</textarea></label><div class="wide ct-actions"><button class="ct-btn primary" type="submit">Save Case</button><button class="ct-btn" type="button" onclick="document.getElementById('ctEditor').innerHTML='';">Cancel</button></div></form>`;
+}
+function ctSave(e,id){
+  e.preventDefault();const rows=ctRead();const data={id:id||('ct_'+Date.now()),caseId:document.getElementById('ctCaseId').value.trim(),customer:document.getElementById('ctCustomer').value.trim(),date:document.getElementById('ctDate').value,assigned:document.getElementById('ctAssigned').value.trim(),notes:document.getElementById('ctNotes').value.trim(),updatedAt:new Date().toISOString()};
+  if(!data.caseId)return;const i=rows.findIndex(x=>x.id===id);if(i>=0)rows[i]={...rows[i],...data};else rows.unshift({...data,closed:false});document.getElementById('ctEditor').innerHTML='';ctWrite(rows);
+}
+function ctShowList(mode){ctMode=mode;const open=document.getElementById('ctOpenTab'),closed=document.getElementById('ctClosedTab');if(open)open.classList.toggle('primary',mode==='open');if(closed)closed.classList.toggle('primary',mode==='closed');const ed=document.getElementById('ctEditor');if(ed)ed.innerHTML='';ctRender()}
+function ctRender(){
+  const el=document.getElementById('ctList');if(!el)return;const rows=ctRead().filter(x=>!!x.closed===(ctMode==='closed'));
+  if(!rows.length){el.innerHTML=`<div class="ct-empty">${ctMode==='open'?'No open cases yet. Click Add Case to get started.':'No closed cases yet.'}</div>`;return}
+  el.innerHTML=rows.map(x=>`<article class="ct-item"><div><strong>${escapeHTML(x.caseId||'')}</strong><small>${escapeHTML(x.customer||'No customer name')} · Opened: ${escapeHTML(x.date||'—')} · ${escapeHTML(x.assigned||'Unassigned')}</small><small>${escapeHTML(x.notes||'No progress notes')}</small></div><div class="ct-item-actions"><button class="ct-btn" type="button" onclick="ctNewCase('${x.id}')">View / Edit</button>${x.closed?`<button class="ct-btn" type="button" onclick="ctReopen('${x.id}')">Reopen</button>`:`<button class="ct-btn primary" type="button" onclick="ctClose('${x.id}')">Progressed</button>`}</div></article>`).join('');
+}
+function ctClose(id){if(!confirm('Mark this case as progressed and move it to the Closed Case Bin?'))return;const rows=ctRead();const x=rows.find(r=>r.id===id);if(x){x.closed=true;x.closedAt=new Date().toISOString();ctWrite(rows)}}
+function ctReopen(id){const rows=ctRead();const x=rows.find(r=>r.id===id);if(x){x.closed=false;delete x.closedAt;ctWrite(rows)}}
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+buildDashboardLayout();
+const _saveModal=document.getElementById('saveLogModal');if(_saveModal)_saveModal.addEventListener('click',e=>{if(e.target===_saveModal)closeSaveLogModal();});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSaveLogModal();});
+const _arcSaveBtn=document.getElementById('arcSaveLog');if(_arcSaveBtn)_arcSaveBtn.hidden=true;
+renderCalendar();
+renderDashboardExtras();
+renderRecoveryBin();
+startAutomaticDailyBackup();
+const _autoBackupSettingsModal=document.getElementById("autoBackupSettingsModal");
+if(_autoBackupSettingsModal) _autoBackupSettingsModal.addEventListener("click",e=>{if(e.target===_autoBackupSettingsModal) closeAutoBackupSettings();});
+
+// Keyboard shortcuts: Alt+N creates a log, Ctrl/Cmd+K focuses search, Esc closes the record modal.
+document.addEventListener("keydown",function(event){
+    const active=document.activeElement;
+    const typing=active && (active.tagName==="INPUT" || active.tagName==="TEXTAREA" || active.isContentEditable);
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="k"){
+        event.preventDefault();const search=document.getElementById("globalSearch");if(search){search.focus();search.scrollIntoView({behavior:"smooth",block:"center"});}
+    }else if(event.altKey && !event.ctrlKey && !event.metaKey && event.key.toLowerCase()==="n"){
+        event.preventDefault();openToday();
+    }else if(event.key==="Escape"){
+        const modal=document.getElementById("callModal");if(modal && (modal.classList.contains("show")||modal.style.display==="flex"||modal.style.display==="block"))closeModal();
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebDoc | Login</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(0,180,100,.16), transparent 35%),
+        radial-gradient(circle at 85% 80%, rgba(0,120,80,.14), transparent 35%),
+        #080d12;
+    color: #fff;
+    padding: 20px;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 42px 38px;
+    background: rgba(17, 27, 34, .88);
+    border: 1px solid rgba(0, 220, 130, .22);
+    border-radius: 20px;
+    box-shadow: 0 20px 70px rgba(0,0,0,.5);
+    backdrop-filter: blur(18px);
+}
+
+.logo {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 20px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #00b86b, #006b43);
+    color: white;
+    font-size: 27px;
+    font-weight: 800;
+    box-shadow: 0 0 28px rgba(0,220,130,.25);
+}
+
+h1 {
+    text-align: center;
+    font-size: 27px;
+    letter-spacing: .5px;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #91a49d;
+    font-size: 13px;
+    margin-bottom: 34px;
+}
+
+label {
+    display: block;
+    color: #c5d4ce;
+    font-size: 13px;
+    margin-bottom: 9px;
+}
+
+.input-group {
+    margin-bottom: 21px;
+}
+
+input {
+    width: 100%;
+    padding: 14px 15px;
+    border: 1px solid #293d37;
+    border-radius: 10px;
+    outline: none;
+    background: #0b1515;
+    color: white;
+    font-size: 14px;
+    transition: .2s;
+}
+
+input:focus {
+    border-color: #00c878;
+    box-shadow: 0 0 0 3px rgba(0,200,120,.10);
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #00c878, #008c55);
+    color: #04140d;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+button:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: wait;
+    transform: none;
+}
+
+.message {
+    display: none;
+    margin-top: 18px;
+    padding: 12px;
+    border-radius: 9px;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.error {
+    display: block;
+    color: #ffaaaa;
+    background: rgba(180,30,30,.13);
+    border: 1px solid rgba(255,80,80,.25);
+}
+
+.footer {
+    text-align: center;
+    color: #63766e;
+    font-size: 11px;
+    margin-top: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="logo">W</div>
+
+    <h1>Welcome Back</h1>
+    <p class="subtitle">WebDoc · Call Documentation System</p>
+
+    <form id="loginForm">
+
+        <div class="input-group">
+            <label for="username">Username</label>
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter your username"
+                autocomplete="username"
+                required
+            >
+        </div>
+
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+            >
+        </div>
+
+        <button type="submit" id="loginButton">
+            Sign In
+        </button>
+
+        <div id="message" class="message"></div>
+
+    </form>
+
+    <div class="footer">
+        Authorized personnel only · WebDoc
+    </div>
+
+</div>
+
+<script>
+const API_BASE = "https://acer-cloud-backend.vercel.app/api";
+
+const form = document.getElementById("loginForm");
+const button = document.getElementById("loginButton");
+const message = document.getElementById("message");
+
+form.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+
+    message.className = "message";
+    message.textContent = "";
+
+    button.disabled = true;
+    button.textContent = "Signing in...";
+
+    try {
+        const response = await fetch(`${API_BASE}/auth/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username,
+                password
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.ok || !result.token) {
+            throw new Error(result.error || "Invalid username or password.");
+        }
+
+        localStorage.setItem("webdoc_token", result.token);
+        localStorage.setItem("webdoc_user", JSON.stringify(result.user));
+
+        window.location.href = "dashboard.html";
+
+    } catch (error) {
+        message.textContent = error.message || "Unable to connect to the server.";
+        message.className = "message error";
+
+        button.disabled = false;
+        button.textContent = "Sign In";
+    }
+});
+</script>
+
+</body>
+</html>

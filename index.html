@@ -1,10 +1,10 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WebDoc | Login</title>
+<title>ACER WebDoc | Login</title>
 
 <style>
 * {
@@ -20,9 +20,9 @@ body {
     align-items: center;
     justify-content: center;
     background:
-        radial-gradient(circle at 15% 20%, rgba(0,180,100,.16), transparent 35%),
-        radial-gradient(circle at 85% 80%, rgba(0,120,80,.14), transparent 35%),
-        #080d12;
+        radial-gradient(circle at 15% 20%, rgba(0, 105, 210, .20), transparent 36%),
+        radial-gradient(circle at 85% 80%, rgba(0, 65, 150, .22), transparent 38%),
+        #050b16;
     color: #fff;
     padding: 20px;
 }
@@ -31,26 +31,22 @@ body {
     width: 100%;
     max-width: 420px;
     padding: 42px 38px;
-    background: rgba(17, 27, 34, .88);
-    border: 1px solid rgba(0, 220, 130, .22);
+    background: rgba(12, 24, 43, .92);
+    border: 1px solid rgba(45, 125, 220, .30);
     border-radius: 20px;
-    box-shadow: 0 20px 70px rgba(0,0,0,.5);
+    box-shadow: 0 20px 70px rgba(0, 0, 0, .55);
     backdrop-filter: blur(18px);
 }
 
 .logo {
-    width: 62px;
-    height: 62px;
     margin: 0 auto 20px;
-    border-radius: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #00b86b, #006b43);
-    color: white;
-    font-size: 27px;
-    font-weight: 800;
-    box-shadow: 0 0 28px rgba(0,220,130,.25);
+    text-align: center;
+    color: #ffffff;
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    line-height: 1;
+    text-shadow: 0 0 24px rgba(35, 125, 255, .35);
 }
 
 h1 {
@@ -62,14 +58,14 @@ h1 {
 
 .subtitle {
     text-align: center;
-    color: #91a49d;
+    color: #91a8c8;
     font-size: 13px;
     margin-bottom: 34px;
 }
 
 label {
     display: block;
-    color: #c5d4ce;
+    color: #c5d4e8;
     font-size: 13px;
     margin-bottom: 9px;
 }
@@ -81,36 +77,41 @@ label {
 input {
     width: 100%;
     padding: 14px 15px;
-    border: 1px solid #293d37;
+    border: 1px solid #263d5e;
     border-radius: 10px;
     outline: none;
-    background: #0b1515;
+    background: #081426;
     color: white;
     font-size: 14px;
     transition: .2s;
 }
 
+input::placeholder {
+    color: #71839d;
+}
+
 input:focus {
-    border-color: #00c878;
-    box-shadow: 0 0 0 3px rgba(0,200,120,.10);
+    border-color: #398cff;
+    box-shadow: 0 0 0 3px rgba(45, 130, 255, .13);
 }
 
 button {
     width: 100%;
     padding: 14px;
     margin-top: 8px;
-    border: none;
+    border: 1px solid rgba(105, 170, 255, .25);
     border-radius: 10px;
-    background: linear-gradient(135deg, #00c878, #008c55);
-    color: #04140d;
+    background: linear-gradient(135deg, #1768c5, #0b438e);
+    color: #ffffff;
     font-weight: 800;
     font-size: 14px;
     cursor: pointer;
     transition: .2s;
+    box-shadow: 0 7px 22px rgba(0, 75, 170, .22);
 }
 
 button:hover {
-    filter: brightness(1.12);
+    filter: brightness(1.15);
     transform: translateY(-1px);
 }
 
@@ -133,15 +134,21 @@ button:disabled {
 .error {
     display: block;
     color: #ffaaaa;
-    background: rgba(180,30,30,.13);
-    border: 1px solid rgba(255,80,80,.25);
+    background: rgba(180, 30, 30, .13);
+    border: 1px solid rgba(255, 80, 80, .25);
 }
 
 .footer {
     text-align: center;
-    color: #63766e;
+    color: #7185a2;
     font-size: 11px;
     margin-top: 30px;
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 35px 25px;
+    }
 }
 </style>
 </head>
@@ -150,7 +157,7 @@ button:disabled {
 
 <div class="login-container">
 
-    <div class="logo">W</div>
+    <div class="logo">ACER</div>
 
     <h1>Welcome Back</h1>
     <p class="subtitle">WebDoc · Call Documentation System</p>
@@ -247,3 +254,4 @@ form.addEventListener("submit", async function(event) {
 
 </body>
 </html>
+```

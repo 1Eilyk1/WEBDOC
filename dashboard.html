@@ -972,11 +972,111 @@ function loadDocumentationData(){
     }
 }
 
+const CLOUD_API_BASE = "https://acer-cloud-backend.vercel.app";
+let cloudSyncReady = false;
+let cloudSaveTimer = null;
+let cloudSaveInProgress = false;
+let cloudSaveQueued = false;
+
+function setCloudStatus(message){
+    const indicator=document.getElementById("saveIndicator");
+    if(indicator) indicator.textContent=message;
+}
+
+async function cloudRequest(path, options={}){
+    const token=localStorage.getItem("webdoc_token");
+    if(!token) throw new Error("Your login session is missing. Please sign in again.");
+    const response=await fetch(CLOUD_API_BASE+path,{
+        ...options,
+        headers:{
+            "Content-Type":"application/json",
+            ...(options.headers||{}),
+            "Authorization":"Bearer "+token
+        }
+    });
+    let result={};
+    try{result=await response.json();}catch(error){}
+    if(response.status===401){
+        localStorage.removeItem("webdoc_token");
+        localStorage.removeItem("webdoc_user");
+        window.location.replace("index.html");
+        throw new Error("Your session expired. Please sign in again.");
+    }
+    if(!response.ok) throw new Error(result.error||result.message||("Cloud request failed ("+response.status+")"));
+    return result;
+}
+
+function queueCloudSave(){
+    if(!cloudSyncReady) return;
+    clearTimeout(cloudSaveTimer);
+    cloudSaveTimer=setTimeout(runCloudSave,900);
+}
+
+async function runCloudSave(){
+    if(!cloudSyncReady) return;
+    if(cloudSaveInProgress){cloudSaveQueued=true;return;}
+    cloudSaveInProgress=true;
+    try{
+        await cloudRequest("/api/docs",{
+            method:"PUT",
+            body:JSON.stringify({documentationData})
+        });
+        setCloudStatus("Saved to cloud · "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}));
+    }catch(error){
+        console.error("Cloud save failed:",error);
+        setCloudStatus("Saved locally · Cloud sync failed");
+    }finally{
+        cloudSaveInProgress=false;
+        if(cloudSaveQueued){cloudSaveQueued=false;runCloudSave();}
+    }
+}
+
+async function initializeCloudDocumentation(){
+    cloudSyncReady=false;
+    setCloudStatus("Connecting to cloud…");
+    const localData=loadDocumentationData();
+    try{
+        const result=await cloudRequest("/api/docs");
+        const cloudData=result.documentationData;
+        const cloudHasData=cloudData && typeof cloudData==="object" && !Array.isArray(cloudData) && Object.keys(cloudData).length>0;
+        const localHasData=localData && typeof localData==="object" && Object.keys(localData).length>0;
+
+        if(cloudHasData){
+            documentationData=cloudData;
+            localStorage.setItem(STORAGE_KEY,JSON.stringify(documentationData));
+            setCloudStatus("Cloud data loaded");
+        }else if(localHasData){
+            const importLocal=confirm("Walang records sa cloud account na ito. May existing records sa browser na ito. I-upload ang local records sa account na naka-login ngayon?\n\nChoose Cancel to leave the cloud account empty. Your local backup will not be deleted.");
+            if(importLocal){
+                documentationData=localData;
+                cloudSyncReady=true;
+                await cloudRequest("/api/docs",{method:"PUT",body:JSON.stringify({documentationData})});
+                localStorage.setItem(STORAGE_KEY,JSON.stringify(documentationData));
+                setCloudStatus("Local records uploaded to cloud");
+            }else{
+                documentationData={};
+                setCloudStatus("Cloud account is empty · Local data preserved");
+            }
+        }else{
+            documentationData={};
+            setCloudStatus("Cloud connected · No records yet");
+        }
+        cloudSyncReady=true;
+    }catch(error){
+        console.error("Cloud initialization failed:",error);
+        cloudSyncReady=false;
+        documentationData=localData;
+        setCloudStatus("Cloud unavailable · Using local data");
+        alert("Hindi makakonekta sa cloud ngayon. Ipapakita muna ang local records mo; hindi mabubura ang mga ito.\n\nDetails: "+error.message);
+    }
+}
+
 function saveDocumentationData(){
     try{
         localStorage.setItem(STORAGE_KEY,JSON.stringify(documentationData));
         const indicator=document.getElementById("saveIndicator");if(indicator)indicator.textContent="Saved locally · "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
         if (typeof renderDashboardExtras === "function") renderDashboardExtras();
+        queueCloudSave();
     }catch(error){
         console.error("Could not save documentation:",error);
         alert("Your browser blocked local storage, so the data could not be saved. Please use Export Backup to keep a copy.");
@@ -2992,12 +3092,17 @@ function ctReopen(id){const rows=ctRead();const x=rows.find(r=>r.id===id);if(x){
 buildDashboardLayout();
 const _saveModal=document.getElementById('saveLogModal');if(_saveModal)_saveModal.addEventListener('click',e=>{if(e.target===_saveModal)closeSaveLogModal();});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSaveLogModal();});
 const _arcSaveBtn=document.getElementById('arcSaveLog');if(_arcSaveBtn)_arcSaveBtn.hidden=true;
-renderCalendar();
-renderDashboardExtras();
-renderRecoveryBin();
-startAutomaticDailyBackup();
 const _autoBackupSettingsModal=document.getElementById("autoBackupSettingsModal");
 if(_autoBackupSettingsModal) _autoBackupSettingsModal.addEventListener("click",e=>{if(e.target===_autoBackupSettingsModal) closeAutoBackupSettings();});
+
+// Load the signed-in user's cloud records before drawing the calendar.
+(async function startWebDoc(){
+    await initializeCloudDocumentation();
+    renderCalendar();
+    renderDashboardExtras();
+    renderRecoveryBin();
+    startAutomaticDailyBackup();
+})();
 
 // Keyboard shortcuts: Alt+N creates a log, Ctrl/Cmd+K focuses search, Esc closes the record modal.
 document.addEventListener("keydown",function(event){

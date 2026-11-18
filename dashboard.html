@@ -505,6 +505,56 @@
 .arc-shell .arc-panel button,.arc-shell .arc-top button{color:#edf4ff}
 .arc-shell .arc-preview pre,.arc-shell .arc-output pre{color:#e5efff !important}
 .arc-shell .arc-muted,.arc-shell small{color:#a9bad2 !important}
+   
+<style>
+    body {
+        visibility: hidden;
+    }
+</style>
+
+<script>
+(async function protectDashboard() {
+    const token = localStorage.getItem("webdoc_token");
+
+    if (!token) {
+        window.location.replace("index.html");
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            "https://acer-cloud-backend.vercel.app/api/auth/me",
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok || !result.user) {
+            throw new Error("Session expired");
+        }
+
+        localStorage.setItem(
+            "webdoc_user",
+            JSON.stringify(result.user)
+        );
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.style.visibility = "visible";
+        });
+
+    } catch (error) {
+        localStorage.removeItem("webdoc_token");
+        localStorage.removeItem("webdoc_user");
+        window.location.replace("index.html");
+    }
+})();
+</script>
+
 </style></head>
 <body>
 <nav aria-label="Main navigation" class="app-sidebar">

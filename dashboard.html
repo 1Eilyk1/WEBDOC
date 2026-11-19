@@ -496,7 +496,9 @@
 
 
 /* Open Case Tracker - isolated styles */
-.case-tracker-page{display:none;margin:8px 0 24px}.case-tracker-page.active{display:block}.ct-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.ct-head h2{margin:0;color:#edf7ff}.ct-head p{margin:5px 0 0;color:#91a9c9;font-size:13px}.ct-actions{display:flex;gap:8px;flex-wrap:wrap}.ct-btn{border:1px solid #42618a;background:#152944;color:#eaf5ff;border-radius:9px;padding:10px 14px;cursor:pointer}.ct-btn.primary{background:linear-gradient(120deg,#176b87,#3157a0);border-color:#4b9cce}.ct-tabs{display:flex;gap:8px;margin:14px 0}.ct-panel{padding:18px;border:1px solid rgba(105,160,220,.23);border-radius:16px;background:linear-gradient(135deg,rgba(12,25,47,.9),rgba(19,15,42,.82))}.ct-list{display:grid;gap:10px}.ct-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px;border:1px solid #2d4565;border-radius:12px;background:#101d30}.ct-item strong{color:#edf7ff}.ct-item small{display:block;color:#91a9c9;margin-top:5px}.ct-item-actions{display:flex;gap:6px;flex-wrap:wrap}.ct-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.ct-form label{display:grid;gap:6px;color:#a9bed9;font-size:12px}.ct-form input,.ct-form textarea{width:100%;box-sizing:border-box;background:#091525;color:#f1f6ff;border:1px solid #40536e;border-radius:8px;padding:10px}.ct-form .wide{grid-column:1/-1}.ct-empty{color:#91a9c9;padding:20px;text-align:center}@media(max-width:650px){.ct-form{grid-template-columns:1fr}.ct-form .wide{grid-column:auto}.ct-item{align-items:flex-start;flex-direction:column}}
+ .case-tracker-page{display:none;margin:8px 0 24px}.case-tracker-page.active{display:block}.ct-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}.ct-head h2{margin:0;color:#f2fff5}.ct-head p{margin:5px 0 0;color:#9aafaa;font-size:13px}.ct-actions{display:flex;gap:8px;flex-wrap:wrap}.ct-btn{border:1px solid #344b40;background:#14221b;color:#e9f7ed;border-radius:10px;padding:10px 14px;cursor:pointer;transition:.18s}.ct-btn:hover{border-color:#63d887;transform:translateY(-1px)}.ct-btn.primary{background:linear-gradient(120deg,#16833f,#27b653);border-color:#39d66b;color:#06180c;font-weight:750}.ct-btn.danger{background:#321b1e;border-color:#794047;color:#ffb8bd}.ct-tabs{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}.ct-panel{padding:18px;border:1px solid rgba(69,190,104,.22);border-radius:16px;background:linear-gradient(135deg,rgba(13,27,20,.96),rgba(12,20,17,.94));box-shadow:0 16px 42px #0003}.ct-list{display:grid;gap:10px}.ct-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px;border:1px solid #294535;border-radius:12px;background:linear-gradient(135deg,#14231a,#101b15)}.ct-item strong{color:#f0fff4}.ct-item small{display:block;color:#9bb6a3;margin-top:5px}.ct-item-actions{display:flex;gap:6px;flex-wrap:wrap}.ct-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.ct-form label{display:grid;gap:6px;color:#b8cdbd;font-size:12px}.ct-form input,.ct-form textarea{width:100%;box-sizing:border-box;background:#0b1510;color:#f1fff4;border:1px solid #355340;border-radius:9px;padding:10px}.ct-form .wide{grid-column:1/-1}.ct-empty{color:#9bb6a3;padding:24px;text-align:center}.ct-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:20px;background:#263d2d;color:#b9f6c9;font-size:11px;margin-left:5px}@media(max-width:650px){.ct-form{grid-template-columns:1fr}.ct-form .wide{grid-column:auto}.ct-item{align-items:flex-start;flex-direction:column}.ct-item-actions{width:100%}.ct-item-actions button{flex:1}}
+/* Change password modal */
+.wd-password-modal{position:fixed;inset:0;z-index:10050;background:rgba(2,8,5,.76);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:18px}.wd-password-modal.show{display:flex}.wd-password-card{width:min(440px,100%);background:linear-gradient(145deg,#14231a,#0b130e);border:1px solid rgba(67,211,111,.35);border-radius:20px;padding:24px;box-shadow:0 24px 80px #0009;color:#effff3}.wd-password-card h2{margin:0 0 7px;font-size:21px}.wd-password-card p{margin:0 0 20px;color:#9eb8a5;font-size:13px;line-height:1.5}.wd-password-field{display:grid;gap:7px;margin:13px 0;color:#c6d9cb;font-size:12px;font-weight:650}.wd-password-field input{width:100%;box-sizing:border-box;background:#09120c;border:1px solid #355340;border-radius:10px;padding:12px;color:#f4fff6;outline:none}.wd-password-field input:focus{border-color:#4be27d;box-shadow:0 0 0 3px #35c76522}.wd-password-message{display:none;margin:12px 0;padding:10px 12px;border-radius:9px;font-size:12px;line-height:1.45}.wd-password-message.show{display:block}.wd-password-message.error{background:#3a1d20;color:#ffb9bd;border:1px solid #81434a}.wd-password-message.success{background:#143321;color:#a9f5bd;border:1px solid #286d40}.wd-password-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}.wd-password-actions button{border-radius:10px;padding:10px 15px;border:1px solid #385443;background:#17251c;color:#eaffef;cursor:pointer}.wd-password-actions .save{background:linear-gradient(120deg,#16833f,#27b653);border-color:#39d66b;color:#06180c;font-weight:750}.wd-password-actions button:disabled{opacity:.55;cursor:wait}
 </style>
 <style>
 /* FINAL RTB / Mail In / PRR dark-theme normalization */
@@ -2760,7 +2762,7 @@ function buildDashboardLayout() {
     shell.appendChild(bottom);
     const tracker=document.createElement('section');
     tracker.id='caseTrackerPage'; tracker.className='case-tracker-page';
-    tracker.innerHTML='<div class="ct-head"><div><h2>Open Case Tracker</h2><p>Track active cases and keep completed cases in the closed bin.</p></div><div class="ct-actions"><button class="ct-btn primary" type="button" onclick="ctNewCase()">＋ Add Case</button></div></div><div class="ct-tabs"><button class="ct-btn primary" id="ctOpenTab" type="button" onclick="ctShowList(\'open\')">Open Cases</button><button class="ct-btn" id="ctClosedTab" type="button" onclick="ctShowList(\'closed\')">Closed Case Bin</button></div><div class="ct-panel"><div id="ctEditor"></div><div class="ct-list" id="ctList"></div></div>';
+    tracker.innerHTML='<div class="ct-head"><div><h2>Open Case Tracker</h2><p>Track active cases, completed cases, and deleted items.</p></div><div class="ct-actions"><button class="ct-btn primary" type="button" onclick="ctNewCase()">＋ Add Case</button></div></div><div class="ct-tabs"><button class="ct-btn primary" id="ctOpenTab" type="button" onclick="ctShowList(\'open\')">Open Cases</button><button class="ct-btn" id="ctClosedTab" type="button" onclick="ctShowList(\'closed\')">Closed Case Bin</button><button class="ct-btn" id="ctDeletedTab" type="button" onclick="ctShowList(\'deleted\')">Deleted Items <span class="ct-count" id="ctDeletedCount">0</span></button></div><div class="ct-panel"><div id="ctEditor"></div><div class="ct-list" id="ctList"></div></div>';
     shell.appendChild(tracker);
     // Add a clear active state on navigation without affecting functionality.
     document.querySelectorAll('.side-link').forEach(btn => btn.addEventListener('click', () => {
@@ -3096,22 +3098,27 @@ function showCaseTracker(){
   document.getElementById('caseTrackerPage')?.classList.add('active');
   document.querySelectorAll('.side-link').forEach(b=>b.classList.remove('active'));
   document.getElementById('caseTrackerNav')?.classList.add('active');
-  ctShowList('open');window.scrollTo({top:0,behavior:'smooth'});
+  ctUpdateDeletedCount();ctShowList('open');window.scrollTo({top:0,behavior:'smooth'});
 }
 function ctNewCase(id){
   const row=id?ctRead().find(x=>x.id===id):null;const ed=document.getElementById('ctEditor');if(!ed)return;
-  ed.innerHTML=`<h3 style="margin:0 0 12px;color:#eaf5ff">${row?'View / Edit Case':'Add New Case'}</h3><form class="ct-form" onsubmit="ctSave(event,'${row?row.id:''}')"><label>Case ID *<input id="ctCaseId" required value="${row?escapeHTML(row.caseId):''}"></label><label>Customer Name<input id="ctCustomer" value="${row?escapeHTML(row.customer||''):''}"></label><label>Date Opened<input id="ctDate" type="date" value="${row?escapeHTML(row.date||''):new Date().toISOString().slice(0,10)}"></label><label>Assigned To<input id="ctAssigned" value="${row?escapeHTML(row.assigned||''):''}"></label><label class="wide">Progress / Notes<textarea id="ctNotes" rows="3">${row?escapeHTML(row.notes||''):''}</textarea></label><div class="wide ct-actions"><button class="ct-btn primary" type="submit">Save Case</button><button class="ct-btn" type="button" onclick="document.getElementById('ctEditor').innerHTML='';">Cancel</button></div></form>`;
+  ed.innerHTML=`<h3 style="margin:0 0 12px;color:#effff3">${row?'View / Edit Case':'Add New Case'}</h3><form class="ct-form" onsubmit="ctSave(event,'${row?row.id:''}')"><label>Case ID *<input id="ctCaseId" required value="${row?escapeHTML(row.caseId):''}"></label><label>Customer Name<input id="ctCustomer" value="${row?escapeHTML(row.customer||''):''}"></label><label>Date Opened<input id="ctDate" type="date" value="${row?escapeHTML(row.date||''):new Date().toISOString().slice(0,10)}"></label><label>Assigned To<input id="ctAssigned" value="${row?escapeHTML(row.assigned||''):''}"></label><label class="wide">Progress / Notes<textarea id="ctNotes" rows="3">${row?escapeHTML(row.notes||''):''}</textarea></label><div class="wide ct-actions"><button class="ct-btn primary" type="submit">Save Case</button><button class="ct-btn" type="button" onclick="document.getElementById('ctEditor').innerHTML='';">Cancel</button></div></form>`;
 }
 function ctSave(e,id){
   e.preventDefault();const rows=ctRead();const data={id:id||('ct_'+Date.now()),caseId:document.getElementById('ctCaseId').value.trim(),customer:document.getElementById('ctCustomer').value.trim(),date:document.getElementById('ctDate').value,assigned:document.getElementById('ctAssigned').value.trim(),notes:document.getElementById('ctNotes').value.trim(),updatedAt:new Date().toISOString()};
-  if(!data.caseId)return;const i=rows.findIndex(x=>x.id===id);if(i>=0)rows[i]={...rows[i],...data};else rows.unshift({...data,closed:false});document.getElementById('ctEditor').innerHTML='';ctWrite(rows);
+  if(!data.caseId)return;const i=rows.findIndex(x=>x.id===id);if(i>=0)rows[i]={...rows[i],...data};else rows.unshift({...data,closed:false,deleted:false});document.getElementById('ctEditor').innerHTML='';ctWrite(rows);
 }
-function ctShowList(mode){ctMode=mode;const open=document.getElementById('ctOpenTab'),closed=document.getElementById('ctClosedTab');if(open)open.classList.toggle('primary',mode==='open');if(closed)closed.classList.toggle('primary',mode==='closed');const ed=document.getElementById('ctEditor');if(ed)ed.innerHTML='';ctRender()}
+function ctUpdateDeletedCount(){const el=document.getElementById('ctDeletedCount');if(el)el.textContent=ctRead().filter(x=>x.deleted).length}
+function ctShowList(mode){ctMode=mode;[['ctOpenTab','open'],['ctClosedTab','closed'],['ctDeletedTab','deleted']].forEach(([id,key])=>{const b=document.getElementById(id);if(b)b.classList.toggle('primary',mode===key)});const ed=document.getElementById('ctEditor');if(ed)ed.innerHTML='';ctRender()}
 function ctRender(){
-  const el=document.getElementById('ctList');if(!el)return;const rows=ctRead().filter(x=>!!x.closed===(ctMode==='closed'));
-  if(!rows.length){el.innerHTML=`<div class="ct-empty">${ctMode==='open'?'No open cases yet. Click Add Case to get started.':'No closed cases yet.'}</div>`;return}
-  el.innerHTML=rows.map(x=>`<article class="ct-item"><div><strong>${escapeHTML(x.caseId||'')}</strong><small>${escapeHTML(x.customer||'No customer name')} · Opened: ${escapeHTML(x.date||'—')} · ${escapeHTML(x.assigned||'Unassigned')}</small><small>${escapeHTML(x.notes||'No progress notes')}</small></div><div class="ct-item-actions"><button class="ct-btn" type="button" onclick="ctNewCase('${x.id}')">View / Edit</button>${x.closed?`<button class="ct-btn" type="button" onclick="ctReopen('${x.id}')">Reopen</button>`:`<button class="ct-btn primary" type="button" onclick="ctClose('${x.id}')">Progressed</button>`}</div></article>`).join('');
+  const el=document.getElementById('ctList');if(!el)return;const all=ctRead();ctUpdateDeletedCount();
+  const rows=all.filter(x=>ctMode==='deleted'?!!x.deleted:!x.deleted&&(!!x.closed===(ctMode==='closed')));
+  if(!rows.length){el.innerHTML=`<div class="ct-empty">${ctMode==='open'?'No open cases yet. Click Add Case to get started.':ctMode==='closed'?'No closed cases yet.':'No deleted items. Deleted cases will appear here.'}</div>`;return}
+  el.innerHTML=rows.map(x=>`<article class="ct-item"><div><strong>${escapeHTML(x.caseId||'')}</strong><small>${escapeHTML(x.customer||'No customer name')} · Opened: ${escapeHTML(x.date||'—')} · ${escapeHTML(x.assigned||'Unassigned')}</small><small>${escapeHTML(x.notes||'No progress notes')}</small>${x.deleted?`<small>Deleted: ${escapeHTML(x.deletedAt?new Date(x.deletedAt).toLocaleString():'—')}</small>`:''}</div><div class="ct-item-actions">${x.deleted?`<button class="ct-btn primary" type="button" onclick="ctRestore('${x.id}')">Restore</button><button class="ct-btn danger" type="button" onclick="ctDeleteForever('${x.id}')">Delete permanently</button>`:`<button class="ct-btn" type="button" onclick="ctNewCase('${x.id}')">View / Edit</button>${x.closed?`<button class="ct-btn" type="button" onclick="ctReopen('${x.id}')">Reopen</button>`:`<button class="ct-btn primary" type="button" onclick="ctClose('${x.id}')">Progressed</button>`}<button class="ct-btn danger" type="button" onclick="ctMoveToDeleted('${x.id}')">Delete</button>`}</div></article>`).join('');
 }
+function ctMoveToDeleted(id){if(!confirm('Move this case to Deleted Items? You can restore it later.'))return;const rows=ctRead();const x=rows.find(r=>r.id===id);if(x){x.deleted=true;x.deletedAt=new Date().toISOString();ctWrite(rows)}}
+function ctRestore(id){const rows=ctRead();const x=rows.find(r=>r.id===id);if(x){x.deleted=false;delete x.deletedAt;ctWrite(rows)}}
+function ctDeleteForever(id){if(!confirm('Permanently delete this case? This cannot be undone.'))return;ctWrite(ctRead().filter(r=>r.id!==id))}
 function ctClose(id){if(!confirm('Mark this case as progressed and move it to the Closed Case Bin?'))return;const rows=ctRead();const x=rows.find(r=>r.id===id);if(x){x.closed=true;x.closedAt=new Date().toISOString();ctWrite(rows)}}
 function ctReopen(id){const rows=ctRead();const x=rows.find(r=>r.id===id);if(x){x.closed=false;delete x.closedAt;ctWrite(rows)}}
 
@@ -3148,27 +3155,24 @@ function webdocLogout(){
   localStorage.removeItem('webdoc_user');
   window.location.replace('index.html');
 }
-async function changeMyPassword(){
-  const currentPassword=prompt('Enter your current password:');
-  if(currentPassword===null)return;
-  const newPassword=prompt('Enter your new password (at least 6 characters):');
-  if(newPassword===null)return;
-  const confirmPassword=prompt('Confirm your new password:');
-  if(confirmPassword===null)return;
-  if(newPassword!==confirmPassword){alert('The new passwords do not match.');return;}
-  if(newPassword.length<6){alert('Password must be at least 6 characters.');return;}
-  try{
-    const response=await fetch('https://acer-cloud-backend.vercel.app/api/auth/change-password',{
-      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('webdoc_token')},
-      body:JSON.stringify({currentPassword,newPassword})
-    });
-    const result=await response.json();
-    if(!response.ok)throw new Error(result.error||'Could not change password.');
-    alert('Password changed successfully. Please log in again with your new password.');
-    localStorage.removeItem('webdoc_token');localStorage.removeItem('webdoc_user');
-    window.location.replace('index.html');
-  }catch(error){alert(error.message||'Unable to change password. Please try again.');}
+function ensurePasswordModal(){
+  if(document.getElementById('wdPasswordModal'))return;
+  const modal=document.createElement('div');modal.id='wdPasswordModal';modal.className='wd-password-modal';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.innerHTML=`<div class="wd-password-card"><h2>Change Password</h2><p>Update your WebDoc sign-in password. Use at least 6 characters.</p><form id="wdPasswordForm"><label class="wd-password-field">Current password<input id="wdCurrentPassword" type="password" autocomplete="current-password" required></label><label class="wd-password-field">New password<input id="wdNewPassword" type="password" minlength="6" autocomplete="new-password" required></label><label class="wd-password-field">Confirm new password<input id="wdConfirmPassword" type="password" minlength="6" autocomplete="new-password" required></label><div id="wdPasswordMessage" class="wd-password-message" role="status"></div><div class="wd-password-actions"><button type="button" onclick="closePasswordModal()">Cancel</button><button class="save" id="wdPasswordSubmit" type="submit">Update Password</button></div></form></div>`;
+  modal.addEventListener('click',e=>{if(e.target===modal)closePasswordModal()});document.body.appendChild(modal);
+  document.getElementById('wdPasswordForm').addEventListener('submit',submitPasswordChange);
 }
+function changeMyPassword(){ensurePasswordModal();const modal=document.getElementById('wdPasswordModal');modal.classList.add('show');document.getElementById('wdPasswordMessage').className='wd-password-message';document.getElementById('wdPasswordMessage').textContent='';document.getElementById('wdPasswordForm').reset();setTimeout(()=>document.getElementById('wdCurrentPassword').focus(),50)}
+function closePasswordModal(){document.getElementById('wdPasswordModal')?.classList.remove('show')}
+function showPasswordMessage(message,type='error'){const el=document.getElementById('wdPasswordMessage');el.textContent=message;el.className='wd-password-message show '+type}
+async function submitPasswordChange(e){
+  e.preventDefault();const currentPassword=document.getElementById('wdCurrentPassword').value;const newPassword=document.getElementById('wdNewPassword').value;const confirmPassword=document.getElementById('wdConfirmPassword').value;const button=document.getElementById('wdPasswordSubmit');
+  if(newPassword.length<6){showPasswordMessage('New password must be at least 6 characters.');return}
+  if(newPassword!==confirmPassword){showPasswordMessage('The new passwords do not match.');return}
+  if(newPassword===currentPassword){showPasswordMessage('Your new password must be different from your current password.');return}
+  button.disabled=true;button.textContent='Updating…';
+  try{const response=await fetch('https://acer-cloud-backend.vercel.app/api/auth/change-password',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('webdoc_token')},body:JSON.stringify({currentPassword,newPassword})});const result=await response.json();if(!response.ok)throw new Error(result.error||'Could not change password.');showPasswordMessage('Password changed successfully. Redirecting to sign in…','success');setTimeout(()=>{localStorage.removeItem('webdoc_token');localStorage.removeItem('webdoc_user');window.location.replace('index.html')},1200)}catch(error){showPasswordMessage(error.message||'Unable to change password. Please try again.')}finally{button.disabled=false;button.textContent='Update Password'}
+}
+
 async function openAdminSettings(){
   const user=getWebdocUser();
   if(String(user.role||'').toLowerCase()!=='admin'){alert('Admin access required.');return;}
@@ -3216,7 +3220,7 @@ async function submitCreateUser(event){
   const username=document.getElementById('newUsername').value.trim();
   const password=document.getElementById('newUserPassword').value;
   if(!/^[A-Za-z0-9._-]{3,40}$/.test(username)){alert('Username must be 3–40 characters and use only letters, numbers, dots, underscores or hyphens.');return;}
-  if(password.length<6){alert('Temporary password must be at least 6 characters.');return;}
+  if(password.length<12){alert('Temporary password must be at least 12 characters.');return;}
   const button=document.getElementById('createUserSubmit');button.disabled=true;button.textContent='Creating account…';
   try{
     const result=await adminApi('/api/admin/users',{method:'POST',body:JSON.stringify({username,password})});
@@ -3231,9 +3235,9 @@ async function adminToggleUser(id,isActive,username){
   catch(error){alert(error.message);}
 }
 async function adminResetPassword(id,username){
-  const password=prompt('Enter a temporary password for '+username+' (at least 6 characters):');
+  const password=prompt('Enter a temporary password for '+username+' (at least 12 characters):');
   if(password===null)return;
-  if(password.length<6){alert('Temporary password must be at least 6 characters.');return;}
+  if(password.length<12){alert('Temporary password must be at least 12 characters.');return;}
   if(!confirm('Reset '+username+'’s password? They must change it at their next login.'))return;
   try{await adminApi('/api/admin/users/'+id+'/reset-password',{method:'POST',body:JSON.stringify({temporaryPassword:password})});alert('Temporary password set. The user must change it after signing in.');await loadAdminUsers();}
   catch(error){alert(error.message);}
@@ -3306,7 +3310,7 @@ document.addEventListener("keydown",function(event){
 .webdoc-dialog input:focus{border-color:#55b9dc;box-shadow:0 0 0 3px #36a9d522}
 .webdoc-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;flex-wrap:wrap}
 .webdoc-actions button,.admin-user-actions button{border:1px solid #405a7a;border-radius:10px;padding:10px 15px;color:#eaf2ff;background:#1b2e48;cursor:pointer;font-weight:650}
-.webdoc-actions .admin-primary,.admin-user-actions .admin-primary,.admin-toolbar>.admin-primary,.admin-primary{background:linear-gradient(135deg,#168d82,#2679c6);border:0;color:#fff;border-radius:11px;padding:11px 16px;font-weight:750;cursor:pointer;box-shadow:0 7px 20px #087d8640}.admin-toolbar>.admin-primary:hover,.admin-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.webdoc-actions .admin-primary,.admin-user-actions .admin-primary{background:linear-gradient(135deg,#168d82,#2679c6);border:0}
 .webdoc-actions button:disabled{opacity:.45;cursor:not-allowed}
 .cloud-info{background:#102b43;border:1px solid #28617e;border-radius:14px;padding:14px;margin-top:17px;color:#d6eafa;font-size:13px;line-height:1.55}
 .cloud-check{display:flex!important;align-items:center;gap:9px;margin-top:17px!important;font-weight:500!important;color:#bdcce0!important}.cloud-check input{width:16px;height:16px;accent-color:#35b7a5}
@@ -3316,7 +3320,7 @@ document.addEventListener("keydown",function(event){
 .admin-user-info strong{display:block;color:#f1f6ff;font-size:14px}.admin-user-info small{display:block;color:#9eb0c9;font-size:11px;margin-top:4px}
 .admin-status{font-size:11px;font-weight:750;border-radius:20px;padding:6px 9px}.admin-status.active{background:#123d35;color:#7be0c0}.admin-status.inactive{background:#47232b;color:#ffabb4}
 .admin-user-actions{display:flex;gap:7px;flex-wrap:wrap}.admin-user-actions button{font-size:11px;padding:8px 10px}.admin-user-actions .admin-danger{background:#48232d;border-color:#75404b;color:#ffb5bd}
-.admin-loading,.admin-error{padding:22px;text-align:center;color:#aebed4}.admin-error{color:#ffabb4}.create-user-intro{padding:13px 15px;border:1px solid #28617e;background:linear-gradient(135deg,#102b43,#142a3e);border-radius:13px;color:#cfe8f7;font-size:12px;line-height:1.55;margin:12px 0 17px}.create-user-field{margin:14px 0}.create-user-field label{display:block;margin:0 0 7px}.create-user-field input{display:block}.create-user-hint{font-size:11px;color:#91a7c2;margin-top:6px}.admin-user-actions button{cursor:pointer}
+.admin-loading,.admin-error{padding:22px;text-align:center;color:#aebed4}.admin-error{color:#ffabb4}
 @media(max-width:600px){.webdoc-dialog{padding:19px}.admin-user-row{grid-template-columns:1fr auto}.admin-user-row .admin-status{grid-column:2;grid-row:1}.admin-user-actions{grid-column:1/-1}}
 </style>
 <div class="webdoc-modal" id="cloudImportModal" role="dialog" aria-modal="true" aria-labelledby="cloudImportTitle">
@@ -3339,15 +3343,13 @@ document.addEventListener("keydown",function(event){
  <div class="webdoc-dialog narrow">
   <div class="webdoc-dialog-head"><div class="webdoc-dialog-icon">＋</div><div><h2 id="createUserTitle">Create a team account</h2><p>Set up a secure login for a WebDoc team member. They’ll be asked to change the temporary password on first sign-in.</p></div></div>
   <form id="createUserForm" onsubmit="submitCreateUser(event)">
-   <div class="create-user-intro">Create an individual WebDoc login. Each team member will have a separate cloud workspace and must choose a new password the first time they sign in.</div>
-   <div class="create-user-field"><label for="newUsername">Username</label><input id="newUsername" name="username" autocomplete="off" minlength="3" maxlength="40" pattern="[A-Za-z0-9._-]{3,40}" placeholder="e.g. alex.santos" required><div class="create-user-hint">3–40 characters. Use letters, numbers, dots, underscores, or hyphens.</div></div>
-   <div class="create-user-field"><label for="newUserPassword">Temporary password</label><input id="newUserPassword" name="password" type="password" minlength="6" maxlength="200" autocomplete="new-password" placeholder="Enter at least 6 characters" required><div class="create-user-hint">Share this password securely. The user will be required to change it after signing in.</div></div>
-   <div class="cloud-info">Account type: <strong>Standard user</strong><br>Documentation and cloud records remain separate for each account.</div>
+   <label for="newUsername">Username</label><input id="newUsername" name="username" autocomplete="off" minlength="3" maxlength="40" pattern="[A-Za-z0-9._-]{3,40}" placeholder="e.g. alex.santos" required>
+   <label for="newUserPassword">Temporary password</label><input id="newUserPassword" name="password" type="password" minlength="12" maxlength="200" autocomplete="new-password" placeholder="At least 12 characters" required>
+   <div class="cloud-info">New accounts are created as standard users. Their documentation stays separate from other accounts.</div>
    <div class="webdoc-actions"><button type="button" onclick="closeCreateUser()">Cancel</button><button type="submit" class="admin-primary" id="createUserSubmit">Create account</button></div>
   </form>
  </div>
 </div>
 
-<script src="webdoc-features.js"></script>
 </body>
 </html>

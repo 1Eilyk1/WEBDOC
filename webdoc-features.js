@@ -23,6 +23,7 @@ function addStyles(){
 .wf-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:19px 0}.wf-tab{padding:9px 14px;border:1px solid #28533f;background:#10251b;color:#ccebd9;border-radius:10px;cursor:pointer;transition:.18s}.wf-tab:hover{border-color:#00c979;color:#fff}.wf-tab.active{background:linear-gradient(135deg,#087849,#075b3b);border-color:#00e58a;color:#fff;box-shadow:0 0 16px rgba(0,229,138,.12)}
 .wf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:13px;margin:16px 0 22px}.wf-card{background:linear-gradient(145deg,#10251b,#0c1d16);border:1px solid #244b38;border-radius:14px;padding:17px;box-shadow:0 8px 22px rgba(0,0,0,.15)}.wf-card strong{display:block;font-size:27px;color:#00e58a;letter-spacing:.2px}.wf-card span{color:#a8cbb6}.wf-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 15px;border-bottom:1px solid #1d3b2c}.wf-row:last-child{border:0}.wf-list{background:rgba(10,27,19,.78);border:1px solid #244b38;border-radius:14px;overflow:hidden}.wf-field{display:grid;gap:7px;margin:14px 0}.wf-field label{color:#b9d8c5;font-weight:700}.wf-field input,.wf-field textarea{background:#07140e;border:1px solid #315b44;border-radius:9px;color:#effff5;padding:11px 12px;font:inherit;outline:none}.wf-field input:focus,.wf-field textarea:focus{border-color:#00d982;box-shadow:0 0 0 3px rgba(0,217,130,.12)}.wf-field textarea{min-height:110px;resize:vertical}.wf-actions{display:flex;gap:9px;flex-wrap:wrap;margin:13px 0}.wf-note{padding:13px 15px;border-radius:11px;background:linear-gradient(120deg,rgba(0,139,82,.17),rgba(0,72,47,.2));border:1px solid rgba(0,217,130,.22);color:#c9f3d9;margin:13px 0}.wf-empty{padding:24px;text-align:center;color:#91b7a4}
 .wf-panel h3{color:#dfffee;margin:18px 0 10px}.wf-panel input[type=checkbox]{accent-color:#00d982}
+#wfAnnouncementStrip{box-sizing:border-box;width:100%;max-width:100%;min-width:0;min-height:34px;height:34px;margin:0 0 9px;padding:0 12px;display:flex;align-items:center;gap:9px;overflow:hidden;border:1px solid rgba(65,148,255,.34);border-radius:10px;background:linear-gradient(100deg,rgba(8,28,61,.96),rgba(10,22,49,.94));color:#dceaff;box-shadow:0 4px 14px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.035);font:600 11px/1.2 Inter,Arial,sans-serif}#wfAnnouncementStrip .wf-ann-icon{flex:0 0 auto;font-size:13px}#wfAnnouncementStrip .wf-ann-title{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e5f0ff;letter-spacing:.12px}@media(max-width:800px){#wfAnnouncementStrip{margin:0 0 8px;height:32px;min-height:32px;padding:0 9px}}
 @media(max-width:650px){#wfShade{padding:8px}.wf-panel{padding:15px;min-height:96vh}.wf-head{align-items:flex-start;flex-direction:column}.wf-row{align-items:flex-start;flex-direction:column}.wf-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.wf-tab{width:100%}}
 `;document.head.append(st);
 }
@@ -70,7 +71,21 @@ async function loadTab(n){
 }
 function activityRows(rows){return `<div class="wf-list">${rows.map(x=>`<div class="wf-row"><div><b>${esc(x.action||'Activity')}</b><div class="wf-muted">${esc(x.actor_username||'User')} ${x.target_user_id?'· Target user #'+esc(x.target_user_id):''}</div></div><div class="wf-muted">${esc(x.created_at?new Date(x.created_at).toLocaleString():'')}</div></div>`).join('')||'<div class="wf-empty">No activity recorded yet.</div>'}</div>`}
 function downloadJson(data,name){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
-async function showAnnouncements(){try{const d=await req('/api/announcements');const arr=d.announcements||[];if(!arr.length)return;const wrap=document.createElement('section');wrap.className='wf-panel';wrap.style.margin='14px 0';wrap.innerHTML='<h3>📢 Team announcements</h3>'+arr.map(a=>`<article class="wf-card" style="margin:8px 0"><b>${esc(a.title)}</b><p>${esc(a.message).replace(/\n/g,'<br>')}</p><small class="wf-muted">${esc(new Date(a.created_at).toLocaleString())}</small></article>`).join('');const main=document.querySelector('main')||document.querySelector('.main-content')||document.body;main.prepend(wrap)}catch(e){console.warn('Announcements unavailable:',e.message)}}
+async function showAnnouncements(){
+ try{
+  const d=await req('/api/announcements');
+  const arr=d.announcements||[];
+  if(!arr.length)return;
+  const host=document.querySelector('.main-shell')||document.querySelector('main')||document.querySelector('.main-content');
+  if(!host)return;
+  const old=document.getElementById('wfAnnouncementStrip');if(old)old.remove();
+  const wrap=document.createElement('div');wrap.id='wfAnnouncementStrip';wrap.setAttribute('role','status');wrap.setAttribute('aria-label','Team announcement');
+  wrap.innerHTML='<span class="wf-ann-icon">📢</span><span class="wf-ann-title"></span>';
+  wrap.querySelector('.wf-ann-title').textContent=String(arr[0].title||'Announcement');
+  const header=host.querySelector('.header');
+  if(header)host.insertBefore(wrap,header);else host.prepend(wrap);
+ }catch(e){console.warn('Announcements unavailable:',e.message)}
+}
 function init(){addStyles();renderShell();showAnnouncements()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

@@ -772,6 +772,10 @@
 <button class="other-card trouble" onclick="openOtherForm('trouble')"><span class="card-icon">🔎</span><b>TROUBLESHOOTING CONTACT LOG WITH NO REPAIR CASE</b><span>Document troubleshooting sessions and customer interactions that don't require repair cases.</span><span class="arc-btn green">Create Troubleshooting Log</span></button>
 <button class="other-card complaint" onclick="openOtherForm('complaint')"><span class="card-icon">📝</span><b>COMPLAINT CASE</b><span>Customer complaint documentation, issue tracking, and resolution management forms.</span><span class="arc-btn blue">Access Complaint Forms</span></button>
 <button class="other-card inquiry" onclick="openOtherForm('inquiry')"><span class="card-icon">📞</span><b>GENERAL INQUIRY</b><span>Document general customer enquiries, call summaries, and case updates.</span><span class="arc-btn blue">Access General Inquiry Form</span></button>
+<button class="other-card onsite" onclick="openOtherForm('onsite')"><span class="card-icon">🏠</span><b>ONSITE Repair Case</b><span>Onsite repair case for commercial units </span><span class="arc-btn blue">Access Onsite Repair Case </span></button>
+<button class="other-card adprrtb" onclick="openOtherForm('adprrtb')"><span class="card-icon">🔄</span><b>AD PRR/RTB Repair Case</b><span>AD PRR / RTB Commercial Units Repair Case </span><span class="arc-btn blue">Access AD PRR/RTB Repair Case</span></button>
+<button class="other-card adonsite" onclick="openOtherForm('adonsite')"><span class="card-icon">🏢</span><b>AD ONSITE Repair Case</b><span>AD ONSITE Commercial Units Repair Case </span><span class="arc-btn blue">Access AD ONSITE Repair Case</span></button>
+<button class="other-card doa" onclick="openOtherForm('doa')"><span class="card-icon">🏢</span><b>DOA Contact Log</b><span>DOA Contact Log for Replacement within 30 Days </span><span class="arc-btn blue">Access DOA Contact Log</span></button>
 </div>
 <div class="other-form" id="otherForm">
 <div class="arc-top"><h3 id="otherFormTitle">Documentation Form</h3><button class="other-back" onclick="backOtherHub()">← Form Selection</button></div>
@@ -2988,6 +2992,173 @@ const otherSchemas={
    ['Call Summary','textarea','(Call interaction excluding detail on the problem/solution field)','full']]],
   ['Case Information','blue',[
    ['Have you made any changes on the case?','textarea','','full']]]
+ ]},
+
+ // ONSITE REPAIR CASE - standard onsite repair
+ onsite:{title:'🏠 Onsite Repair Case',stages:[
+  {title:'🚨 Problem Field Documentation',outputTitle:'Problem Field Documentation:',groups:[
+   ['Problem Definition','pink',[
+    ['Fault Description','textarea','Describe the reported fault or damage','full'],
+    ['When and where did the damage occur, and how did you first notice the product was damaged?','textarea','','full'],
+    ['What is the nature and extent of the damage?','textarea','','full'],
+    ['What parts are affected?','textarea','','full'],
+    ['How did the damage occur?','textarea','','full'],
+    ['Where on the device is the site of damage?','textarea','','full']]]
+  ]},
+  {title:'✅ Solutions Field Documentation',outputTitle:'Solutions Field Documentation:',groups:[
+   ['Special Instructions for Tech','green',[
+    ['Special Instructions for Tech 1','textarea','Instructions for the onsite technician','full'],
+    ['Special Instructions for Tech 2','textarea','','full'],
+    ['Special Instructions for Tech 3','textarea','','full']]],
+   ['NCC Troubleshooting','green',[
+    ['Advised to provide photos of the extent of damage and all sides of the device','select',['Select option','Y','N'],'full'],
+    ['Advised to take photos from ALL SIDES prior to onsite repair?','select',['Select option','Y','N'],'full'],
+    ['Advised to include accessories? Which one?','text','List accessories or enter N/A','full'],
+    ['Preferred Onsite Repair Address','textarea','Complete onsite repair address','full'],
+    ['Preferred Return Address','textarea','Complete return address, if different','full']]],
+   ['Repair Type Offered','yellow',[
+    ['Repair Type Offered','text','Onsite Repair','full'],
+    ['Customer Contact Person','text','Name of the onsite contact person','full'],
+    ['Contact Person Phone','tel','Contact number','full'],
+    ['Preferred Onsite Schedule','text','Preferred date and time','full'],
+    ['Advised about availability issues for 3rd party onsite repair?','select',['Select option','Y','N'],'full']]],
+   ['QC Checklist','pink',[
+    ['Advised to take photos from ALL SIDES prior to repair?','select',['Select option','Y','N'],'full'],
+    ['Advised to include accessories? Which one?','text','List accessories or enter N/A','full'],
+    ['Advised of Repair Notice & Data Loss?','select',['Select option','Y','N'],'full']]]
+  ]},
+  {title:'☎️ Contact Log Documentation',outputTitle:'Contact Log Documentation:',groups:[
+   ['Customer Details','blue',[
+    ['Name (including company if applicable)','text','Customer / company name'],
+    ['Phone','tel','Phone number'],['Email','email','Email address']]],
+   ['Call Summary','blue',[
+    ['Call Summary','textarea','Describe the call and agreement reached','full']]],
+   ['Purchase Information','yellow',[
+    ['DOP or ESTIMATED DOP','text','Date of purchase or estimated date'],['Retailer','text','Retailer name'],
+    ['Requested Documents','textarea','POP / POF / VOF or other documents requested','full']]],
+   ['Survey Offered','green',[
+    ['Survey','select',['Select option','Y','N'],'full']]]
+  ]}
+ ]},
+
+ // AD PRR / RTB REPAIR CASE - commercial units
+ adprrtb:{title:'🔄 AD PRR/RTB Repair Case',stages:[
+  {title:'🚨 AD PRR/RTB Problem Field Documentation',outputTitle:'Problem Field Documentation:',groups:[
+   ['Problem Definition','pink',[
+    ['Fault Description','textarea','Describe the reported fault','full'],
+    ['Where and when did the damage occur, and how did you first notice the product was damaged?','textarea','','full'],
+    ['What is the nature and extent of the damage?','textarea','','full'],
+    ['What parts are affected?','textarea','','full'],
+    ['How did the damage occur?','textarea','','full'],
+    ['Where on the device is the site of damage?','textarea','','full']]]
+  ]},
+  {title:'✅ AD PRR/RTB Solutions Documentation',outputTitle:'Solutions Field Documentation:',groups:[
+   ['Special Instructions for Tech','green',[
+    ['Special Instructions for Tech 1','textarea','Instructions for the technician','full'],
+    ['Special Instructions for Tech 2','textarea','','full'],
+    ['Special Instructions for Tech 3','textarea','','full']]],
+   ['NCC Troubleshooting','green',[
+    ['Advised to provide photos of the extent of damage and all sides of the device','select',['Select option','Y','N'],'full'],
+    ['Advised to take photos from ALL SIDES prior to shipping?','select',['Select option','Y','N'],'full'],
+    ['Advised to include accessories? Which one?','text','List accessories or enter N/A','full'],
+    ['Preferred Pickup Address','textarea','Complete pickup address','full'],
+    ['Preferred Return Address','textarea','Complete return address','full']]],
+   ['Repair Type Offered','yellow',[
+    ['Repair Type Offered','text','AD PRR / AD RTB','full'],
+    ['Courier Pick-up Time and Date','text','Preferred courier pickup date and time','full'],
+    ['Advised about availability issues for 3rd party pickup?','select',['Select option','Y','N'],'full']]],
+   ['QC Checklist','pink',[
+    ['Advised to take photos from ALL SIDES prior to shipping?','select',['Select option','Y','N'],'full'],
+    ['Advised to include accessories? Which one?','text','List accessories or enter N/A','full'],
+    ['Advised of Repair Notice & Data Loss?','select',['Select option','Y','N'],'full']]]
+  ]},
+  {title:'☎️ AD PRR/RTB Contact Log Documentation',outputTitle:'Contact Log Documentation:',groups:[
+   ['Customer Details','blue',[
+    ['Name (including company if applicable)','text','Customer / company name'],
+    ['Phone','tel','Phone number'],['Email','email','Email address']]],
+   ['Call Summary','blue',[
+    ['Call Summary','textarea','Describe the call and agreement reached','full']]],
+   ['Purchase Information','yellow',[
+    ['DOP or ESTIMATED DOP','text','Date of purchase or estimated date'],['Retailer','text','Retailer name'],
+    ['Requested Documents','textarea','Documents requested from the customer','full']]],
+   ['Survey Offered','green',[
+    ['Survey','select',['Select option','Y','N'],'full']]]
+  ]}
+ ]},
+
+ // AD ONSITE REPAIR CASE - commercial units
+ adonsite:{title:'🏢 AD ONSITE Repair Case',stages:[
+  {title:'🚨 AD ONSITE Problem Field Documentation',outputTitle:'Problem Field Documentation:',groups:[
+   ['Problem Definition','pink',[
+    ['Fault Description','textarea','Describe the reported fault','full'],
+    ['Where and when did the damage occur, and how did you first notice the product was damaged?','textarea','','full'],
+    ['What is the nature and extent of the damage?','textarea','','full'],
+    ['What parts are affected?','textarea','','full'],
+    ['How did the damage occur?','textarea','','full'],
+    ['Where on the device is the site of damage?','textarea','','full']]]
+  ]},
+  {title:'✅ AD ONSITE Solutions Documentation',outputTitle:'Solutions Field Documentation:',groups:[
+   ['Special Instructions for Tech','green',[
+    ['Special Instructions for Tech 1','textarea','Instructions for the onsite technician','full'],
+    ['Special Instructions for Tech 2','textarea','','full'],
+    ['Special Instructions for Tech 3','textarea','','full']]],
+   ['NCC Troubleshooting','green',[
+    ['Advised to provide photos of the extent of damage and all sides of the device','select',['Select option','Y','N'],'full'],
+    ['Advised to take photos from ALL SIDES prior to onsite repair?','select',['Select option','Y','N'],'full'],
+    ['Advised to include accessories? Which one?','text','List accessories or enter N/A','full'],
+    ['Preferred Onsite Repair Address','textarea','Complete onsite repair address','full'],
+    ['Preferred Return Address','textarea','Complete return address, if different','full']]],
+   ['Repair Type Offered','yellow',[
+    ['Repair Type Offered','text','AD ONSITE','full'],
+    ['Customer Contact Person','text','Name of onsite contact person','full'],
+    ['Contact Person Phone','tel','Contact number','full'],
+    ['Preferred Onsite Schedule','text','Preferred date and time','full'],
+    ['Advised about availability issues for 3rd party onsite repair?','select',['Select option','Y','N'],'full']]],
+   ['QC Checklist','pink',[
+    ['Advised to take photos from ALL SIDES prior to repair?','select',['Select option','Y','N'],'full'],
+    ['Advised to include accessories? Which one?','text','List accessories or enter N/A','full'],
+    ['Advised of Repair Notice & Data Loss?','select',['Select option','Y','N'],'full']]]
+  ]},
+  {title:'☎️ AD ONSITE Contact Log Documentation',outputTitle:'Contact Log Documentation:',groups:[
+   ['Customer Details','blue',[
+    ['Name (including company if applicable)','text','Customer / company name'],
+    ['Phone','tel','Phone number'],['Email','email','Email address']]],
+   ['Call Summary','blue',[
+    ['Call Summary','textarea','Describe the call and agreement reached','full']]],
+   ['Purchase Information','yellow',[
+    ['DOP or ESTIMATED DOP','text','Date of purchase or estimated date'],['Retailer','text','Retailer name'],
+    ['Requested Documents','textarea','Documents requested from the customer','full']]],
+   ['Survey Offered','green',[
+    ['Survey','select',['Select option','Y','N'],'full']]]
+  ]}
+ ]},
+
+ // DOA CONTACT LOG - replacement within 30 days
+ doa:{title:'📦 DOA Contact Log',groups:[
+  ['Customer Details','blue',[
+   ['Name (including company if applicable)','text','Customer / company name'],
+   ['Phone','tel','Phone number'],['Email','email','Email address']]],
+  ['Device Information','yellow',[
+   ['Acer Model','text','Device model'],['Serial Number','text','SNID / Serial number'],
+   ['DOP or ESTIMATED DOP','text','Date of purchase or estimated date'],['Retailer','text','Retailer name'],
+   ['Date Reported','text','Date the issue was reported']]],
+  ['Problem Definition','pink',[
+   ['Fault Description','textarea','Describe the reported fault','full'],
+   ['When did the issue occur?','textarea','When was the issue first noticed?','full'],
+   ['How can the issue be replicated?','textarea','Steps to replicate the issue','full'],
+   ['Any recent HW/SW modification/change?','textarea','','full'],
+   ['Can the fault be replicated?','select',['Select option','Y','N'],'full']]],
+  ['Customer Request','yellow',[
+   ['Customer Request','textarea','What is the customer requesting?','full']]],
+  ['Troubleshooting & Actions Taken','green',[
+   ['Customer/Retailer Troubleshooting','textarea','Action > Result','full'],
+   ['NCC Troubleshooting','textarea','Action > Result','full'],
+   ['Action Taken / Replacement Arrangement','textarea','Document the action taken and replacement arrangement','full']]],
+  ['Documents & Follow-up','blue',[
+   ['POP Requested','select',['Select option','Y','N']],
+   ['POF/VOF Requested','select',['Select option','Y','N']],
+   ['Requested Documents','textarea','Documents requested from the customer','full'],
+   ['Survey Offered','select',['Select option','Y','N'],'full']]]
  ]}
 };
 function showOtherForms(){document.getElementById('arcFormsShell').classList.remove('active');document.getElementById('otherForm').classList.remove('active');document.getElementById('otherHub').style.display='grid';document.querySelector('.main-shell').style.display='none';document.getElementById('otherFormsShell').classList.add('active');document.querySelectorAll('.side-link').forEach(x=>x.classList.remove('active'));document.getElementById('otherFormsNav')?.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
@@ -2995,11 +3166,11 @@ function hideOtherForms(){document.getElementById('otherFormsShell').classList.r
 function openOtherForm(type){otherType=type;otherStageIndex=0;const schema=otherSchemas[type];document.getElementById('otherHub').style.display='none';document.getElementById('otherForm').classList.add('active');document.getElementById('otherFormTitle').textContent=schema.title;renderOtherForm();document.getElementById('otherOutput').textContent='Your generated documentation will appear here.';window.scrollTo({top:0,behavior:'smooth'});}
 function otherGroupsForCurrent(){const schema=otherSchemas[otherType];return schema.stages?schema.stages[otherStageIndex].groups:schema.groups;}
 function renderOtherForm(){const schema=otherSchemas[otherType],root=document.getElementById('otherFields'),nav=document.getElementById('otherStageNav');root.innerHTML='';nav.innerHTML='';const staged=!!schema.stages;nav.hidden=!staged;
- if(staged){schema.stages.forEach((st,i)=>{const b=document.createElement('button');b.type='button';const tabContent=[['🚨','Problem Field Documentation','Document the complaint, reported fault, and issue details'],['✅','Solutions Field Documentation','Record solutions offered, actions taken, and customer details'],['☎️','Contact Log Documentation','Log caller information, contact summary, and follow-up details']][i];b.innerHTML='<span>'+tabContent[0]+'</span><strong>'+tabContent[1]+'</strong><span>'+tabContent[2]+'</span>';b.classList.toggle('active',i===otherStageIndex);b.onclick=()=>{saveOtherForm();otherStageIndex=i;renderOtherForm();};nav.appendChild(b);});}
+ if(staged){schema.stages.forEach((st,i)=>{const b=document.createElement('button');b.type='button';b.innerHTML='<strong>'+st.title+'</strong>';b.classList.toggle('active',i===otherStageIndex);b.onclick=()=>{saveOtherForm();otherStageIndex=i;renderOtherForm();};nav.appendChild(b);});}
  const groups=otherGroupsForCurrent();let fieldIndex=0;
  groups.forEach(([group,color,fields],gi)=>{const box=document.createElement('section');box.className='other-group '+color;const heading=document.createElement('div');heading.className='other-group-title';heading.textContent=group;box.appendChild(heading);const grid=document.createElement('div');grid.className='other-group-fields'+(group==='Caller Information'?' three-col':'');fields.forEach(([label,kind,extra,span,help])=>{const wrap=document.createElement('div');wrap.className='arc-field'+(span==='full'||kind==='textarea'?' full':'');const id='other_'+otherType+'_'+(fieldIndex++);const lab=document.createElement('label');lab.htmlFor=id;lab.textContent=label;wrap.appendChild(lab);if(help){const hint=document.createElement('small');hint.textContent=help;hint.style.cssText='display:block;color:#6b7280;font-size:12px;margin:3px 0 7px';wrap.appendChild(hint);}let el;if(kind==='textarea'){el=document.createElement('textarea');el.placeholder=extra||'';}else if(kind==='select'){el=document.createElement('select');(extra||[]).forEach((v,i)=>{const o=document.createElement('option');o.value=i===0?'':v;o.textContent=v;el.appendChild(o);});}else{el=document.createElement('input');el.type=kind;el.placeholder=extra||'';}el.id=id;el.dataset.label=label;wrap.appendChild(el);grid.appendChild(wrap);});box.appendChild(grid);root.appendChild(box);});
  loadOtherForm();root.querySelectorAll('input,textarea,select').forEach(el=>{el.addEventListener('input',saveOtherForm);el.addEventListener('change',saveOtherForm);});
- const prev=document.getElementById('otherPrev'),next=document.getElementById('otherNext'),gen=document.querySelector('#otherActions button[onclick="generateOtherDoc()"]');if(staged){prev.hidden=otherStageIndex===0;next.hidden=otherStageIndex===schema.stages.length-1;document.getElementById('otherSaveLog').hidden=otherStageIndex!==schema.stages.length-1;prev.textContent=otherStageIndex===1?'← Previous: Problem Documentation':'← Previous: Solutions Documentation';next.textContent=otherStageIndex===0?'Next: Solutions Documentation →':'Next: Contact Log Documentation →';gen.textContent='🚀 Generate '+(otherStageIndex===0?'Complaint Problem':otherStageIndex===1?'Complaint Solutions':'Complaint Contact Log')+' Documentation';}else{prev.hidden=true;next.hidden=true;document.getElementById('otherSaveLog').hidden=false;gen.textContent=otherType==='trouble'?'🚀 Generate Troubleshooting Documentation':'🚀 Generate General Enquiry Documentation';}
+ const prev=document.getElementById('otherPrev'),next=document.getElementById('otherNext'),gen=document.querySelector('#otherActions button[onclick="generateOtherDoc()"]');if(staged){prev.hidden=otherStageIndex===0;next.hidden=otherStageIndex===schema.stages.length-1;document.getElementById('otherSaveLog').hidden=otherStageIndex!==schema.stages.length-1;prev.textContent='← Previous: '+schema.stages[otherStageIndex-1].title;next.textContent='Next: '+schema.stages[otherStageIndex+1].title+' →';gen.textContent='🚀 Generate '+schema.stages[otherStageIndex].title+' Documentation';}else{prev.hidden=true;next.hidden=true;document.getElementById('otherSaveLog').hidden=false;gen.textContent=otherType==='trouble'?'🚀 Generate Troubleshooting Documentation':otherType==='doa'?'🚀 Generate DOA Contact Log Documentation':'🚀 Generate General Enquiry Documentation';}
 }
 function backOtherHub(){saveOtherForm();document.getElementById('otherForm').classList.remove('active');document.getElementById('otherHub').style.display='grid';}
 function otherNextStage(){const schema=otherSchemas[otherType];if(!schema.stages)return;saveOtherForm();otherStageIndex=Math.min(schema.stages.length-1,otherStageIndex+1);renderOtherForm();window.scrollTo({top:0,behavior:'smooth'});}
@@ -3049,7 +3220,7 @@ function openSaveLogModal(source){
   if(source==='arc'){
     arcSave(); name=arcVal('arcCaller'); email=arcVal('arcEmail'); phone=arcVal('arcPhone');
   }else{
-    saveOtherForm(); const d=otherStorage()[otherType]||{}; name=d['Caller Name']||''; email=d['Email']||''; phone=d['Number']||d['Caller Number']||'';
+    saveOtherForm(); const d=otherStorage()[otherType]||{}; name=d['Caller Name']||d['Customer Name']||d['Name (including company if applicable)']||''; email=d['Email']||''; phone=d['Number']||d['Caller Number']||d['Phone']||'';
   }
   document.getElementById('saveLogReference').value='';
   document.getElementById('saveLogError').textContent='';
@@ -3084,7 +3255,7 @@ function confirmSaveDocumentationLog(){
  if(pendingDocumentationSource==='arc'){
    arcSave();name=arcVal('arcCaller');email=arcVal('arcEmail');phone=arcVal('arcPhone');summary=arcAllDocumentation();sourceType='RTB / Mail In / PRR';
  }else{
-   saveOtherForm();const d=otherStorage()[otherType]||{};name=d['Caller Name']||'';email=d['Email']||'';phone=d['Number']||d['Caller Number']||'';summary=otherAllDocumentation();sourceType=otherSchemas[otherType].title;
+   saveOtherForm();const d=otherStorage()[otherType]||{};name=d['Caller Name']||d['Customer Name']||d['Name (including company if applicable)']||'';email=d['Email']||'';phone=d['Number']||d['Caller Number']||d['Phone']||'';summary=otherAllDocumentation();sourceType=otherSchemas[otherType].title;
  }
  // Always save new Other Documentation logs under today's date.
  const date = dateKey(new Date());

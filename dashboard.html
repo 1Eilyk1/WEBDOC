@@ -3394,5 +3394,35 @@ document.addEventListener("keydown",function(event){
 </div>
 
   <script src="webdoc-features.js"></script>
+  <style id="webdoc-admin-blue-override">
+    #wfLaunch{background:linear-gradient(135deg,#102b50,#174477 55%,#102b50)!important;border-color:rgba(91,158,255,.62)!important;color:#edf5ff!important;box-shadow:0 7px 22px rgba(0,0,0,.24),0 0 18px rgba(45,126,255,.12)!important}
+    #wfLaunch:hover{background:linear-gradient(135deg,#173c69,#205a96 55%,#173c69)!important;border-color:#76b2ff!important}
+    #wfShade{background:rgba(2,8,20,.84)!important}
+    .wf-panel{background:linear-gradient(145deg,rgba(10,24,45,.99),rgba(7,16,32,.99))!important;color:#e8f1ff!important;border-color:rgba(75,141,255,.32)!important;box-shadow:0 28px 90px #000c,0 0 38px rgba(45,126,255,.08)!important}
+    .wf-head{border-color:rgba(75,141,255,.2)!important}.wf-muted{color:#9eb5d5!important}
+    .wf-close,.wf-btn{background:linear-gradient(135deg,#172a45,#1d3b61)!important;border-color:#34577f!important;color:#eaf3ff!important}
+    .wf-btn.primary,.wf-tab.active{background:linear-gradient(135deg,#2365b8,#17477f)!important;border-color:#5798ee!important;color:#fff!important}
+    .wf-tab{background:#12243b!important;border-color:#2b4668!important;color:#d2e3fa!important}
+    .wf-card{background:linear-gradient(145deg,#142944,#0d1d33)!important;border-color:#29486c!important}.wf-card strong{color:#79b5ff!important}
+    .wf-list{background:rgba(9,22,40,.9)!important;border-color:#29486c!important}.wf-row{border-color:#213b5c!important}
+    .wf-field label{color:#c2d7f2!important}.wf-field input,.wf-field textarea{background:#09172a!important;border-color:#345477!important;color:#eff6ff!important}
+    .wf-note{background:linear-gradient(120deg,rgba(28,87,158,.2),rgba(13,43,82,.24))!important;border-color:rgba(75,141,255,.28)!important;color:#d6e8ff!important}
+  </style>
+  <script>
+  (function(){
+    const originalConfirm=window.confirm.bind(window);
+    window.confirm=function(message){
+      const text=String(message||'');
+      if(text.includes('This will replace documentation records for users included in this backup.'))
+        return originalConfirm('Restore the unified WebDoc backup? This replaces documentation and validation data (records, templates, folders, Pre-Quote drafts and price rules) for the users included in the snapshot. Continue?');
+      return originalConfirm(message);
+    };
+    const updateBackupNotice=()=>document.querySelectorAll('#wfContent .wf-note').forEach(el=>{
+      if(el.textContent.includes('Backups contain documentation records only.'))
+        el.textContent='Unified backups include all users’ Call Documentation, validation records, template and folder libraries, Pre-Quote drafts, and price rules. Passwords and login tokens are excluded. Uploaded evidence file contents are not included yet; only evidence names and validation details are saved.';
+    });
+    const observer=new MutationObserver(updateBackupNotice);observer.observe(document.body,{childList:true,subtree:true});updateBackupNotice();
+  })();
+  </script>
 </body>
 </html>

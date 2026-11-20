@@ -2999,22 +2999,23 @@ const otherSchemas={
   {title:'🚨 Problem Field Documentation',outputTitle:'Problem Field Documentation:',groups:[
    ['Problem Definition','pink',[
     ['Fault Description','textarea','Describe the reported fault or damage','full'],
-    ['How did the issue occur?','textarea','','full'],
-    ['Any recent HW/SW changes?','textarea','','full'],
-    ['What troubleshooting steps customer took before calling Acer?','textarea','','full']
+    ['When and where did the damage occur, and how did you first notice the product was damaged?','textarea','','full'],
+    ['What is the nature and extent of the damage?','textarea','','full'],
+    ['What parts are affected?','textarea','','full'],
+    ['How did the damage occur?','textarea','','full'],
+    ['Where on the device is the site of damage?','textarea','','full']]]
   ]},
   {title:'✅ Solutions Field Documentation',outputTitle:'Solutions Field Documentation:',groups:[
    ['Special Instructions for Tech','green',[
     ['Special Instructions for Tech 1','textarea','Instructions for the onsite technician','full'],
     ['Special Instructions for Tech 2','textarea','','full'],
     ['Special Instructions for Tech 3','textarea','','full']]],
-   ['CONTACT PERSON FOR REPAIR BELOW','green',[
-      ['Contact Name','textarea','','full'],
-      ['Phone','textarea','','full'],
-      ['Address','textarea','','full']]],
-   ['NCC TROUBLESHOOTING','green',[
-    ['TS/Probing questions based on linear troubleshooting?','','full'],
-    ['Action 1','','full','Result 1','','full']]],
+   ['NCC Troubleshooting','green',[
+    ['Advised to provide photos of the extent of damage and all sides of the device','select',['Select option','Y','N'],'full'],
+    ['Advised to take photos from ALL SIDES prior to onsite repair?','select',['Select option','Y','N'],'full'],
+    ['Advised to include accessories? Which one?','text','List accessories or enter N/A','full'],
+    ['Preferred Onsite Repair Address','textarea','Complete onsite repair address','full'],
+    ['Preferred Return Address','textarea','Complete return address, if different','full']]],
    ['Repair Type Offered','yellow',[
     ['Repair Type Offered','text','Onsite Repair','full'],
     ['Customer Contact Person','text','Name of the onsite contact person','full'],

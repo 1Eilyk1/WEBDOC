@@ -3199,8 +3199,7 @@ async function submitPasswordChange(e){
 async function openAdminSettings(){
   const user=getWebdocUser();
   if(String(user.role||'').toLowerCase()!=='admin'){alert('Admin access required.');return;}
-  document.getElementById('adminUsersModal').classList.add('show');
-  await loadAdminUsers();
+  window.location.href='admin.html';
 }
 async function adminApi(path, options={}){
   const response=await fetch('https://acer-cloud-backend.vercel.app'+path,{

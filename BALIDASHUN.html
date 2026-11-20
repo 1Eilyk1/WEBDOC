@@ -399,6 +399,10 @@ body::after{right:-30vw;transform:translateY(-50%) rotate(5deg);border:2px solid
 @media(max-width:850px){#manageTemplatesPanel .template-layout{grid-template-columns:1fr!important}#manageTemplatesPanel .template-editor{position:static}#manageTemplatesPanel #templateBody{min-height:250px!important}}
 </style>
 
+
+<style id="quote-separation-validation">
+#toggleQuoteSettingsBtn,#preQuoteTabBtn,#savedDraftsTabBtn,#preQuotePanel,#savedDraftsPanel,#quoteToolsCard{display:none!important}
+</style>
 </head>
 <body>
 <div class="neon-edge-orbit" aria-hidden="true"><div class="neon-loop"></div></div>
@@ -408,7 +412,7 @@ body::after{right:-30vw;transform:translateY(-50%) rotate(5deg);border:2px solid
       <h1>POP / POF Validation</h1>
       <div class="subtitle">Review documents, validate each image, and download the selected evidence as a PDF.</div>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button type="button" class="secondary" id="backToDashboardBtn" onclick="window.location.href='dashboard.html'">← Back to Dashboard</button><button type="button" class="secondary" id="exportAllDataBtn" title="Export app settings, templates, drafts and current form data">Export All Data</button><button type="button" class="secondary" id="importAllDataBtn">Import Backup</button><input id="importAllDataFile" type="file" accept="application/json,.json" style="display:none"><button class="danger" id="clearBtnTop" type="button" title="Clear validation evidence and results (Shift + F1)">🗑 Clear All <span style="font-size:11px;opacity:.8">(Shift + F1)</span></button><button type="button" class="secondary" id="cloudRecordsBtn">☁ Cloud Records</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button type="button" class="secondary" onclick="window.location.href='quote.html'">Pre Quote / Saved Drafts</button><button type="button" class="secondary" id="backToDashboardBtn" onclick="window.location.href='dashboard.html'">← Back to Dashboard</button><button type="button" class="secondary" id="exportAllDataBtn" title="Export app settings, templates, drafts and current form data">Export All Data</button><button type="button" class="secondary" id="importAllDataBtn">Import Backup</button><input id="importAllDataFile" type="file" accept="application/json,.json" style="display:none"><button class="danger" id="clearBtnTop" type="button" title="Clear validation evidence and results (Shift + F1)">🗑 Clear All <span style="font-size:11px;opacity:.8">(Shift + F1)</span></button><button type="button" class="secondary" id="cloudRecordsBtn">☁ Cloud Records</button></div>
   </div>
 
   <section id="cloudRecordsPanel" class="card" style="display:none;margin:12px 0 18px">
@@ -787,7 +791,7 @@ async function requireWebdocSession(){
   if(!webdocToken){window.location.replace('index.html');throw new Error('Please sign in to WebDoc first.');}
   const d=await webdocApi('/api/auth/me'); webdocAccount=d.user||{};
   if(webdocAccount.mustChangePassword){window.location.replace('index.html');throw new Error('Please change your password first.');}
-  const back=$('backToDashboardBtn'); if(back) back.textContent='← Back to Dashboard';
+  const back=$('backToDashboardBtn'); if(back) back.textContent='← Back to WebDoc';
 }
 function currentValidationCloudData(){
   const ownTemplates=(templateItems||[]).filter(t=>!t.creatorUserId||Number(t.creatorUserId)===Number(webdocAccount.id)).map(({creatorUserId,creatorUsername,...t})=>t);

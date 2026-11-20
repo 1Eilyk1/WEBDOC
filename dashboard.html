@@ -604,6 +604,7 @@
 <div class="profile-menu" id="profileMenu">
   <button type="button" onclick="toggleProfileSettings()">⚙️ Settings <span style="margin-left:auto">›</span></button>
   <div class="profile-submenu" id="profileSettingsMenu">
+    <button type="button" onclick="openPersonalSettings()">👤 Personal Settings</button>
     <button type="button" onclick="changeMyPassword()">🔑 Change Password</button>
   </div>
   <button type="button" id="adminSettingsButton" onclick="openAdminSettings()" style="display:none">🛠️ Admin Settings</button>
@@ -3335,12 +3336,61 @@ function initializeProfileMenu(){
   const avatar=document.getElementById('profileAvatar');
   const name=document.getElementById('profileUsername');
   const roleLabel=document.getElementById('profileRole');
-  if(avatar)avatar.textContent=username.trim().charAt(0).toUpperCase()||'U';
+  if(avatar)renderProfileAvatar(avatar,username);
+
   if(name)name.textContent=username;
   if(roleLabel)roleLabel.textContent=role==='admin'?'Administrator':'Standard user';
   const adminButton=document.getElementById('adminSettingsButton');
   if(adminButton)adminButton.style.display=role==='admin'?'flex':'none';
 }
+function profilePhotoKey(){
+  const u=getWebdocUser();
+  const identity=String(u.id||u.username||'default').toLowerCase();
+  return 'webdoc_profile_photo_v1_'+identity.replace(/[^a-z0-9_-]/g,'_');
+}
+function renderProfileAvatar(target,username){
+  if(!target)return;
+  const photo=localStorage.getItem(profilePhotoKey());
+  target.innerHTML='';
+  if(photo){
+    const img=document.createElement('img');img.src=photo;img.alt='Profile picture';target.appendChild(img);target.classList.add('has-photo');
+  }else{target.textContent=(String(username||'U').trim().charAt(0).toUpperCase()||'U');target.classList.remove('has-photo');}
+}
+let pendingProfilePhoto=null;
+function openPersonalSettings(){
+  const modal=document.getElementById('personalSettingsModal');
+  pendingProfilePhoto=localStorage.getItem(profilePhotoKey())||'';
+  renderProfilePreview(pendingProfilePhoto);
+  const input=document.getElementById('profilePhotoInput');if(input)input.value='';
+  modal?.classList.add('show');
+}
+function renderProfilePreview(src){
+  const box=document.getElementById('personalSettingsPreview');if(!box)return;
+  box.innerHTML='';
+  if(src){const img=document.createElement('img');img.src=src;img.alt='Profile preview';box.appendChild(img);}
+  else box.textContent=(getWebdocUser().username||'U').trim().charAt(0).toUpperCase()||'U';
+}
+function closePersonalSettings(){document.getElementById('personalSettingsModal')?.classList.remove('show');pendingProfilePhoto=null;}
+function removeProfilePhoto(){pendingProfilePhoto='';renderProfilePreview('');}
+function saveProfilePhoto(){
+  const key=profilePhotoKey();
+  if(pendingProfilePhoto)localStorage.setItem(key,pendingProfilePhoto);else localStorage.removeItem(key);
+  renderProfileAvatar(document.getElementById('profileAvatar'),getWebdocUser().username||'User');
+  closePersonalSettings();
+}
+document.addEventListener('change',function(e){
+  if(e.target?.id!=='profilePhotoInput')return;
+  const file=e.target.files?.[0];if(!file)return;
+  if(!/^image\/(png|jpeg|webp|gif|bmp)$/.test(file.type)){alert('Please choose a JPG, PNG, WEBP, GIF or BMP image.');e.target.value='';return;}
+  if(file.size>5*1024*1024){alert('Please choose an image smaller than 5 MB.');e.target.value='';return;}
+  const reader=new FileReader();
+  reader.onload=()=>{const img=new Image();img.onload=()=>{
+    const canvas=document.createElement('canvas');canvas.width=256;canvas.height=256;
+    const ctx=canvas.getContext('2d');const side=Math.min(img.width,img.height);const sx=(img.width-side)/2,sy=(img.height-side)/2;
+    ctx.drawImage(img,sx,sy,side,side,0,0,256,256);pendingProfilePhoto=canvas.toDataURL('image/jpeg',.86);renderProfilePreview(pendingProfilePhoto);
+  };img.src=reader.result;};
+  reader.readAsDataURL(file);
+});
 function toggleProfileMenu(){
   const menu=document.getElementById('profileMenu');
   const trigger=document.getElementById('profileTrigger');
@@ -3544,6 +3594,15 @@ document.addEventListener("keydown",function(event){
 .admin-loading,.admin-error{padding:22px;text-align:center;color:#aebed4}.admin-error{color:#ffabb4}
 @media(max-width:600px){.webdoc-dialog{padding:19px}.admin-user-row{grid-template-columns:1fr auto}.admin-user-row .admin-status{grid-column:2;grid-row:1}.admin-user-actions{grid-column:1/-1}}
 </style>
+<div class="webdoc-modal" id="personalSettingsModal" role="dialog" aria-modal="true" aria-labelledby="personalSettingsTitle">
+ <div class="webdoc-dialog narrow">
+  <div class="webdoc-dialog-head"><div class="webdoc-dialog-icon">👤</div><div><h2 id="personalSettingsTitle">Personal Settings</h2><p>Personalize the profile shown beside your username.</p></div></div>
+  <div id="personalSettingsPreview" class="wd-profile-preview">U</div>
+  <label class="wd-profile-upload" for="profilePhotoInput">Upload profile picture<input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp"></label>
+  <p class="wd-profile-hint">JPG, PNG, WEBP, GIF or BMP · Maximum 5 MB. Your picture is saved separately for your signed-in account in this browser.</p>
+  <div class="webdoc-actions"><button type="button" onclick="removeProfilePhoto()">Remove picture</button><button type="button" onclick="closePersonalSettings()">Cancel</button><button type="button" class="admin-primary" onclick="saveProfilePhoto()">Save Picture</button></div>
+ </div>
+</div>
 <div class="webdoc-modal" id="cloudImportModal" role="dialog" aria-modal="true" aria-labelledby="cloudImportTitle">
  <div class="webdoc-dialog narrow">
   <div class="webdoc-dialog-head"><div class="webdoc-dialog-icon">☁</div><div><h2 id="cloudImportTitle">Cloud data not found</h2><p>Your account does not have saved documentation in the cloud yet.</p></div></div>

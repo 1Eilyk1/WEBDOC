@@ -791,7 +791,7 @@ async function requireWebdocSession(){
   if(!webdocToken){window.location.replace('index.html');throw new Error('Please sign in to WebDoc first.');}
   const d=await webdocApi('/api/auth/me'); webdocAccount=d.user||{};
   if(webdocAccount.mustChangePassword){window.location.replace('index.html');throw new Error('Please change your password first.');}
-  const back=$('backToDashboardBtn'); if(back) back.textContent='← Back to WebDoc';
+  const back=$('backToDashboardBtn'); if(back) back.textContent='← Back to Dashboard';
 }
 function currentValidationCloudData(){
   const ownTemplates=(templateItems||[]).filter(t=>!t.creatorUserId||Number(t.creatorUserId)===Number(webdocAccount.id)).map(({creatorUserId,creatorUsername,...t})=>t);

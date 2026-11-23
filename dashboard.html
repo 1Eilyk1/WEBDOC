@@ -600,12 +600,12 @@
 </style><style>
 
 /* WebDoc announcements / update notifications */
-.webdoc-notify-wrap{position:fixed;right:22px;top:18px;z-index:12000;font-family:inherit}
+.webdoc-notify-wrap{position:fixed;right:22px;top:18px;z-index:2147483001;font-family:inherit}
 .webdoc-notify-bell{position:relative;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid rgba(119,153,205,.38);border-radius:14px;background:rgba(9,18,38,.88);color:#eaf2ff;box-shadow:0 8px 28px rgba(0,0,0,.28);cursor:pointer;font-size:20px;backdrop-filter:blur(14px)}
 .webdoc-notify-bell:hover{border-color:#69d9ff;transform:translateY(-1px)}
 .webdoc-notify-count{position:absolute;right:-6px;top:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:#ff557d;color:#fff;font:700 11px/19px Arial,sans-serif;text-align:center;box-shadow:0 0 0 2px #0b1428}
 .webdoc-notify-count[hidden]{display:none}
-.webdoc-notify-panel{display:none;position:fixed;right:22px;top:72px;width:min(420px,calc(100vw - 28px));max-height:min(72vh,650px);overflow:auto;padding:16px;border:1px solid rgba(116,158,220,.28);border-radius:18px;background:linear-gradient(155deg,rgba(13,25,49,.98),rgba(7,13,28,.98));color:#eaf2ff;box-shadow:0 22px 70px rgba(0,0,0,.48);backdrop-filter:blur(18px)}
+.webdoc-notify-panel{display:none;position:fixed;right:22px;top:72px;z-index:2147483000;width:min(420px,calc(100vw - 28px));max-height:min(72vh,650px);overflow:auto;padding:16px;border:1px solid rgba(116,158,220,.28);border-radius:18px;background:linear-gradient(155deg,rgba(13,25,49,.98),rgba(7,13,28,.98));color:#eaf2ff;box-shadow:0 22px 70px rgba(0,0,0,.48);backdrop-filter:blur(18px)}
 .webdoc-notify-panel.open{display:block}
 .webdoc-notify-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .webdoc-notify-head h3{margin:0;font-size:16px;color:#f5f8ff}

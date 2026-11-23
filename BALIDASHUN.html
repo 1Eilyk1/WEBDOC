@@ -366,6 +366,15 @@ body::after{right:-30vw;transform:translateY(-50%) rotate(5deg);border:2px solid
 #manageTemplatesPanel .back-row .controls button{padding:8px 10px;font-size:12px}
 @media(max-width:850px){#manageTemplatesPanel .template-layout{grid-template-columns:1fr!important}#manageTemplatesPanel .template-editor{position:static}#manageTemplatesPanel #templateBody{min-height:250px!important}}
 
+
+/* Templates-page owner filter (kept out of Manage Templates) */
+.templates-owner-filter{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 16px;padding:13px 15px;border:1px solid rgba(112,160,220,.2);border-radius:13px;background:rgba(8,20,39,.58)}
+.templates-owner-filter label{margin:0;font-size:12px;font-weight:700;color:#d7e8ff}
+.templates-owner-filter select{min-width:230px;max-width:100%;padding:9px 11px;border:1px solid rgba(112,160,220,.3);border-radius:9px;background:#10213a;color:#eef6ff}
+.templates-owner-filter small{flex-basis:100%;color:#8ea5c2;font-size:11px;line-height:1.45}
+#manageTemplatesPanel .shared-owner-filter{display:none!important}
+#preQuotePanel,#savedDraftsPanel{display:none!important}
+
 </style>
 
 <style id="webdoc-template-clean-layout">
@@ -485,8 +494,6 @@ body::after{right:-30vw;transform:translateY(-50%) rotate(5deg);border:2px solid
   <div class="app-tabs" role="tablist" aria-label="Program sections">
     <button type="button" class="app-tab active" id="validationTabBtn" role="tab" aria-selected="true">Validation</button>
     <button type="button" id="toggleQuoteSettingsBtn" class="app-tab settings-toggle" aria-expanded="false" aria-controls="quoteToolsCard" title="Show or hide price settings">▸</button>
-    <button type="button" class="app-tab" id="preQuoteTabBtn" role="tab" aria-selected="false">Pre Quote</button>
-    <button type="button" class="app-tab" id="savedDraftsTabBtn" role="tab" aria-selected="false">Saved Drafts</button>
     <button type="button" class="app-tab" id="templatesTabBtn" role="tab" aria-selected="false">Templates</button>
   </div>
 
@@ -681,7 +688,7 @@ body::after{right:-30vw;transform:translateY(-50%) rotate(5deg);border:2px solid
 
   </div><!-- /validationPanel -->
 
-  <section id="preQuotePanel" style="display:none">
+  <section id="preQuotePanel" style="display:none!important" aria-hidden="true">
     <div id="preQuoteTillPayWorkspace" style="margin-top:0">
     <div id="paymentsQuotePanel" class="card" style="display:block;margin-top:18px">
       <h2 style="margin-top:0">Pre Quote — TillPay Repair Quote</h2>
@@ -737,7 +744,7 @@ body::after{right:-30vw;transform:translateY(-50%) rotate(5deg);border:2px solid
       </div>
   </section>
 
-  <section id="savedDraftsPanel" style="display:none">
+  <section id="savedDraftsPanel" style="display:none!important" aria-hidden="true">
     <div class="card" style="margin-top:18px">
       <h2 style="margin-top:0">Saved Pre Quote Drafts</h2>
       <p class="template-help">Save and reopen quotes here. Drafts sync to your WebDoc account when connected.</p>
@@ -752,6 +759,7 @@ body::after{right:-30vw;transform:translateY(-50%) rotate(5deg);border:2px solid
   <section id="templatesPanel" style="display:none">
     <div class="card" id="templateHomeView">
       <div class="back-row"><div><h2 style="margin:0 0 8px">Templates</h2><p class="template-help" style="margin:0">Choose a folder to browse your saved responses.</p></div><div class="controls"><button type="button" class="secondary" id="exportTemplatesJsonBtn">Export Templates (JSON)</button><button type="button" class="secondary" id="importTemplatesJsonBtn">Import Templates</button><input id="importTemplatesJsonFile" type="file" accept="application/json,.json" style="display:none"><button type="button" class="secondary" id="openManageTemplatesBtn">Manage Templates</button></div></div>
+      <div class="templates-owner-filter"><label for="templatesOwnerFilter">Show templates from</label><select id="templatesOwnerFilter"><option value="mine">My templates only</option><option value="all">My templates + all teammates</option></select><small>Choose a teammate UID to show only your folders and that teammate’s shared folders.</small></div>
       <div id="folderHomeGrid" class="folder-home-grid"></div>
     </div>
     <div class="card" id="templateFolderView" style="display:none">
@@ -794,7 +802,6 @@ body::after{right:-30vw;transform:translateY(-50%) rotate(5deg);border:2px solid
             <div class="shared-folders-inner">
               <div class="shared-description">Teammates’ folders are read-only. Use Duplicate to make an editable copy in your own folders.</div>
               <div class="shared-actions"><button type="button" class="secondary" id="refreshSharedTemplatesBtn">↻ Refresh shared folders</button></div>
-              <div class="shared-owner-filter"><label for="sharedFolderOwnerFilter">Show folders from</label><select id="sharedFolderOwnerFilter" onchange="renderSharedFolderList()"><option value="all">All teammates</option></select></div>
               <div id="sharedFolderList" class="folder-list"></div>
               <div id="sharedFoldersEmpty" class="template-help">No shared folders found yet.</div>
             </div>
@@ -931,7 +938,7 @@ async function initialiseValidationCloud(){
     await syncValidationDataToCloud(false);
     const teamCount=(d.teamLibraries||[]).length; const folderCount=(d.teamLibraries||[]).reduce((sum,lib)=>sum+(lib.folders||[]).length,0);
     setTemplateCloudStatus(`✓ Connected to WebDoc cloud · your changes are synced · ${teamCount} teammate(s), ${folderCount} shared folder(s) loaded.`, 'ok');
-    const status=$('pdfExportStatus');if(status)status.textContent='Connected to WebDoc cloud · your templates, folders and Pre-Quote drafts are synced.';
+    const status=$('pdfExportStatus');if(status)status.textContent='Connected to WebDoc cloud · your templates and folders are synced.';
   }catch(e){setTemplateCloudStatus('⚠ WebDoc cloud unavailable: '+e.message+' · Local browser data has not been deleted.','error');const status=$('pdfExportStatus');if(status)status.textContent='WebDoc cloud unavailable: '+e.message+' Local browser data has not been deleted.';console.warn('Validation cloud initialisation:',e);}
 }
 function validationRecordSnapshot(){
@@ -2319,7 +2326,7 @@ document.addEventListener("keydown",e=>{if(e.ctrlKey||e.altKey||e.metaKey)return
 // Template Library with main folders and templates nested inside each folder.
 const TEMPLATE_STORAGE_KEY = "acerResponseTemplateLibrary_v1";
 const FOLDER_STORAGE_KEY = "acerResponseTemplateFolders_v1";
-const defaultFolders = [{id:"pop",name:"POP"},{id:"prequote-tillpay",name:"Pre-Quote / TillPay"}];
+const defaultFolders = [{id:"pop",name:"POP"}];
 const defaultTemplates = [
   {id:"invalid-pof-photos", folderId:"pop", name:"Invalid POF — Request Photos", body:"Good day!\n\nThank you for contacting Acer Customer Support.\n\nWe received your email regarding the invoice of your Acer product for Case ID: [Case ID]. However, the photos provided do not clearly show the whole laptop screen and the device from all sides.\n\nMay we request that you send us another email attaching clear photos of your Acer product showing the fault or damage. Please ensure the photos show the whole laptop screen and the device from all sides. Please use the following file type or format:\n\n• Photos: .jpg, .jpeg\n\nYou may send your email to pop.aca@acer.com with the SNID/Serial Number or the Repair Case Number as the subject of your email.\n\nPlease be advised that we will close the case by [DD/MM/YYYY] if no response is received.\n\nThank you and have a nice day!\n\nNOTE: Please DO NOT REPLY to this email as this is not being monitored. If you have further concerns, please feel free to call us at 1300 365 100 (AU) / 0800 862 237 (NZ).\n\nKind regards,\nAcer Customer Support Team"},
   {id:"invalid-pof-videos", folderId:"pop", name:"Invalid POF — Request Videos", body:"Good day!\n\nThank you for contacting Acer Customer Support.\n\nWe received your email regarding the invoice of your Acer product for Case ID: [Case ID]. However, the videos provided do not clearly show the whole laptop screen and the device from all sides.\n\nMay we request that you send us another email attaching clear videos of your Acer product. Please ensure the videos show the entire laptop screen and the device from all sides, including the fault or damage. Please use the following file type or format:\n\n• Videos: .mp4, .mov\n\nYou may send your email to pop.aca@acer.com with the SNID/Serial Number or the Repair Case Number as the subject of your email.\n\nPlease be advised that we will close the case by [DD/MM/YYYY] if no response is received.\n\nThank you and have a nice day!\n\nNOTE: Please DO NOT REPLY to this email as this is not being monitored. If you have further concerns, please feel free to call us at 1300 365 100 (AU) / 0800 862 237 (NZ).\n\nKind regards,\nAcer Customer Support Team"},
@@ -2329,16 +2336,8 @@ const defaultTemplates = [
 ];
 let templateFolders = loadTemplateFolders();
 let templateItems = loadTemplateItems();
-// Consolidate the former Payments and TillPay folders into one Pre-Quote / TillPay workspace.
-// Load templateItems before this migration so it is initialized before it is accessed.
-(function consolidateQuoteFolders(){
- let quote=templateFolders.find(f=>/pre.?quote.*tillpay|tillpay.*pre.?quote/i.test(f.name));
- if(!quote){quote={id:"prequote-tillpay",name:"Pre-Quote / TillPay"};templateFolders.push(quote);}
- templateFolders.filter(f=>/^(payments|tillpay|payments\s*\/\s*tillpay)$/i.test(f.name.trim())).forEach(old=>{
-   templateItems.forEach(t=>{if(t.folderId===old.id)t.folderId=quote.id;});
-   templateFolders=templateFolders.filter(f=>f.id!==old.id);
- });
-})();
+// Validation templates remain separate from the Pre-Quote / TillPay webpage.
+
 let selectedFolderId = templateFolders[0]?.id || "pop";
 let selectedTemplateId = templateItems.find(t=>t.folderId===selectedFolderId)?.id || null;
 function loadTemplateFolders(){try{const a=JSON.parse(localStorage.getItem(FOLDER_STORAGE_KEY)||"null");if(Array.isArray(a)&&a.length)return a;}catch(e){}return defaultFolders.map(f=>({...f}));}
@@ -2348,16 +2347,8 @@ function setTemplateStatus(message){const el=document.getElementById("templateSt
 function renderFolderList(){const list=document.getElementById("folderList");if(!list)return;list.innerHTML="";templateFolders.filter(f=>!f.readOnly).forEach(folder=>{const b=document.createElement("button");b.type="button";b.className="folder-choice"+(folder.id===selectedFolderId?" active":"");const count=templateItems.filter(t=>t.folderId===folder.id).length;b.textContent=`${folderIconFor(folder.name)} ${folder.name} (${count})`;b.addEventListener("click",()=>{selectedFolderId=folder.id;selectedTemplateId=templateItems.find(t=>t.folderId===folder.id)?.id||null;renderTemplateList();renderFolderList();if(selectedTemplateId)selectTemplate(selectedTemplateId);else createNewTemplate();});list.appendChild(b);});document.getElementById("savedTemplatesLabel").textContent="Templates in "+(templateFolders.find(f=>f.id===selectedFolderId)?.name||"Folder");}
 function renderSharedFolderList(){
  const list=document.getElementById('sharedFolderList');if(!list)return;list.innerHTML='';
- const shared=templateFolders.filter(f=>f.readOnly);
- const filter=document.getElementById('sharedFolderOwnerFilter');
- if(filter){
-   const previous=filter.value||'all';
-   const owners=[...new Map(shared.map(f=>[String(f.creatorUserId),{id:String(f.creatorUserId),username:f.creatorUsername||'Teammate'}])).values()].sort((a,b)=>Number(a.id)-Number(b.id));
-   filter.innerHTML='<option value="all">All teammates</option>'+owners.map(o=>`<option value="${o.id}">UID ${o.id} / ${String(o.username).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</option>`).join('');
-   filter.value=owners.some(o=>o.id===previous)?previous:(owners.some(o=>o.id==='2')?'2':'all');
- }
- const owner=filter?.value||'all';const visible=shared.filter(f=>owner==='all'||String(f.creatorUserId)===owner);
- const empty=document.getElementById('sharedFoldersEmpty');if(empty){empty.style.display=visible.length?'none':'block';empty.textContent=shared.length?'No folders from this teammate.':'No shared folders found yet.';}
+ const visible=templateFolders.filter(f=>f.readOnly);
+ const empty=document.getElementById('sharedFoldersEmpty');if(empty){empty.style.display=visible.length?'none':'block';empty.textContent='No shared folders found yet.';}
  visible.forEach(folder=>{const b=document.createElement('button');b.type='button';b.className='folder-choice'+(folder.id===selectedFolderId?' active':'');const count=templateItems.filter(t=>t.folderId===folder.id).length;
    if(folder.iconData){const img=document.createElement('img');img.src=folder.iconData;img.alt='';img.className='shared-folder-icon-img';b.appendChild(img);b.append(' ');}
    const label=document.createElement('span');label.textContent=`${folder.name} · ${folder.creatorUsername||'Teammate'} (${count})`;b.appendChild(label);b.title=`UID ${folder.creatorUserId} · Shared by ${folder.creatorUsername||'a teammate'} · read-only`;
@@ -2380,7 +2371,32 @@ function folderIconFor(name){const n=String(name||"").toLowerCase();if(/pre.?quo
 function renderFolderIconPreview(){const box=document.getElementById("folderIconPreview");if(!box)return;const folder=templateFolders.find(f=>f.id===selectedFolderId);box.innerHTML="";if(folder?.iconData){const img=document.createElement("img");img.src=folder.iconData;img.alt="Custom folder icon";box.appendChild(img);}else box.textContent=folderIconFor(folder?.name||"");const input=document.getElementById("folderIconUpload");if(input)input.disabled=!folder||!!folder.readOnly;const remove=document.getElementById("removeFolderIconBtn");if(remove)remove.disabled=!folder||!!folder.readOnly;}
 function saveFolderIconFile(file){const folder=templateFolders.find(f=>f.id===selectedFolderId);if(!folder||folder.readOnly){setTemplateStatus("Select one of your own folders before changing its picture.");return;}if(!file)return;if(!/^image\/(png|jpeg|webp|gif|bmp)$/.test(file.type)){setTemplateStatus("Choose a JPG, PNG, WEBP, GIF or BMP image.");return;}if(file.size>3*1024*1024){setTemplateStatus("Folder pictures must be 3 MB or smaller.");return;}const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas");c.width=128;c.height=128;const ctx=c.getContext("2d"),side=Math.min(img.width,img.height);ctx.drawImage(img,(img.width-side)/2,(img.height-side)/2,side,side,0,0,128,128);folder.iconData=c.toDataURL("image/jpeg",.82);persistTemplateItems();renderFolderIconPreview();setTemplateStatus("Folder picture saved.");};img.src=reader.result;};reader.readAsDataURL(file);}
 
-function renderFolderHome(){const grid=document.getElementById("folderHomeGrid");if(!grid)return;grid.innerHTML="";templateFolders.forEach(folder=>{const count=templateItems.filter(t=>t.folderId===folder.id).length;const b=document.createElement("button");b.type="button";b.className="folder-tile";b.innerHTML=`<span class="folder-icon"></span><strong></strong><span class="folder-count"></span>`;if(folder.iconData){const img=document.createElement("img");img.src=folder.iconData;img.alt="";img.style.cssText="width:30px;height:30px;max-width:30px;max-height:30px;object-fit:cover;border-radius:7px;display:block";b.querySelector(".folder-icon").appendChild(img);}else b.querySelector(".folder-icon").textContent=folderIconFor(folder.name);b.querySelector("strong").textContent=folder.name;b.querySelector(".folder-count").textContent=`${count} template${count===1?"":"s"}`;b.addEventListener("click",()=>openTemplateFolder(folder.id));grid.appendChild(b);});const add=document.createElement("button");add.type="button";add.className="folder-tile";add.innerHTML='<span class="folder-icon">＋</span><strong>Add Folder</strong><span class="folder-count">Create a new category</span>';add.addEventListener("click",()=>{switchAppTab("manage");createFolder();});grid.appendChild(add);}
+function renderFolderHome(){
+ const grid=document.getElementById("folderHomeGrid");if(!grid)return;grid.innerHTML="";
+ const filter=document.getElementById("templatesOwnerFilter");
+ const ownId=Number(webdocAccount?.id||0);
+ const sharedOwners=[...new Map(templateFolders.filter(f=>f.readOnly&&f.creatorUserId).map(f=>[String(f.creatorUserId),{id:String(f.creatorUserId),name:f.creatorUsername||"Teammate"}])).values()].sort((a,b)=>Number(a.id)-Number(b.id));
+ if(filter){
+   const previous=filter.value||"mine";
+   filter.innerHTML='<option value="mine">My templates only</option><option value="all">My templates + all teammates</option>'+sharedOwners.map(o=>`<option value="${o.id}">My templates + UID ${o.id} / ${escapeHtml(o.name)}</option>`).join("");
+   filter.value=(previous==="all"||previous==="mine"||sharedOwners.some(o=>o.id===previous))?previous:"mine";
+ }
+ const selectedOwner=filter?.value||"mine";
+ const visibleFolders=templateFolders.filter(folder=>{
+   const isMine=!folder.readOnly&&(!folder.creatorUserId||!ownId||Number(folder.creatorUserId)===ownId);
+   const isSelectedShared=folder.readOnly&&(selectedOwner==="all"||(selectedOwner!=="mine"&&String(folder.creatorUserId)===selectedOwner));
+   return isMine||isSelectedShared;
+ });
+ visibleFolders.forEach(folder=>{
+   const count=templateItems.filter(t=>t.folderId===folder.id).length;
+   const b=document.createElement("button");b.type="button";b.className="folder-tile";b.innerHTML=`<span class="folder-icon"></span><strong></strong><span class="folder-count"></span>`;
+   if(folder.iconData){const img=document.createElement("img");img.src=folder.iconData;img.alt="";img.style.cssText="width:30px;height:30px;max-width:30px;max-height:30px;object-fit:cover;border-radius:7px;display:block";b.querySelector(".folder-icon").appendChild(img);}else b.querySelector(".folder-icon").textContent=folderIconFor(folder.name);
+   b.querySelector("strong").textContent=folder.name+(folder.readOnly?` · ${folder.creatorUsername||"Teammate"}`:"");
+   b.querySelector(".folder-count").textContent=`${count} template${count===1?"":"s"}${folder.readOnly?` · UID ${folder.creatorUserId}`:""}`;
+   b.addEventListener("click",()=>openTemplateFolder(folder.id));grid.appendChild(b);
+ });
+ const add=document.createElement("button");add.type="button";add.className="folder-tile";add.innerHTML='<span class="folder-icon">＋</span><strong>Add Folder</strong><span class="folder-count">Create a new category</span>';add.addEventListener("click",()=>{switchAppTab("manage");createFolder();});grid.appendChild(add);
+}
 function openTemplateFolder(id){selectedFolderId=id;const folder=templateFolders.find(f=>f.id===id);if(!folder)return;document.getElementById("templateHomeView").style.display="none";document.getElementById("templateFolderView").style.display="block";document.getElementById("currentFolderTitle").textContent=folder.name;
  document.getElementById("standardTemplateBrowser").style.display="";
  renderBrowseTemplateList();const first=templateItems.find(t=>t.folderId===id);if(first)showTemplatePreview(first.id);else{document.getElementById("previewTemplateName").textContent="No templates yet";document.getElementById("templatePreviewBody").textContent="This folder is empty. Open Manage Templates to add one.";document.getElementById("previewStatus").textContent="No templates in this folder yet.";}}
@@ -2388,8 +2404,8 @@ let favoriteTemplateIds=(()=>{try{return JSON.parse(localStorage.getItem("acerFa
 function renderBrowseTemplateList(){const list=document.getElementById("browseTemplateList");if(!list)return;list.innerHTML="";const q=(document.getElementById("templateSearchBox")?.value||"").trim().toLowerCase();const onlyFav=!!document.getElementById("favoritesOnlyToggle")?.checked;const filtered=templateItems.filter(t=>t.folderId===selectedFolderId&&(!q||(t.name+" "+t.body).toLowerCase().includes(q))&&(!onlyFav||favoriteTemplateIds.includes(t.id)));if(!filtered.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="No templates in this folder yet.";list.appendChild(empty);return;}filtered.forEach(item=>{const b=document.createElement("button");b.type="button";b.className="template-choice";b.dataset.templateId=item.id;b.textContent=(favoriteTemplateIds.includes(item.id)?"★ ":"")+(item.name||"Untitled Template");b.addEventListener("click",()=>showTemplatePreview(item.id));list.appendChild(b);});}
 function showTemplatePreview(id){selectedTemplateId=id;const item=templateItems.find(t=>t.id===id);if(!item)return;document.getElementById("previewTemplateName").textContent=item.name;document.getElementById("templatePreviewBody").textContent=item.body;document.getElementById("previewStatus").textContent="Previewing: "+item.name;document.querySelectorAll("#browseTemplateList .template-choice").forEach(b=>b.classList.toggle("active",b.dataset.templateId===item.id));const fb=document.getElementById("favoriteTemplateBtn");if(fb)fb.textContent=favoriteTemplateIds.includes(id)?"★ Favorited":"☆ Add Favorite";}
 async function copyPreviewTemplate(){const body=document.getElementById("templatePreviewBody").textContent;if(!body.trim()||body==="Select a template from the list.")return;try{await navigator.clipboard.writeText(body);document.getElementById("previewStatus").textContent="Template copied to clipboard.";}catch(e){const ta=document.createElement("textarea");ta.value=body;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");document.getElementById("previewStatus").textContent="Template copied to clipboard.";}catch(_){document.getElementById("previewStatus").textContent="Copy was blocked. Select the preview text and copy manually.";}ta.remove();}}
-function switchAppTab(which){const showValidation=which==="validation",showPreQuote=which==="prequote",showDrafts=which==="drafts",showManage=which==="manage",showTemplates=which==="templates";document.getElementById("validationPanel").style.display=showValidation?"block":"none";document.getElementById("preQuotePanel").style.display=showPreQuote?"block":"none";document.getElementById("savedDraftsPanel").style.display=showDrafts?"block":"none";document.getElementById("templatesPanel").style.display=showTemplates&&!showManage?"block":"none";document.getElementById("manageTemplatesPanel").style.display=showManage?"block":"none";document.getElementById("validationTabBtn").classList.toggle("active",showValidation);document.getElementById("preQuoteTabBtn").classList.toggle("active",showPreQuote);document.getElementById("savedDraftsTabBtn").classList.toggle("active",showDrafts);document.getElementById("templatesTabBtn").classList.toggle("active",showTemplates||showManage);document.getElementById("validationTabBtn").setAttribute("aria-selected",String(showValidation));document.getElementById("preQuoteTabBtn").setAttribute("aria-selected",String(showPreQuote));document.getElementById("savedDraftsTabBtn").setAttribute("aria-selected",String(showDrafts));document.getElementById("templatesTabBtn").setAttribute("aria-selected",String(showTemplates||showManage));document.getElementById("clearBtnTop").style.display=showValidation?"":"none";if(showPreQuote)calculatePayQuote();if(showDrafts){refreshQuoteDraftList();}if(showTemplates){document.getElementById("templateHomeView").style.display="block";document.getElementById("templateFolderView").style.display="none";renderFolderHome();}syncQuoteSettingsToggle();}
-document.getElementById("validationTabBtn").addEventListener("click",()=>switchAppTab("validation"));document.getElementById("preQuoteTabBtn").addEventListener("click",()=>switchAppTab("prequote"));document.getElementById("savedDraftsTabBtn").addEventListener("click",()=>switchAppTab("drafts"));document.getElementById("templatesTabBtn").addEventListener("click",()=>switchAppTab("templates"));document.getElementById("openManageTemplatesBtn").addEventListener("click",()=>switchAppTab("manage"));document.getElementById("exportTemplatesJsonBtn").addEventListener("click",exportTemplatesJSON);document.getElementById("exportTemplatesJsonManageBtn").addEventListener("click",exportTemplatesJSON);document.getElementById("backToTemplatesBtn").addEventListener("click",()=>switchAppTab("templates"));document.getElementById("backToFoldersBtn").addEventListener("click",()=>{document.getElementById("templateFolderView").style.display="none";document.getElementById("templateHomeView").style.display="block";renderFolderHome();});document.getElementById("copyPreviewBtn").addEventListener("click",copyPreviewTemplate);document.getElementById("templateSearchBox").addEventListener("input",renderBrowseTemplateList);document.getElementById("favoritesOnlyToggle").addEventListener("change",renderBrowseTemplateList);document.getElementById("favoriteTemplateBtn").addEventListener("click",()=>{if(!selectedTemplateId)return;if(favoriteTemplateIds.includes(selectedTemplateId))favoriteTemplateIds=favoriteTemplateIds.filter(id=>id!==selectedTemplateId);else favoriteTemplateIds.push(selectedTemplateId);localStorage.setItem("acerFavoriteTemplateIds_v1",JSON.stringify(favoriteTemplateIds));renderBrowseTemplateList();showTemplatePreview(selectedTemplateId);});document.getElementById("editPreviewBtn").addEventListener("click",()=>{const item=templateItems.find(t=>t.id===selectedTemplateId);if(item){selectedFolderId=item.folderId;selectTemplate(item.id);switchAppTab("manage");}});
+function switchAppTab(which){const showValidation=which==="validation",showManage=which==="manage",showTemplates=which==="templates";document.getElementById("validationPanel").style.display=showValidation?"block":"none";document.getElementById("preQuotePanel").style.display="none";document.getElementById("savedDraftsPanel").style.display="none";document.getElementById("templatesPanel").style.display=showTemplates&&!showManage?"block":"none";document.getElementById("manageTemplatesPanel").style.display=showManage?"block":"none";document.getElementById("validationTabBtn").classList.toggle("active",showValidation);document.getElementById("templatesTabBtn").classList.toggle("active",showTemplates||showManage);document.getElementById("validationTabBtn").setAttribute("aria-selected",String(showValidation));document.getElementById("templatesTabBtn").setAttribute("aria-selected",String(showTemplates||showManage));document.getElementById("clearBtnTop").style.display=showValidation?"":"none";if(showTemplates){document.getElementById("templateHomeView").style.display="block";document.getElementById("templateFolderView").style.display="none";renderFolderHome();}syncQuoteSettingsToggle();}
+document.getElementById("validationTabBtn").addEventListener("click",()=>switchAppTab("validation"));document.getElementById("templatesTabBtn").addEventListener("click",()=>switchAppTab("templates"));document.getElementById("templatesOwnerFilter").addEventListener("change",renderFolderHome);document.getElementById("openManageTemplatesBtn").addEventListener("click",()=>switchAppTab("manage"));document.getElementById("exportTemplatesJsonBtn").addEventListener("click",exportTemplatesJSON);document.getElementById("exportTemplatesJsonManageBtn").addEventListener("click",exportTemplatesJSON);document.getElementById("backToTemplatesBtn").addEventListener("click",()=>switchAppTab("templates"));document.getElementById("backToFoldersBtn").addEventListener("click",()=>{document.getElementById("templateFolderView").style.display="none";document.getElementById("templateHomeView").style.display="block";renderFolderHome();});document.getElementById("copyPreviewBtn").addEventListener("click",copyPreviewTemplate);document.getElementById("templateSearchBox").addEventListener("input",renderBrowseTemplateList);document.getElementById("favoritesOnlyToggle").addEventListener("change",renderBrowseTemplateList);document.getElementById("favoriteTemplateBtn").addEventListener("click",()=>{if(!selectedTemplateId)return;if(favoriteTemplateIds.includes(selectedTemplateId))favoriteTemplateIds=favoriteTemplateIds.filter(id=>id!==selectedTemplateId);else favoriteTemplateIds.push(selectedTemplateId);localStorage.setItem("acerFavoriteTemplateIds_v1",JSON.stringify(favoriteTemplateIds));renderBrowseTemplateList();showTemplatePreview(selectedTemplateId);});document.getElementById("editPreviewBtn").addEventListener("click",()=>{const item=templateItems.find(t=>t.id===selectedTemplateId);if(item){selectedFolderId=item.folderId;selectTemplate(item.id);switchAppTab("manage");}});
 document.getElementById("refreshSharedTemplatesBtn").addEventListener("click",refreshSharedTemplates);document.getElementById("newTemplateBtn").addEventListener("click",createNewTemplate);document.getElementById("newFolderBtn").addEventListener("click",createFolder);document.getElementById("renameFolderBtn").addEventListener("click",renameFolder);document.getElementById("deleteFolderBtn").addEventListener("click",deleteFolder);document.getElementById("folderIconUpload").addEventListener("change",e=>{saveFolderIconFile(e.target.files?.[0]);e.target.value="";});document.getElementById("removeFolderIconBtn").addEventListener("click",()=>{const f=templateFolders.find(x=>x.id===selectedFolderId);if(!f||f.readOnly)return;delete f.iconData;persistTemplateItems();renderFolderIconPreview();setTemplateStatus("Default folder icon restored.");});document.getElementById("saveTemplateBtn").addEventListener("click",saveCurrentTemplate);document.getElementById("copyTemplateBtn").addEventListener("click",copyCurrentTemplate);document.getElementById("duplicateTemplateBtn").addEventListener("click",duplicateCurrentTemplate);document.getElementById("deleteTemplateBtn").addEventListener("click",deleteCurrentTemplate);persistTemplateItems();renderTemplateList();renderFolderHome();renderSharedFolderList();if(selectedTemplateId)selectTemplate(selectedTemplateId);else createNewTemplate();
 $('saveValidationCloudBtn').addEventListener('click',saveValidationRecordToCloud);
 $('cloudRecordsBtn').addEventListener('click',()=>{const panel=$('cloudRecordsPanel');panel.style.display=panel.style.display==='none'?'block':'none';if(panel.style.display==='block')loadCloudRecords();});

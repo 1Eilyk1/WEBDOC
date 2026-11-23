@@ -467,6 +467,11 @@
 .profile-area{position:relative;margin-top:8px;flex-shrink:0}
 .profile-trigger{width:100%;display:flex;align-items:center;gap:11px;padding:10px;border:1px solid rgba(72,170,255,.28);border-radius:14px;background:rgba(8,25,50,.78);color:#edf6ff;cursor:pointer;text-align:left}
 .profile-avatar{width:38px;height:38px;flex:0 0 38px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#00c9ff,#7c3aed);color:white;font-weight:800;box-shadow:0 0 18px #00bfff55}
+.profile-avatar{overflow:hidden;position:relative;isolation:isolate}
+.profile-avatar img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;min-width:0!important;min-height:0!important;object-fit:cover!important;border-radius:50%!important;flex:none!important}
+.wd-profile-preview{width:104px;height:104px;min-width:104px;max-width:104px;min-height:104px;max-height:104px;margin:8px auto 18px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#00c9ff,#7c3aed);color:#fff;font-size:34px;font-weight:800;box-sizing:border-box}
+.wd-profile-preview img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;min-width:0!important;min-height:0!important;object-fit:cover!important;border-radius:50%!important}
+
 .profile-meta{min-width:0;flex:1}.profile-meta strong{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.profile-meta small{display:block;color:#8ca9c9;font-size:10px;text-transform:capitalize}
 .profile-caret{color:#8daed1}
 .profile-menu{display:none;margin-top:7px;padding:7px;border:1px solid rgba(72,170,255,.3);border-radius:13px;background:rgba(5,15,34,.97);box-shadow:0 12px 35px #0009}
@@ -3600,7 +3605,8 @@ document.addEventListener("keydown",function(event){
   <div id="personalSettingsPreview" class="wd-profile-preview">U</div>
   <label class="wd-profile-upload" for="profilePhotoInput">Upload profile picture<input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp"></label>
   <p class="wd-profile-hint">JPG, PNG, WEBP, GIF or BMP · Maximum 5 MB. Your picture is saved separately for your signed-in account in this browser.</p>
-  <div class="webdoc-actions"><button type="button" onclick="removeProfilePhoto()">Remove picture</button><button type="button" onclick="closePersonalSettings()">Cancel</button><button type="button" class="admin-primary" onclick="saveProfilePhoto()">Save Picture</button></div>
+  <div class="webdoc-actions" style="justify-content:flex-start;margin-bottom:14px"><button type="button" onclick="closePersonalSettings();changeMyPassword()">🔑 Change Password</button></div>
+  <div class="webdoc-actions"><button type="button" onclick="removeProfilePhoto()">Remove picture</button><button type="button" onclick="closePersonalSettings()">Cancel</button><button type="button" class="admin-primary" onclick="saveProfilePhoto()">Save Profile Icon</button></div>
  </div>
 </div>
 <div class="webdoc-modal" id="cloudImportModal" role="dialog" aria-modal="true" aria-labelledby="cloudImportTitle">

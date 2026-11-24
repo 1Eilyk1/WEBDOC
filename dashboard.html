@@ -3972,6 +3972,15 @@ document.addEventListener("keydown",function(event){
     ]}
   ];
 
+  // Give each guide's opening question a stable ID. The first question in
+  // each guide intentionally omits an ID in the source data, so normalize it
+  // before tsStart()/tsRestart() attempt to render it.
+  guides.forEach(guide => {
+    guide.steps.forEach((step, index) => {
+      if (!step.id) step.id = index === 0 ? `${guide.id}_start` : `${guide.id}_step_${index+1}`;
+    });
+  });
+
   let currentGuide=null, history=[], currentStep=null, currentResult='';
   const $=id=>document.getElementById(id);
   function escapeHTML(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}

@@ -524,6 +524,37 @@
 .wd-password-field input:focus{border-color:#60a5fa;box-shadow:0 0 0 3px #3b82f622}
 .wd-password-actions button{border-color:#3b506b;background:#17263b;color:#eaf2ff}
 .wd-password-actions .save{background:linear-gradient(120deg,#1d4ed8,#2563eb);border-color:#3b82f6;color:#fff}
+
+/* Troubleshooting decision tree workspace */
+#troubleshootingPage{display:none;box-sizing:border-box;margin:18px 22px 28px 244px;padding:24px;border:1px solid rgba(77,155,255,.28);border-radius:20px;background:linear-gradient(145deg,rgba(7,18,38,.96),rgba(12,15,35,.94));box-shadow:0 18px 55px #0005;min-height:calc(100vh - 40px);color:#eaf3ff}
+#troubleshootingPage.active{display:block}
+.ts-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}
+.ts-head h2{font-size:25px;margin-bottom:6px;color:#f1f7ff}.ts-head p{font-size:12px;color:#9bb4d3}
+.ts-back{border:1px solid #345477;background:#14243b;color:#dcecff;border-radius:9px;padding:10px 14px;cursor:pointer}
+.ts-search{width:100%;max-width:520px;margin:0 0 18px}
+.ts-search input{background:#081426;border:1px solid #294363;color:#edf6ff;border-radius:10px;padding:12px}
+.ts-category-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ts-category{min-height:120px;text-align:left;padding:16px;border:1px solid rgba(90,153,225,.3);border-radius:13px;background:linear-gradient(145deg,#12243b,#10182d);color:#eaf4ff;cursor:pointer;transition:.18s}
+.ts-category:hover{border-color:#00d9ff;transform:translateY(-2px);box-shadow:0 8px 25px #00bfff18}
+.ts-category .ico{font-size:25px;display:block;margin-bottom:9px}.ts-category strong{display:block;font-size:13px}.ts-category small{display:block;color:#8fa9c9;font-size:10px;margin-top:5px;line-height:1.4}
+.ts-work{display:none;max-width:900px;border:1px solid #294363;border-radius:15px;padding:22px;background:rgba(5,14,28,.72)}
+.ts-work.active{display:block}
+.ts-progress{height:5px;background:#1c2d44;border-radius:8px;overflow:hidden;margin:12px 0 20px}.ts-progress span{display:block;height:100%;background:linear-gradient(90deg,#00d9ff,#8b5cf6);width:0;transition:width .2s}
+.ts-step-label{font-size:10px;color:#65dfff;text-transform:uppercase;letter-spacing:1px;font-weight:800}
+.ts-work h3{font-size:20px;margin:9px 0;color:#f0f7ff}.ts-instruction{font-size:13px;color:#b8cbe3;line-height:1.65;white-space:pre-line;margin:0 0 18px}
+.ts-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ts-choice{padding:13px 15px;text-align:left;border:1px solid #345477;background:#13243a;color:#e8f3ff;border-radius:10px;cursor:pointer}
+.ts-choice:hover{border-color:#00d9ff;background:#17324e}
+.ts-result{display:none;margin-top:16px;padding:15px;border:1px solid #27634f;background:rgba(12,54,42,.35);border-radius:11px;color:#d7ffeb;font-size:13px;line-height:1.6}
+.ts-result.active{display:block}
+.ts-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+.ts-action{padding:10px 14px;border:1px solid #345477;border-radius:9px;background:#172943;color:#e6f2ff;cursor:pointer;font-weight:700}
+.ts-action.primary{background:#155e75;border-color:#0891b2}.ts-action:disabled{opacity:.4;cursor:not-allowed}
+.ts-disclaimer{margin-top:18px;padding:12px;border-radius:10px;background:rgba(120,75,20,.15);border:1px solid rgba(245,180,80,.25);color:#f7d9a4;font-size:11px;line-height:1.5}
+@media(max-width:1250px) and (min-width:801px){#troubleshootingPage{margin-left:205px;margin-right:12px}}
+@media(max-width:800px){#troubleshootingPage{margin:8px 12px 20px;padding:15px}.ts-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ts-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:480px){.ts-category-grid,.ts-choices{grid-template-columns:1fr}.ts-work{padding:15px}}
+
 </style>
 <style>
 /* FINAL RTB / Mail In / PRR dark-theme normalization */
@@ -661,6 +692,7 @@
 <button class="side-link" onclick="window.location.href='rn-creation.html'"><span>＋</span>RN Creation</button>
 <button class="side-link" id="caseTrackerNav" onclick="showCaseTracker()"><span>▣</span>Open Case Tracker</button>
 <button class="side-link" id="analyticsNav" onclick="showAnalyticsTab()"><span>▥</span>Analytics</button>
+<button class="side-link" id="troubleshootingNav" onclick="showTroubleshooting()"><span>🧭</span>Troubleshooting Guide</button>
 <button class="side-link" onclick="openAutoBackupSettings()"><span>⚙</span>Backup Settings</button>
 <div class="side-spacer"></div>
 <div class="side-safe"><b>◉ Your data is safe</b>Stored locally in your browser</div>
@@ -735,6 +767,32 @@
 </div>
 </div>
 </div>
+
+<!-- Guided Acer troubleshooting decision tree -->
+<section id="troubleshootingPage" aria-label="Troubleshooting Decision Tree">
+  <div class="ts-head">
+    <div><h2>🧭 Troubleshooting Decision Tree</h2><p>Guided checks for common Acer device issues. Select a symptom to begin.</p></div>
+    <button class="ts-back" type="button" onclick="showDashboardTab()">← Back to Dashboard</button>
+  </div>
+  <div class="ts-search"><input id="tsSearch" type="search" placeholder="Search issue, e.g. Wi-Fi, no power, charging..." oninput="tsFilterCategories(this.value)" aria-label="Search troubleshooting categories"></div>
+  <div class="ts-category-grid" id="tsCategoryGrid"></div>
+  <div class="ts-work" id="tsWork" aria-live="polite">
+    <div class="ts-step-label" id="tsStepLabel">STEP 1</div>
+    <div class="ts-progress"><span id="tsProgressBar"></span></div>
+    <h3 id="tsQuestion"></h3>
+    <p class="ts-instruction" id="tsInstruction"></p>
+    <div class="ts-choices" id="tsChoices"></div>
+    <div class="ts-result" id="tsResult"></div>
+    <div class="ts-actions">
+      <button class="ts-action" type="button" onclick="tsGoBack()" id="tsBackStep">← Previous step</button>
+      <button class="ts-action" type="button" onclick="tsRestart()">↻ Restart guide</button>
+      <button class="ts-action primary" type="button" onclick="tsCopySummary()">Copy troubleshooting summary</button>
+      <button class="ts-action" type="button" onclick="tsChooseAnother()">Choose another issue</button>
+    </div>
+  </div>
+  <div class="ts-disclaimer">Agent reference only: follow the device's model-specific service guidance and Acer policy. Do not ask customers to open the device, handle internal components, or perform electrical repairs. Stop and escalate if there is liquid damage, swelling, burning smell, unusual heat, or visible physical damage.</div>
+</section>
+
 <!-- RTB / Mail In / PRR documentation forms -->
 <section class="arc-shell" id="arcFormsShell">
 <div class="arc-top"><div><h2>🛠 RTB / Mail In / PRR for ARC Repair Case</h2><p>Create structured Problem, Solutions and Contact Log documentation.</p></div><button class="arc-back" onclick="hideARCForms()">← Back to Dashboard</button></div>
@@ -2847,6 +2905,7 @@ function buildDashboardLayout() {
     renderDashboardExtras();
 }
 function showAnalyticsTab(){
+  document.getElementById('troubleshootingPage')?.classList.remove('active');
   document.getElementById('caseTrackerPage')?.classList.remove('active');
   document.getElementById('arcFormsShell')?.classList.remove('active');document.getElementById('otherFormsShell')?.classList.remove('active');document.querySelector('.main-shell').style.display='';
   const page=document.getElementById('analyticsPage'); if(!page)return;
@@ -2860,6 +2919,7 @@ function showAnalyticsTab(){
   renderDashboardExtras(); window.scrollTo({top:0,behavior:'smooth'});
 }
 function showDashboardTab(){
+  document.getElementById('troubleshootingPage')?.classList.remove('active');
   document.getElementById('caseTrackerPage')?.classList.remove('active');
   // Always close every documentation workspace before restoring the dashboard.
   document.getElementById('arcFormsShell')?.classList.remove('active');
@@ -3206,7 +3266,8 @@ const otherSchemas={
    ['Survey Offered','select',['Select option','Y','N'],'full']]]
  ]}
 };
-function showOtherForms(){document.getElementById('arcFormsShell').classList.remove('active');document.getElementById('otherForm').classList.remove('active');document.getElementById('otherHub').style.display='grid';document.getElementById('onsiteHub').style.display='none';document.querySelector('.main-shell').style.display='none';document.getElementById('otherFormsShell').classList.add('active');document.querySelectorAll('.side-link').forEach(x=>x.classList.remove('active'));document.getElementById('otherFormsNav')?.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function showOtherForms(){
+  document.getElementById('troubleshootingPage')?.classList.remove('active');document.getElementById('arcFormsShell').classList.remove('active');document.getElementById('otherForm').classList.remove('active');document.getElementById('otherHub').style.display='grid';document.getElementById('onsiteHub').style.display='none';document.querySelector('.main-shell').style.display='none';document.getElementById('otherFormsShell').classList.add('active');document.querySelectorAll('.side-link').forEach(x=>x.classList.remove('active'));document.getElementById('otherFormsNav')?.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 function hideOtherForms(){document.getElementById('otherFormsShell').classList.remove('active');document.getElementById('arcFormsShell').classList.remove('active');document.querySelector('.main-shell').style.display='';showDashboardTab();}
 function openOtherForm(type){
  if(type==='onsite'){document.getElementById('otherHub').style.display='none';document.getElementById('otherForm').classList.remove('active');document.getElementById('onsiteHub').style.display='grid';window.scrollTo({top:0,behavior:'smooth'});return;}
@@ -3332,6 +3393,7 @@ let ctMode='open';
 function ctRead(){try{const data=JSON.parse(localStorage.getItem(CT_KEY)||'[]');return Array.isArray(data)?data:[]}catch(e){return []}}
 function ctWrite(rows){localStorage.setItem(CT_KEY,JSON.stringify(rows));ctRender()}
 function showCaseTracker(){
+  document.getElementById('troubleshootingPage')?.classList.remove('active');
   document.getElementById('arcFormsShell')?.classList.remove('active');
   document.getElementById('otherFormsShell')?.classList.remove('active');
   const otherForm=document.getElementById('otherForm');if(otherForm)otherForm.classList.remove('active');
@@ -3817,5 +3879,154 @@ document.addEventListener("keydown",function(event){
 })();
 
 </script>
+
+<script>
+/* Troubleshooting guide: lightweight client-side decision tree; no external services. */
+(function(){
+  const guides = [
+    {id:'wifi',icon:'📶',title:'Wi-Fi / Network',desc:'Cannot detect or connect to a wireless network',steps:[
+      {q:'Can the device detect other Wi-Fi networks?',i:'Check the available network list. Confirm whether nearby networks appear.',c:[['Yes, other networks appear','router'],['No networks appear','airplane']]},
+      {id:'router',q:'Can another device connect to the same Wi-Fi network?',i:'Use another phone or computer to check whether the modem/router is providing internet.',c:[['Yes, other devices connect','forget'],['No, other devices also fail','routerRestart']]},
+      {id:'airplane',q:'Is Airplane mode turned off and Wi-Fi enabled?',i:'Check Windows Quick Settings and confirm Airplane mode is off. Then check that Wi-Fi is enabled.',c:[['Yes, Wi-Fi is enabled','driver'],['No, I turned it off / enabled Wi-Fi','recheck']]},
+      {id:'forget',q:'Does forgetting and reconnecting to the network resolve the issue?',i:'Open Settings → Network & internet → Wi-Fi → Manage known networks. Forget the affected network, reconnect, and enter the password again.',c:[['Yes, it connects now','resolved'],['No, still cannot connect','ipreset']]},
+      {id:'routerRestart',q:'After restarting the modem/router, can the device connect?',i:'Power-cycle the modem/router according to the ISP instructions. Wait until it is fully online, then test again.',c:[['Yes, connection works','resolved'],['No, still no connection','isp']]},
+      {id:'driver',q:'Does the wireless adapter appear in Device Manager?',i:'Right-click Start → Device Manager → Network adapters. Look for the wireless adapter and any warning icon. Do not uninstall it yet.',c:[['Yes, adapter appears normally','adapterReset'],['Missing or has a warning icon','driverEscalate']]},
+      {id:'recheck',q:'After enabling Wi-Fi, are networks visible?',i:'Wait a few seconds and refresh the available network list.',c:[['Yes','router'],['No','driver']]},
+      {id:'ipreset',q:'After Windows network reset / TCP-IP troubleshooting, does it connect?',i:'Use Windows built-in Network troubleshooter first. If permitted by your support procedure, proceed with network reset and restart Windows.',c:[['Yes','resolved'],['No','driverEscalate']]},
+      {id:'adapterReset',q:'Does disabling and re-enabling the wireless adapter restore connectivity?',i:'In Device Manager, right-click the wireless adapter, choose Disable device, wait briefly, then Enable device. Restart if prompted.',c:[['Yes','resolved'],['No','driverEscalate']]},
+      {id:'driverEscalate',q:'Recommended next action',i:'Record the exact model, Windows version, wireless adapter name, Device Manager status, and tests performed. Verify the correct Acer/OEM wireless driver for the exact model before updating or reinstalling.',end:'Further driver or hardware assessment may be required. Document the adapter status and escalate through the approved support process.'},
+      {id:'isp',q:'Recommended next action',i:'Since other devices also cannot connect, verify the modem/router and ISP service before treating this as a laptop fault.',end:'Refer the customer to their ISP/router provider. Retest the Acer device once the network is confirmed working.'},
+      {id:'resolved',q:'Troubleshooting result',i:'The customer confirmed that the Wi-Fi connection is working after the steps performed.',end:'Issue appears resolved. Record the exact step that restored connectivity and confirm stability with the customer.'}
+    ]},
+    {id:'power',icon:'🔌',title:'Power / No Boot',desc:'Device will not turn on or does not boot into Windows',steps:[
+      {q:'Are there any power or charging indicators when the adapter is connected?',i:'Check the power LED and charging LED. Ask whether any fan noise, keyboard light, or screen activity occurs.',c:[['Yes, an indicator or activity appears','display'],['No lights or activity','adapter']]},
+      {id:'display',q:'Does the device show a logo or any image?',i:'Increase screen brightness and check whether the Acer logo or BIOS screen appears.',c:[['Yes, logo appears but Windows does not load','windows'],['No image, but power is on','displayCheck']]},
+      {id:'adapter',q:'Have you checked the wall outlet, power cable, and compatible Acer adapter?',i:'Confirm the outlet works with another device. Check the adapter and cable for visible damage. Use only a compatible approved adapter.',c:[['Power source or cable was the issue','resolved'],['Still no power','reset'] ]},
+      {id:'reset',q:'After the approved power reset procedure for this model, does it turn on?',i:'Disconnect peripherals and follow the official Acer power-reset / battery-reset procedure for the exact model. Do not open the unit.',c:[['Yes','resolved'],['No','service']]},
+      {id:'windows',q:'Can the customer access Windows Recovery or Startup Repair?',i:'Use the Windows recovery options shown on screen. Avoid Reset this PC or reinstalling Windows until data implications and customer consent are addressed.',c:[['Yes, recovery tools open','recovery'],['No, recovery is unavailable','service']]},
+      {id:'displayCheck',q:'Does an external display show an image?',i:'If available, connect a known-good external monitor using a supported connection and select the correct input.',c:[['Yes, external display works','displayEscalate'],['No, still no image','service']]},
+      {id:'recovery',q:'Does Startup Repair resolve the boot issue?',i:'Run Startup Repair once and record the exact result or error message.',c:[['Yes','resolved'],['No','service']]},
+      {id:'displayEscalate',q:'Recommended next action',i:'Record whether the internal display is blank, whether external output works, and any LED or fan activity.',end:'Display-path or hardware assessment may be required. Escalate for further diagnosis.'},
+      {id:'service',q:'Recommended next action',i:'Record the power indicators, adapter test, reset procedure, boot behavior, and any error codes. Stop if there are signs of electrical damage or overheating.',end:'Further repair-center assessment is recommended. Do not instruct the customer to open the device.'},
+      {id:'resolved',q:'Troubleshooting result',i:'The device now powers on or boots after the performed step.',end:'Issue appears resolved. Confirm the device remains stable and document the successful step.'}
+    ]},
+    {id:'battery',icon:'🔋',title:'Battery / Charging',desc:'Not charging, battery drains quickly, or adapter not detected',steps:[
+      {q:'Is the AC adapter recognized and is a charging indicator visible?',i:'Connect the correct adapter and check Windows battery status and the charging LED.',c:[['Yes, charging is indicated','chargeRate'],['No, not detected / no indicator','adapter']]},
+      {id:'chargeRate',q:'Does the battery percentage increase while connected?',i:'Leave the device connected for several minutes while powered on and check whether the percentage changes.',c:[['Yes','resolved'],['No','batteryReport']]},
+      {id:'adapter',q:'Does a known-good compatible Acer adapter work?',i:'Check the outlet and cable. If available, test only with a known-good adapter that meets the exact model specifications.',c:[['Yes, alternate adapter works','adapterFault'],['No, same issue','reset']]},
+      {id:'reset',q:'Does the approved model-specific battery/power reset resolve charging?',i:'Follow the official reset procedure for the exact model. Do not open the unit or disconnect an internal battery.',c:[['Yes','resolved'],['No','service']]},
+      {id:'batteryReport',q:'Does Windows report battery health or an error?',i:'If permitted, generate the Windows battery report and record design capacity, full charge capacity, and any warnings.',c:[['Battery health warning / capacity issue','batteryService'],['No clear warning','service']]},
+      {id:'adapterFault',q:'Recommended next action',i:'Record the original adapter model/specification and the result with the known-good compatible adapter.',end:'The original adapter or cable may require further assessment. Follow the approved accessory replacement process.'},
+      {id:'batteryService',q:'Recommended next action',i:'Record the battery report values and charging behavior. Check for swelling or unusual heat without pressing or handling the battery.',end:'Battery assessment is recommended. If swelling, unusual heat, or odor is present, stop use and follow the safety escalation procedure.'},
+      {id:'service',q:'Recommended next action',i:'Document adapter tests, LED status, battery percentage, and reset results.',end:'Further charging-circuit, battery, or adapter assessment may be required.'},
+      {id:'resolved',q:'Troubleshooting result',i:'Charging behavior returned to normal during testing.',end:'Issue appears resolved. Record the successful step and confirm charging remains stable.'}
+    ]},
+    {id:'display',icon:'🖥️',title:'Display / LCD',desc:'Black screen, flickering, lines, or no image',steps:[
+      {q:'Is the device powered on (power LED, fan, or keyboard lights)?',i:'Confirm power activity before diagnosing the display.',c:[['Yes, device appears powered on','brightness'],['No, no signs of power','displayPowerEscalate']]},
+      {id:'brightness',q:'Does adjusting brightness or using the display toggle restore the image?',i:'Increase brightness and use the model-supported display toggle shortcut. Check whether the screen is simply switched to another output.',c:[['Yes','resolved'],['No','external']]},
+      {id:'external',q:'Does an external monitor display an image?',i:'Connect a known-good external monitor and select its correct input source.',c:[['Yes, external display works','internalPanel'],['No, external display is also blank','graphics']]},
+      {id:'internalPanel',q:'Is the issue limited to the built-in screen?',i:'Record whether the built-in panel is black, flickering, has lines, or shows physical damage. Do not press or flex the panel.',c:[['Yes','service'],['Not sure','service']]},
+      {id:'graphics',q:'Does the Acer logo appear before Windows loads?',i:'Restart once and observe whether the logo or BIOS screen appears.',c:[['Yes, logo appears','windowsDisplay'],['No logo / no image','service']]},
+      {id:'windowsDisplay',q:'Does the display work in BIOS or Windows Recovery?',i:'If accessible, check whether the issue occurs outside normal Windows operation. Do not change firmware settings unnecessarily.',c:[['Works outside Windows','software'],['Issue remains','service']]},
+      {id:'software',q:'Does the issue clear after the approved graphics-driver troubleshooting?',i:'Record the graphics adapter and driver version. Use the correct model-specific driver and approved support procedure.',c:[['Yes','resolved'],['No','service']]},
+      {id:'displayPowerEscalate',q:'Recommended next action',i:'The device has no visible signs of power. Switch to the Power / No Boot guide and complete the adapter, outlet, and approved power-reset checks.',end:'Power-related troubleshooting is required before assessing the display.'},
+      {id:'service',q:'Recommended next action',i:'Record internal/external display results, LED/fan behavior, visible artifacts, and any physical damage.',end:'Further display or hardware assessment is recommended. If the panel is cracked or damaged, follow the physical-damage assessment process.'},
+      {id:'resolved',q:'Troubleshooting result',i:'The display is functioning normally after the performed step.',end:'Issue appears resolved. Confirm normal display operation and document the step that worked.'}
+    ]},
+    {id:'keyboard',icon:'⌨️',title:'Keyboard / Touchpad',desc:'Keys or touchpad are not responding',steps:[
+      {q:'Does the issue affect the keyboard, touchpad, or both?',i:'Identify the exact affected input device and whether the issue is intermittent or constant.',c:[['Keyboard only','keyboardCheck'],['Touchpad only','touchpadCheck'],['Both devices','restart']]},
+      {id:'keyboardCheck',q:'Do the affected keys work on the sign-in screen or in BIOS (if accessible)?',i:'Test a few keys in a safe text field. Avoid entering passwords into unknown fields.',c:[['Yes, works outside the app','software'],['No, keys fail everywhere','service']]},
+      {id:'touchpadCheck',q:'Is the touchpad enabled in Windows Settings and by the model shortcut?',i:'Check Settings → Bluetooth & devices → Touchpad and the model-specific touchpad toggle shortcut.',c:[['It was disabled; now works','resolved'],['Enabled but still not working','driver']]},
+      {id:'restart',q:'After a normal restart, do both devices work?',i:'Save open work and restart Windows normally. Do not force power off unless the device is unresponsive.',c:[['Yes','resolved'],['No','driver']]},
+      {id:'driver',q:'Does the device appear normally in Device Manager?',i:'Check Human Interface Devices, Keyboards, and relevant input devices for warning icons.',c:[['Yes','software'],['Missing or warning icon','service']]},
+      {id:'software',q:'Does the issue persist in another application or a clean Windows test account?',i:'Check whether the issue is limited to one application or user profile before treating it as hardware.',c:[['No, only one app/profile','resolved'],['Yes, across Windows','service']]},
+      {id:'service',q:'Recommended next action',i:'Record affected keys/area, Device Manager status, external keyboard/mouse test, and whether the issue occurs before Windows loads.',end:'Further driver or input-device hardware assessment may be required.'},
+      {id:'resolved',q:'Troubleshooting result',i:'The keyboard or touchpad now responds normally.',end:'Issue appears resolved. Record the setting, restart, or software step that restored operation.'}
+    ]},
+    {id:'audio',icon:'🔊',title:'Audio / Speakers',desc:'No sound, distorted sound, or microphone issue',steps:[
+      {q:'Is the correct audio output device selected and unmuted?',i:'Check Windows volume, app volume, and Settings → System → Sound output selection.',c:[['Yes, correct output selected','test'],['No, corrected the setting','resolved']]},
+      {id:'test',q:'Does sound work through headphones or another output?',i:'Test with known-good headphones or another supported output device at a safe volume.',c:[['Headphones work, speakers do not','speaker'],['Neither output works','troubleshooter']]},
+      {id:'speaker',q:'Does the built-in speaker still fail after checking balance and audio enhancements?',i:'Check left/right balance and temporarily disable audio enhancements if available.',c:[['Now works','resolved'],['Still no speaker sound','service']]},
+      {id:'troubleshooter',q:'Does the Windows audio troubleshooter resolve the issue?',i:'Run the built-in Get Help / audio troubleshooter and record any reported issue.',c:[['Yes','resolved'],['No','driver']]},
+      {id:'driver',q:'Is the audio device visible in Device Manager without warnings?',i:'Check Sound, video and game controllers and Audio inputs and outputs.',c:[['Yes','service'],['Missing or warning icon','service']]},
+      {id:'service',q:'Recommended next action',i:'Record output device, troubleshooter result, Device Manager status, and whether headphones work.',end:'Further audio driver or hardware assessment may be required.'},
+      {id:'resolved',q:'Troubleshooting result',i:'Audio works normally after the performed step.',end:'Issue appears resolved. Confirm the correct output and document the step that worked.'}
+    ]},
+    {id:'heat',icon:'🌡️',title:'Overheating / Fan',desc:'High temperature, loud fan, or unexpected shutdown',steps:[
+      {q:'Is there a burning smell, battery swelling, smoke, or unusually hot surface?',i:'Ask the customer to stop using and charging the device if there are signs of a safety issue. Do not continue testing.',c:[['Yes, safety concern present','safety'],['No, fan noise or warmth only','airflow']]},
+      {id:'airflow',q:'Are the vents unobstructed and is the device on a hard, flat surface?',i:'Move the device to a hard, flat surface and ensure vents are not blocked. Do not place it on bedding or soft fabric.',c:[['Yes, airflow is clear','load'],['No, vents were obstructed','retest']]},
+      {id:'load',q:'Is high CPU usage or a demanding application causing the fan to run?',i:'Check Task Manager for unusually high CPU usage and close unnecessary applications if safe to do so.',c:[['Yes, high load identified','resolved'],['No, fan remains unusually loud','service']]},
+      {id:'retest',q:'After improving airflow, does temperature/fan behavior return to normal?',i:'Allow the device to cool naturally and retest under normal workload. Do not use external cooling liquids or open the chassis.',c:[['Yes','resolved'],['No','service']]},
+      {id:'safety',q:'Safety escalation',i:'Stop troubleshooting. Advise the customer to power down and unplug the adapter if safe. Do not press, puncture, or handle a swollen battery.',end:'Follow Acer safety escalation and repair-center procedures. Do not continue normal operation or charging.'},
+      {id:'service',q:'Recommended next action',i:'Record temperature symptoms, workload, fan behavior, shutdown frequency, and whether vents are obstructed.',end:'Further thermal or fan hardware assessment may be required.'},
+      {id:'resolved',q:'Troubleshooting result',i:'The device is operating normally after reducing workload or improving airflow.',end:'Issue appears improved. Advise keeping vents clear and document the observed behavior.'}
+    ]},
+    {id:'software',icon:'🪟',title:'Windows / Software',desc:'Slow performance, errors, freezes, or update problems',steps:[
+      {q:'Does the issue happen in one application or throughout Windows?',i:'Identify whether the fault is isolated to a single app or affects the whole operating system.',c:[['One application only','app'],['Multiple apps / Windows-wide','restart']]},
+      {id:'app',q:'Does updating or repairing the affected application resolve the issue?',i:'Check for an approved app update and use the application repair option if available. Protect customer data before reset/reinstall.',c:[['Yes','resolved'],['No','service']]},
+      {id:'restart',q:'Does a normal restart resolve the issue?',i:'Save work and restart Windows normally. Record any error code if it returns.',c:[['Yes','resolved'],['No','updates']]},
+      {id:'updates',q:'Are Windows updates pending or did the issue start after a recent update?',i:'Check Windows Update history and available updates. Do not remove updates without following the approved procedure.',c:[['Pending update available','update'],['Issue began after an update / no pending update','service']]},
+      {id:'update',q:'After completing the approved update and restart, is the issue resolved?',i:'Install updates through Windows Update, restart, and test the original symptom.',c:[['Yes','resolved'],['No','service']]},
+      {id:'service',q:'Recommended next action',i:'Record Windows version, application, error message/code, recent changes, and steps already attempted. Back up important data before recovery actions.',end:'Further software investigation may be required. Avoid factory reset or OS reinstall without customer consent and data-impact discussion.'},
+      {id:'resolved',q:'Troubleshooting result',i:'The original symptom no longer occurs after the performed step.',end:'Issue appears resolved. Document the exact fix and confirm the customer can repeat the task.'}
+    ]}
+  ];
+
+  let currentGuide=null, history=[], currentStep=null, currentResult='';
+  const $=id=>document.getElementById(id);
+  function escapeHTML(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function renderCategories(filter=''){
+    const q=filter.trim().toLowerCase();
+    const list=guides.filter(g=>(g.title+' '+g.desc).toLowerCase().includes(q));
+    $('tsCategoryGrid').innerHTML=list.map(g=>`<button class="ts-category" type="button" onclick="tsStart('${g.id}')"><span class="ico">${g.icon}</span><strong>${escapeHTML(g.title)}</strong><small>${escapeHTML(g.desc)}</small></button>`).join('')||'<p style="color:#9bb4d3">No matching guide found.</p>';
+  }
+  window.tsFilterCategories=renderCategories;
+  window.showTroubleshooting=function(){
+    document.getElementById('caseTrackerPage')?.classList.remove('active');
+    document.getElementById('arcFormsShell')?.classList.remove('active');
+    document.getElementById('otherFormsShell')?.classList.remove('active');
+    document.getElementById('analyticsPage')?.classList.remove('analytics-active');
+    document.querySelector('.main-shell').style.display='none';
+    document.getElementById('troubleshootingPage').classList.add('active');
+    document.querySelectorAll('.side-link').forEach(b=>b.classList.remove('active'));
+    $('troubleshootingNav').classList.add('active');
+    $('tsWork').classList.remove('active');
+    renderCategories($('tsSearch').value);
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  window.tsStart=function(id){
+    currentGuide=guides.find(g=>g.id===id);history=[];currentResult='';currentStep=currentGuide?.steps[0]?.id||'';
+    $('tsWork').classList.add('active');renderStep();$('tsWork').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  function renderStep(){
+    if(!currentGuide||!currentStep)return;
+    const step=currentGuide.steps.find(x=>(x.id||'')===currentStep)||currentGuide.steps[0];
+    const index=currentGuide.steps.indexOf(step);
+    $('tsStepLabel').textContent=`${currentGuide.title.toUpperCase()} · STEP ${index+1}`;
+    $('tsProgressBar').style.width=(step.end?'100%':Math.min(95,((index+1)/Math.max(currentGuide.steps.length,4))*100))+'%';
+    $('tsQuestion').textContent=step.q;
+    $('tsInstruction').textContent=step.i;
+    $('tsChoices').innerHTML=(step.c||[]).map(([label,next])=>`<button class="ts-choice" type="button" data-next="${escapeHTML(next)}">${escapeHTML(label)} →</button>`).join('');
+    $('tsChoices').querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('click',()=>{history.push(currentStep);currentStep=btn.dataset.next;currentResult='';renderStep();}));
+    $('tsResult').classList.toggle('active',!!step.end);
+    $('tsResult').textContent=step.end||'';
+    $('tsBackStep').disabled=!history.length;
+    if(step.end){currentResult=`${currentGuide.title}\n${step.q}\n${step.i}\nResult: ${step.end}`;}
+  }
+  window.tsGoBack=function(){if(!history.length)return;currentStep=history.pop();currentResult='';renderStep();};
+  window.tsRestart=function(){if(!currentGuide)return;history=[];currentStep=currentGuide.steps[0].id||'';currentResult='';renderStep();};
+  window.tsChooseAnother=function(){$('tsWork').classList.remove('active');currentGuide=null;history=[];currentStep=null;currentResult='';renderCategories($('tsSearch').value);};
+  window.tsCopySummary=async function(){
+    if(!currentGuide)return;
+    const visited=history.concat(currentStep).map(id=>currentGuide.steps.find(x=>(x.id||'')===id)).filter(Boolean);
+    const lines=[`Troubleshooting Guide: ${currentGuide.title}`,...visited.map((st,i)=>`${i+1}. ${st.q}\n${st.i}`),currentResult?'Outcome: '+currentResult:'Outcome: Troubleshooting in progress'];
+    const value=lines.join('\n\n');
+    try{await navigator.clipboard.writeText(value);alert('Troubleshooting summary copied.');}
+    catch(e){const ta=document.createElement('textarea');ta.value=value;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();alert('Troubleshooting summary copied.');}
+  };
+  renderCategories();
+})();
+</script>
+
 </body>
 </html>
